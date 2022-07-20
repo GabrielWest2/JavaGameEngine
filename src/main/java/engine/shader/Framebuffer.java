@@ -1,6 +1,6 @@
 package engine.shader;
 
-import engine.shader.display.DisplayManager;
+import engine.display.DisplayManager;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
 import org.lwjgl.opengl.GL14;

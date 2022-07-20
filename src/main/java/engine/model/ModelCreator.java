@@ -1,6 +1,8 @@
 package engine.model;
 
+import engine.GameEngine;
 import engine.texture.Texture;
+import engine.texture.TextureLoader;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
@@ -15,6 +17,53 @@ import java.util.List;
 import static org.lwjgl.opengles.GLES20.GL_ELEMENT_ARRAY_BUFFER;
 
 public class ModelCreator {
+
+    private static final float SIZE = 600f;
+
+    private static final float[] VERTICES = {
+            -SIZE, SIZE, -SIZE,
+            -SIZE, -SIZE, -SIZE,
+            SIZE, -SIZE, -SIZE,
+            SIZE, -SIZE, -SIZE,
+            SIZE, SIZE, -SIZE,
+            -SIZE, SIZE, -SIZE,
+
+            -SIZE, -SIZE, SIZE,
+            -SIZE, -SIZE, -SIZE,
+            -SIZE, SIZE, -SIZE,
+            -SIZE, SIZE, -SIZE,
+            -SIZE, SIZE, SIZE,
+            -SIZE, -SIZE, SIZE,
+
+            SIZE, -SIZE, -SIZE,
+            SIZE, -SIZE, SIZE,
+            SIZE, SIZE, SIZE,
+            SIZE, SIZE, SIZE,
+            SIZE, SIZE, -SIZE,
+            SIZE, -SIZE, -SIZE,
+
+            -SIZE, -SIZE, SIZE,
+            -SIZE, SIZE, SIZE,
+            SIZE, SIZE, SIZE,
+            SIZE, SIZE, SIZE,
+            SIZE, -SIZE, SIZE,
+            -SIZE, -SIZE, SIZE,
+
+            -SIZE, SIZE, -SIZE,
+            SIZE, SIZE, -SIZE,
+            SIZE, SIZE, SIZE,
+            SIZE, SIZE, SIZE,
+            -SIZE, SIZE, SIZE,
+            -SIZE, SIZE, -SIZE,
+
+            -SIZE, -SIZE, -SIZE,
+            -SIZE, -SIZE, SIZE,
+            SIZE, -SIZE, -SIZE,
+            SIZE, -SIZE, -SIZE,
+            -SIZE, -SIZE, SIZE,
+            SIZE, -SIZE, SIZE
+    };
+
     private final List<Integer> vaos = new ArrayList<>();
     private final List<Integer> vbos = new ArrayList<>();
 
@@ -39,6 +88,11 @@ public class ModelCreator {
         storeDataInAttributeList(0, 3, positions);
         unbindVAO();
         return new Model(vaoID, positions.capacity());
+    }
+
+    public SkyboxModel createSkyboxModel(String[] TEXTURE_FILES) {
+        Model m = GameEngine.modelCreator.loadToVAO(VERTICES, 3);
+        return new SkyboxModel(m.getVaoID(), m.getVertexCount(), TextureLoader.loadCubeMap(TEXTURE_FILES));
     }
 
     public TexturedModel loadToTexturedVAO(float[] positions, int[] indices, float[] textureCoords, float[] normals, Texture texture) {

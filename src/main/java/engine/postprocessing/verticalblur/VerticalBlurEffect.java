@@ -1,7 +1,7 @@
 package engine.postprocessing.verticalblur;
 
+import engine.display.DisplayManager;
 import engine.postprocessing.PostProcessingEffect;
-import engine.shader.display.DisplayManager;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE0;

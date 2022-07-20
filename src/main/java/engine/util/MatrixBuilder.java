@@ -1,7 +1,7 @@
 package engine.util;
 
 import engine.Camera;
-import engine.shader.display.DisplayManager;
+import engine.display.DisplayManager;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;

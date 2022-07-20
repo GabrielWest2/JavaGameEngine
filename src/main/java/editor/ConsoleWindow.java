@@ -25,8 +25,9 @@ public class ConsoleWindow {
             ImGui.setClipboardText(newConsole.toString());
 
         ImGui.separator();
-
+        ImGui.beginChildFrame(1, ImGui.getContentRegionMaxX(), ImGui.getContentRegionAvail().y);
         ImGui.textWrapped(newConsole.toString());
+        ImGui.endChildFrame();
 
         ImGui.end();
     }

@@ -2,18 +2,10 @@ package scripting;
 
 public class GameEngineAPI {
 
-    private static GameEngineAPI instance;
+    public float z = 19;
 
-    public GameEngineAPI() {
-        instance = this;
-    }
-
-    public static GameEngineAPI getInstance() {
-        return instance;
-    }
-
-    public void Update() {
-
+    public String engineUpdate() {
+        return "ENGINEUPDATE";
     }
 
 

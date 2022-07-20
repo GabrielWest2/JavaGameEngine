@@ -7,18 +7,18 @@ import org.luaj.vm2.lib.jse.CoerceJavaToLua;
 import org.luaj.vm2.lib.jse.JsePlatform;
 
 public class LuaScriptingManager {
-    public void init() {
-        GameEngineAPI engineAPI = new GameEngineAPI();
+
+    public void loadCode() {
         Thread thread = new Thread(() -> {
             Globals globals = JsePlatform.standardGlobals();
-            LuaValue api = CoerceJavaToLua.coerce(engineAPI);
-            globals.set("engine", api);
+            LuaValue api = CoerceJavaToLua.coerce(GameEngineAPI.class);
+            globals.set("engineClass", api);
             LuaValue chunk = globals.loadfile("scripts/test.lua");
+
             try {
                 chunk.call();
             } catch (LuaError error) {
                 System.out.println("[ERROR]: " + error.getMessage());
-                System.out.println("[ERROR]: " + error.getCause());
             }
         });
         thread.start();

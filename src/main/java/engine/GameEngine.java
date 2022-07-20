@@ -1,21 +1,18 @@
 package engine;
 
 import editor.ConsoleWindow;
+import engine.display.DisplayManager;
 import engine.ecs.Entity;
 import engine.ecs.Light;
 import engine.ecs.component.Transform;
 import engine.model.ModelCreator;
+import engine.model.OBJLoader;
+import engine.model.SkyboxModel;
 import engine.postprocessing.PostProcessing;
 import engine.shader.Framebuffer;
-import engine.shader.StaticShader;
-import engine.shader.TerrainShader;
-import engine.shader.display.DisplayManager;
 import engine.terrain.Terrain;
 import engine.texture.TextureLoader;
-import engine.util.MatrixBuilder;
 import org.joml.Vector3f;
-import org.lwjgl.Version;
-import scripting.GameEngineAPI;
 
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
@@ -23,104 +20,62 @@ import static org.lwjgl.glfw.GLFW.*;
 
 public class GameEngine {
     public static ModelCreator modelCreator;
-    public static TextureLoader textureLoader;
     public static Renderer renderer;
-    public static SkyboxRenderer skyboxRenderer;
-    public static StaticShader shader;
-    public static TerrainShader terrainShader;
     public static Camera camera;
     public static Framebuffer fb;
+    public static Light light;
+    public static Terrain terrain;
+
 
     public static ModelCreator getModelCreator() {
         return modelCreator;
     }
 
-    public static TextureLoader getTextureLoader() {
-        return textureLoader;
-    }
-
-    public static Renderer getRenderer() {
-        return renderer;
-    }
-
-    public static StaticShader getShader() {
-        return shader;
-    }
 
     public static void main(String[] args) {
         new GameEngine().run();
     }
 
     public void run() {
-
-        System.out.println("Hello LWJGL " + Version.getVersion() + "!");
-
         DisplayManager.initOpenGL(this);
-
-
         loop();
-
-
         glfwFreeCallbacks(DisplayManager.window);
         glfwDestroyWindow(DisplayManager.window);
         modelCreator.cleanUp();
         TextureLoader.cleanUp();
-        shader.cleanUp();
-        terrainShader.cleanUp();
+
         glfwTerminate();
         glfwSetErrorCallback(null).free();
     }
 
     private void loop() {
         modelCreator = new ModelCreator();
-
         renderer = new Renderer();
         renderer.Prepare();
-        skyboxRenderer = new SkyboxRenderer(MatrixBuilder.createProjectionMatrix());
+        renderer.Prepare();
 
-        shader = new StaticShader();
-        terrainShader = new TerrainShader();
 
-        renderer.setShader(shader);
-        renderer.setShader(terrainShader);
         PostProcessing.init();
         ConsoleWindow.init();
 
         camera = new Camera(new Vector3f(30, 10, 30), new Vector3f(0, 25, 0));
         fb = new Framebuffer(DisplayManager.getWidth(), DisplayManager.getHeight(), Framebuffer.DEPTH_TEXTURE);
         DisplayManager.setCallbacks();
-        //Physics.setUpPhysics();
 
+        Entity link = new Entity(new Transform(), OBJLoader.loadTexturedOBJ("cube.obj", TextureLoader.getTexture("grass_color.png")));
 
-        Terrain terrain = new Terrain();
-        Entity entity = new Entity(new Transform(), terrain.getModel());
-
-        Light sun = new Light(new Vector3f(10, 30, 10), new Vector3f(1, 1f, 1));
+        terrain = new Terrain();
+        light = new Light(new Vector3f(10, 30, 10), new Vector3f(1, 1f, 1));
+        SkyboxModel skyboxModel = modelCreator.createSkyboxModel(new String[]{"right", "left", "top", "bottom", "back", "front"});
 
         while (!glfwWindowShouldClose(DisplayManager.window)) {
             renderer.beginFrame(fb);
             camera.update();
-            if (GameEngineAPI.getInstance() != null)
-                GameEngineAPI.getInstance().Update();
+            //GameEngineAPI.engineUpdate();
 
-
-            skyboxRenderer.render(MatrixBuilder.createStationaryViewMatrix(camera));
-
-            //shader.start();
-            //shader.loadViewMatrix(MatrixBuilder.createViewMatrix(camera));
-            //shader.loadLight(light);
-            //shader.setMaterial(20, 0.5f);
-            //renderer.Render(link, shader);
-            //Physics.render(shader);
-            //shader.stop();
-            //Physics.logic();
-            //Physics.input();
-
-
-            terrainShader.start();
-            terrainShader.loadViewMatrix(MatrixBuilder.createViewMatrix(camera));
-            renderer.Render(entity, terrainShader);
-            terrainShader.stop();
+            renderer.Render(skyboxModel);
+            renderer.Render(link);
+            renderer.Render(terrain.getModel());
 
 
             renderer.endScene(fb);

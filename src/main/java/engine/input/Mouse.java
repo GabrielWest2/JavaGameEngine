@@ -1,7 +1,7 @@
 package engine.input;
 
 import editor.GameViewportWindow;
-import engine.shader.display.DisplayManager;
+import engine.display.DisplayManager;
 import imgui.ImGui;
 import imgui.ImVec2;
 

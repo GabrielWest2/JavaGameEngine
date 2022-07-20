@@ -27,12 +27,12 @@ public class OBJLoader {
         return null;
     }
 
-    public static Model loadTexturedOBJ(String path, Texture texture) {
+    public static TexturedModel loadTexturedOBJ(String path, Texture texture) {
         try {
             InputStream inputStream = new FileInputStream("res/" + path);
             Obj obj = ObjUtils.convertToRenderable(
                     ObjReader.read(inputStream));
-            Model model = GameEngine.getModelCreator().loadToTexturedVAO(ObjData.getVertices(obj), ObjData.getFaceVertexIndices(obj), ObjData.getTexCoords(obj, 2), ObjData.getNormals(obj), texture);
+            TexturedModel model = GameEngine.getModelCreator().loadToTexturedVAO(ObjData.getVertices(obj), ObjData.getFaceVertexIndices(obj), ObjData.getTexCoords(obj, 2), ObjData.getNormals(obj), texture);
             return model;
         } catch (IOException e) {
             e.printStackTrace();

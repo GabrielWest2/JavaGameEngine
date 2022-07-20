@@ -1,4 +1,4 @@
-package engine.shader.display;
+package engine.display;
 
 import engine.GameEngine;
 import engine.shader.Framebuffer;

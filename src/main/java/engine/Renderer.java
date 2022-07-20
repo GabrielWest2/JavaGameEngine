@@ -3,16 +3,16 @@ package engine;
 import editor.ConsoleWindow;
 import editor.DebugWindow;
 import editor.GameViewportWindow;
+import engine.display.DisplayManager;
 import engine.ecs.Entity;
+import engine.ecs.component.Transform;
 import engine.input.Mouse;
+import engine.model.Model;
+import engine.model.SkyboxModel;
+import engine.model.TerrianModel;
 import engine.model.TexturedModel;
 import engine.postprocessing.PostProcessing;
-import engine.shader.Framebuffer;
-import engine.shader.ShaderProgram;
-import engine.shader.StaticShader;
-import engine.shader.TerrainShader;
-import engine.shader.display.DisplayManager;
-import engine.texture.NormalMappedModel;
+import engine.shader.*;
 import engine.util.MatrixBuilder;
 import engine.util.Time;
 import org.joml.Matrix4f;
@@ -21,86 +21,139 @@ import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import static org.lwjgl.glfw.GLFW.glfwPollEvents;
 import static org.lwjgl.glfw.GLFW.glfwSwapBuffers;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL13.GL_MULTISAMPLE;
 
 public class Renderer {
-    private final List<ShaderProgram> shaders = new ArrayList<>();
+    private StaticShader defaultShader;
+    private SkyboxShader skyboxShader;
+    private TerrainShader terrainShader;
+    private GridShader gridShader;
 
-    public void setShader(ShaderProgram shader) {
-        this.shaders.add(shader);
-    }
 
     public void UpdateProjection() {
-        for (ShaderProgram shader : shaders) {
-            Matrix4f mat = MatrixBuilder.createProjectionMatrix();
-            shader.start();
-            shader.loadProjectionMatrix(mat);
-            shader.stop();
-        }
+        Matrix4f mat = MatrixBuilder.createProjectionMatrix();
+        defaultShader.start();
+        defaultShader.loadProjectionMatrix(mat);
+        defaultShader.stop();
+
+        skyboxShader.start();
+        skyboxShader.loadProjectionMatrix(mat);
+        skyboxShader.stop();
+
+        terrainShader.start();
+        terrainShader.loadProjectionMatrix(mat);
+        terrainShader.stop();
+
+        gridShader.start();
+        gridShader.loadProjectionMatrix(mat);
+        gridShader.stop();
     }
 
     public void Prepare() {
-
-
         glEnable(GL_MULTISAMPLE);
         // Set the clear color
-        glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+        glClearColor(0.5f, 0.5f, 1.0f, 1.0f);
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_CULL_FACE);
         glCullFace(GL_BACK);
+
+        defaultShader = new StaticShader();
+        skyboxShader = new SkyboxShader();
+        terrainShader = new TerrainShader();
+        gridShader = new GridShader();
     }
 
-    public void Render(Entity entity, StaticShader shader) {
+    public void Render(Entity entity) {
+        if (TerrianModel.class.isAssignableFrom(entity.getModel().getClass()))
+            RenderTerrain((TerrianModel) entity.getModel(), entity.getTransform());
+        else if (TexturedModel.class.isAssignableFrom(entity.getModel().getClass()))
+            RenderTextured((TexturedModel) entity.getModel(), entity.getTransform());
+        else if (SkyboxModel.class.isAssignableFrom(entity.getModel().getClass()))
+            RenderSkybox((SkyboxModel) entity.getModel());
+        else
+            RenderDefault(entity);
+    }
 
-        shader.loadProjectionMatrix(MatrixBuilder.createProjectionMatrix());
-        shader.loadTransformationMatrix(MatrixBuilder.createTransformationMatrix(entity.getTransform().getPosition(), entity.getTransform().getRotation(), entity.getTransform().getScale()));
+    public void Render(Model model) {
+        if (TerrianModel.class.isAssignableFrom(model.getClass()))
+            RenderTerrain((TerrianModel) model, new Transform());
+        else if (TexturedModel.class.isAssignableFrom(model.getClass()))
+            RenderTextured((TexturedModel) model, new Transform());
+        else if (SkyboxModel.class.isAssignableFrom(model.getClass()))
+            RenderSkybox((SkyboxModel) model);
+        else
+            RenderDefault(new Entity(new Transform(), model));
+    }
+
+    private void RenderDefault(Entity entity) {
+        defaultShader.start();
+        defaultShader.loadLight(GameEngine.light);
+        defaultShader.setMaterial(20, 0.5f);
+        defaultShader.loadTransformationMatrix(MatrixBuilder.createTransformationMatrix(entity.getTransform().getPosition(), entity.getTransform().getRotation(), entity.getTransform().getScale()));
+        defaultShader.loadViewMatrix(MatrixBuilder.createViewMatrix(GameEngine.camera));
         GL30.glBindVertexArray(entity.getModel().getVaoID());
         GL20.glEnableVertexAttribArray(0);
         GL20.glEnableVertexAttribArray(1);
         GL20.glEnableVertexAttribArray(2);
-        if (entity.getModel() instanceof TexturedModel) {
-            GL13.glActiveTexture(GL13.GL_TEXTURE0);
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, ((TexturedModel) entity.getModel()).getTexture().getTextureID());
-        }
-        if (entity.getModel() instanceof NormalMappedModel) {
-            GL13.glActiveTexture(GL13.GL_TEXTURE0);
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, ((NormalMappedModel) entity.getModel()).getTexture().getTextureID());
-            GL13.glActiveTexture(GL13.GL_TEXTURE1);
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, ((NormalMappedModel) entity.getModel()).getNormalMap().getTextureID());
-        }
+
         GL11.glDrawElements(GL11.GL_TRIANGLES, entity.getModel().getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
         GL20.glDisableVertexAttribArray(2);
         GL20.glDisableVertexAttribArray(1);
         GL20.glDisableVertexAttribArray(0);
         GL30.glBindVertexArray(0);
-
+        defaultShader.stop();
     }
 
-    public void Render(Entity entity, TerrainShader terrainShader) {
-        //glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
-        terrainShader.start();
-        terrainShader.loadProjectionMatrix(MatrixBuilder.createProjectionMatrix());
-        terrainShader.loadTransformationMatrix(MatrixBuilder.createTransformationMatrix(entity.getTransform().getPosition(), entity.getTransform().getRotation(), entity.getTransform().getScale()));
-        GL30.glBindVertexArray(entity.getModel().getVaoID());
+    private void RenderTextured(TexturedModel model, Transform transform) {
+        defaultShader.start();
+        defaultShader.loadLight(GameEngine.light);
+        defaultShader.setMaterial(20, 0.5f);
+        defaultShader.loadTransformationMatrix(MatrixBuilder.createTransformationMatrix(transform.getPosition(), transform.getRotation(), transform.getScale()));
+        defaultShader.loadViewMatrix(MatrixBuilder.createViewMatrix(GameEngine.camera));
+        GL30.glBindVertexArray(model.getVaoID());
         GL20.glEnableVertexAttribArray(0);
         GL20.glEnableVertexAttribArray(1);
-        if (entity.getModel() instanceof TexturedModel) {
-            GL13.glActiveTexture(GL13.GL_TEXTURE0);
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, ((TexturedModel) entity.getModel()).getTexture().getTextureID());
-        }
+        GL20.glEnableVertexAttribArray(2);
+        GL13.glActiveTexture(GL13.GL_TEXTURE0);
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, model.getTexture().getTextureID());
+        GL11.glDrawElements(GL11.GL_TRIANGLES, model.getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
+        GL20.glDisableVertexAttribArray(2);
+        GL20.glDisableVertexAttribArray(1);
+        GL20.glDisableVertexAttribArray(0);
+        GL30.glBindVertexArray(0);
+        defaultShader.stop();
+    }
 
-        GL11.glDrawElements(GL11.GL_TRIANGLES, entity.getModel().getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
+    private void RenderTerrain(TerrianModel model, Transform transform) {
+        terrainShader.start();
+        terrainShader.loadTransformationMatrix(MatrixBuilder.createTransformationMatrix(transform.getPosition(), transform.getRotation(), transform.getScale()));
+        terrainShader.loadViewMatrix(MatrixBuilder.createViewMatrix(GameEngine.camera));
+        GL30.glBindVertexArray(model.getVaoID());
+        GL20.glEnableVertexAttribArray(0);
+        GL20.glEnableVertexAttribArray(1);
+
+        GL11.glDrawElements(GL11.GL_TRIANGLES, model.getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
         GL20.glDisableVertexAttribArray(1);
         GL20.glDisableVertexAttribArray(0);
         GL30.glBindVertexArray(0);
         terrainShader.stop();
-        //glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
+    }
+
+    private void RenderSkybox(SkyboxModel model) {
+        skyboxShader.start();
+        skyboxShader.loadViewMatrix(MatrixBuilder.createStationaryViewMatrix(GameEngine.camera));
+        GL30.glBindVertexArray(model.getVaoID());
+        GL20.glEnableVertexAttribArray(0);
+        GL13.glActiveTexture(GL13.GL_TEXTURE0);
+        GL11.glBindTexture(GL13.GL_TEXTURE_CUBE_MAP, model.getCubemapTexture());
+        GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, model.getVertexCount());
+        GL20.glDisableVertexAttribArray(0);
+        GL30.glBindVertexArray(0);
+        skyboxShader.stop();
+        skyboxShader.stop();
     }
 
     public void beginFrame(Framebuffer fb) {
@@ -122,5 +175,12 @@ public class Renderer {
         DisplayManager.endImguiFrame();
         glfwSwapBuffers(DisplayManager.window); // swap the color buffers
         glfwPollEvents();
+    }
+
+    public void cleanUp() {
+        defaultShader.cleanUp();
+        skyboxShader.cleanUp();
+        terrainShader.cleanUp();
+        gridShader.cleanUp();
     }
 }

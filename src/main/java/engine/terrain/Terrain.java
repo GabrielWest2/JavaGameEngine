@@ -5,16 +5,14 @@ import engine.model.TerrianModel;
 import engine.util.FastNoiseLite;
 import org.joml.Vector3f;
 
-import java.awt.*;
-import java.util.Random;
-
 public class Terrain {
 
 
-    private static final int TERRAIN_SIZE = 80;
-    private static final float UNIT_SIZE = 0.5f;
-
-    private final TerrianModel model;
+    public static int TERRAIN_SIZE = 80;
+    public static float UNIT_SIZE = 0.5f;
+    public static float offsetX = 0, offsetY = 0, scale = 10, amplitude = 2;
+    public static Vector3f color1 = new Vector3f(255f / 255f, 217f / 255f, 66f / 255f), color2 = new Vector3f(102f / 255f, 204f / 255f, 71f / 255f);
+    private TerrianModel model;
 
     public Terrain() {
         this.model = generateTerrain();
@@ -24,32 +22,35 @@ public class Terrain {
         return model;
     }
 
+    public void UpdateModel() {
+        this.model = generateTerrain();
+    }
+
+
     private TerrianModel generateTerrain() {
         FastNoiseLite noise = new FastNoiseLite();
         noise.SetNoiseType(FastNoiseLite.NoiseType.Perlin);
-        Random random = new Random();
         Vector3f[] verticesVec3 = new Vector3f[(TERRAIN_SIZE + 1) * (TERRAIN_SIZE + 1)];
-        Color[] colorsRGB = new Color[(TERRAIN_SIZE + 1) * (TERRAIN_SIZE + 1)];
+        Vector3f[] colorsRGB = new Vector3f[(TERRAIN_SIZE + 1) * (TERRAIN_SIZE + 1)];
         for (int i = 0, y = 0; y <= TERRAIN_SIZE; y++) {
             for (int x = 0; x <= TERRAIN_SIZE; x++, i++) {
 
-                float height = noise.GetNoise(x * 10f, y * 10f);
-                verticesVec3[i] = new Vector3f(x * UNIT_SIZE, height * 5, y * UNIT_SIZE);
-
-
-                colorsRGB[i] = height < 0 ? new Color(255, 217, 66) : new Color(102, 204, 71);
+                float height = noise.GetNoise((x + offsetX) * scale, (y + offsetY) * scale);
+                verticesVec3[i] = new Vector3f(x * UNIT_SIZE, height * amplitude, y * UNIT_SIZE);
+                colorsRGB[i] = height < 0 ? color1 : color2;
             }
         }
         float[] colors = new float[verticesVec3.length * 3];
         float[] vertices = new float[verticesVec3.length * 3];
         int i = 0;
         for (Vector3f vert : verticesVec3) {
+
             vertices[i] = vert.x;
             vertices[i + 1] = vert.y;
             vertices[i + 2] = vert.z;
-            colors[i] = colorsRGB[i / 3].getRed() / 256f;
-            colors[i + 1] = colorsRGB[i / 3].getGreen() / 256f;
-            colors[i + 2] = colorsRGB[i / 3].getBlue() / 256f;
+            colors[i] = colorsRGB[i / 3].x;
+            colors[i + 1] = colorsRGB[i / 3].y;
+            colors[i + 2] = colorsRGB[i / 3].z;
             i += 3;
         }
 

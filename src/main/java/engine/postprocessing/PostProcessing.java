@@ -1,12 +1,12 @@
 package engine.postprocessing;
 
+import engine.display.DisplayManager;
 import engine.postprocessing.brightnessfilter.BrightnessFilterEffect;
 import engine.postprocessing.combine.CombineEffect;
 import engine.postprocessing.contrast.ContrastEffect;
 import engine.postprocessing.horizontalblur.HorizontalBlurEffect;
 import engine.postprocessing.verticalblur.VerticalBlurEffect;
 import engine.shader.Framebuffer;
-import engine.shader.display.DisplayManager;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
