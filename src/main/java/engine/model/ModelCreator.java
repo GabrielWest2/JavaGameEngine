@@ -91,7 +91,7 @@ public class ModelCreator {
     }
 
     public SkyboxModel createSkyboxModel(String[] TEXTURE_FILES) {
-        Model m = GameEngine.modelCreator.loadToVAO(VERTICES, 3);
+        Model m = GameEngine.getInstance().modelCreator.loadToVAO(VERTICES, 3);
         return new SkyboxModel(m.getVaoID(), m.getVertexCount(), TextureLoader.loadCubeMap(TEXTURE_FILES));
     }
 
@@ -105,13 +105,14 @@ public class ModelCreator {
         return new TexturedModel(vaoID, positions.length, texture);
     }
 
-    public TerrianModel loadToTerrainVAO(float[] positions, int[] indices, float[] colors) {
+    public TerrianModel loadToTerrainVAO(float[] positions, int[] indices, float[] textureCoords, float[] normals, Texture texture) {
         int vaoID = createVAO();
         bindIndicesBuffer(indices);
         storeDataInAttributeList(0, 3, positions);
-        storeDataInAttributeList(1, 3, colors);
+        storeDataInAttributeList(1, 2, textureCoords);
+        storeDataInAttributeList(2, 3, normals);
         unbindVAO();
-        return new TerrianModel(vaoID, positions.length * 3);
+        return new TerrianModel(vaoID, positions.length * 3, texture);
     }
 
 

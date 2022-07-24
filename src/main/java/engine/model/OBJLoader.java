@@ -19,7 +19,7 @@ public class OBJLoader {
             InputStream inputStream = new FileInputStream("res/" + path);
             Obj obj = ObjUtils.convertToRenderable(
                     ObjReader.read(inputStream));
-            Model model = GameEngine.getModelCreator().loadToVAO(ObjData.getVertices(obj), ObjData.getFaceVertexIndices(obj));
+            Model model = GameEngine.getInstance().modelCreator.loadToVAO(ObjData.getVertices(obj), ObjData.getFaceVertexIndices(obj));
             return model;
         } catch (IOException e) {
             e.printStackTrace();
@@ -32,7 +32,7 @@ public class OBJLoader {
             InputStream inputStream = new FileInputStream("res/" + path);
             Obj obj = ObjUtils.convertToRenderable(
                     ObjReader.read(inputStream));
-            TexturedModel model = GameEngine.getModelCreator().loadToTexturedVAO(ObjData.getVertices(obj), ObjData.getFaceVertexIndices(obj), ObjData.getTexCoords(obj, 2), ObjData.getNormals(obj), texture);
+            TexturedModel model = GameEngine.getInstance().modelCreator.loadToTexturedVAO(ObjData.getVertices(obj), ObjData.getFaceVertexIndices(obj), ObjData.getTexCoords(obj, 2), ObjData.getNormals(obj), texture);
             return model;
         } catch (IOException e) {
             e.printStackTrace();

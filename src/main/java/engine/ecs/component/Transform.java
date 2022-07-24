@@ -23,6 +23,10 @@ public class Transform extends Component {
 
     }
 
+    public Transform(Vector3f position) {
+        this.position = position;
+    }
+
     public void moveBy(Vector3f vec) {
         this.position.add(vec);
     }

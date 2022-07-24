@@ -1,10 +1,9 @@
 package engine;
 
-import editor.ConsoleWindow;
-import editor.DebugWindow;
-import editor.GameViewportWindow;
+import editor.*;
 import engine.display.DisplayManager;
 import engine.ecs.Entity;
+import engine.ecs.component.ModelRenderer;
 import engine.ecs.component.Transform;
 import engine.input.Mouse;
 import engine.model.Model;
@@ -67,12 +66,16 @@ public class Renderer {
     }
 
     public void Render(Entity entity) {
-        if (TerrianModel.class.isAssignableFrom(entity.getModel().getClass()))
-            RenderTerrain((TerrianModel) entity.getModel(), entity.getTransform());
-        else if (TexturedModel.class.isAssignableFrom(entity.getModel().getClass()))
-            RenderTextured((TexturedModel) entity.getModel(), entity.getTransform());
-        else if (SkyboxModel.class.isAssignableFrom(entity.getModel().getClass()))
-            RenderSkybox((SkyboxModel) entity.getModel());
+        ModelRenderer mr = entity.getComponent(ModelRenderer.class);
+        if (mr == null)
+            return;
+        Model m = mr.getModel();
+        if (TerrianModel.class.isAssignableFrom(m.getClass()))
+            RenderTerrain((TerrianModel) m, entity.getTransform());
+        else if (TexturedModel.class.isAssignableFrom(m.getClass()))
+            RenderTextured((TexturedModel) m, entity.getTransform());
+        else if (SkyboxModel.class.isAssignableFrom(m.getClass()))
+            RenderSkybox((SkyboxModel) m);
         else
             RenderDefault(entity);
     }
@@ -89,17 +92,18 @@ public class Renderer {
     }
 
     private void RenderDefault(Entity entity) {
+        Model m = entity.getComponent(ModelRenderer.class).getModel();
         defaultShader.start();
-        defaultShader.loadLight(GameEngine.light);
+        defaultShader.loadLight(GameEngine.getInstance().light);
         defaultShader.setMaterial(20, 0.5f);
         defaultShader.loadTransformationMatrix(MatrixBuilder.createTransformationMatrix(entity.getTransform().getPosition(), entity.getTransform().getRotation(), entity.getTransform().getScale()));
-        defaultShader.loadViewMatrix(MatrixBuilder.createViewMatrix(GameEngine.camera));
-        GL30.glBindVertexArray(entity.getModel().getVaoID());
+        defaultShader.loadViewMatrix(MatrixBuilder.createViewMatrix(GameEngine.getInstance().camera));
+        GL30.glBindVertexArray(m.getVaoID());
         GL20.glEnableVertexAttribArray(0);
         GL20.glEnableVertexAttribArray(1);
         GL20.glEnableVertexAttribArray(2);
 
-        GL11.glDrawElements(GL11.GL_TRIANGLES, entity.getModel().getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
+        GL11.glDrawElements(GL11.GL_TRIANGLES, m.getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
         GL20.glDisableVertexAttribArray(2);
         GL20.glDisableVertexAttribArray(1);
         GL20.glDisableVertexAttribArray(0);
@@ -109,10 +113,10 @@ public class Renderer {
 
     private void RenderTextured(TexturedModel model, Transform transform) {
         defaultShader.start();
-        defaultShader.loadLight(GameEngine.light);
+        defaultShader.loadLight(GameEngine.getInstance().light);
         defaultShader.setMaterial(20, 0.5f);
         defaultShader.loadTransformationMatrix(MatrixBuilder.createTransformationMatrix(transform.getPosition(), transform.getRotation(), transform.getScale()));
-        defaultShader.loadViewMatrix(MatrixBuilder.createViewMatrix(GameEngine.camera));
+        defaultShader.loadViewMatrix(MatrixBuilder.createViewMatrix(GameEngine.getInstance().camera));
         GL30.glBindVertexArray(model.getVaoID());
         GL20.glEnableVertexAttribArray(0);
         GL20.glEnableVertexAttribArray(1);
@@ -129,8 +133,10 @@ public class Renderer {
 
     private void RenderTerrain(TerrianModel model, Transform transform) {
         terrainShader.start();
+        terrainShader.loadLight(GameEngine.getInstance().light);
+        terrainShader.setMaterial(20, 0.5f);
         terrainShader.loadTransformationMatrix(MatrixBuilder.createTransformationMatrix(transform.getPosition(), transform.getRotation(), transform.getScale()));
-        terrainShader.loadViewMatrix(MatrixBuilder.createViewMatrix(GameEngine.camera));
+        terrainShader.loadViewMatrix(MatrixBuilder.createViewMatrix(GameEngine.getInstance().camera));
         GL30.glBindVertexArray(model.getVaoID());
         GL20.glEnableVertexAttribArray(0);
         GL20.glEnableVertexAttribArray(1);
@@ -144,7 +150,7 @@ public class Renderer {
 
     private void RenderSkybox(SkyboxModel model) {
         skyboxShader.start();
-        skyboxShader.loadViewMatrix(MatrixBuilder.createStationaryViewMatrix(GameEngine.camera));
+        skyboxShader.loadViewMatrix(MatrixBuilder.createStationaryViewMatrix(GameEngine.getInstance().camera));
         GL30.glBindVertexArray(model.getVaoID());
         GL20.glEnableVertexAttribArray(0);
         GL13.glActiveTexture(GL13.GL_TEXTURE0);
@@ -163,15 +169,21 @@ public class Renderer {
         DisplayManager.createDockspace();
         Time.updateTime();
         Mouse.update();
+        GameEngine.getInstance().camera.update();
     }
 
     public void endScene(Framebuffer fb) {
 
         fb.unbind();
         PostProcessing.doPostProcessing(fb.getColorTexture());
+
+        WindowMenubar.render();
         GameViewportWindow.render(PostProcessing.finalBuffer);
         ConsoleWindow.render();
         DebugWindow.render();
+        ExplorerWindow.render();
+        InspectorWindow.render();
+
         DisplayManager.endImguiFrame();
         glfwSwapBuffers(DisplayManager.window); // swap the color buffers
         glfwPollEvents();

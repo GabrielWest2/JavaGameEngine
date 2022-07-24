@@ -16,7 +16,6 @@ public class ConsoleWindow {
 
     public static void render() {
         ImGui.begin("Console");
-        ImGui.showDemoWindow();
         if (ImGui.smallButton("Clear")) {
             newConsole.reset();
         }
