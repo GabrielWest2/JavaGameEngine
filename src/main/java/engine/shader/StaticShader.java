@@ -2,6 +2,7 @@ package engine.shader;
 
 import engine.ecs.Light;
 import org.joml.Matrix4f;
+import org.joml.Vector4f;
 
 public class StaticShader extends ShaderProgram {
 
@@ -41,5 +42,9 @@ public class StaticShader extends ShaderProgram {
     public void setMaterial(float shineDamper, float reflectivity) {
         super.loadUniform(super.getUniformLocation("shineDamper"), shineDamper);
         super.loadUniform(super.getUniformLocation("reflectivity"), reflectivity);
+    }
+
+    public void setClipPlane(Vector4f plane) {
+        super.loadUniform(super.getUniformLocation("plane"), plane);
     }
 }

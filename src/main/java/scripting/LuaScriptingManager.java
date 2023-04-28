@@ -30,9 +30,6 @@ public class LuaScriptingManager {
     public void loadCode() {
         Thread thread = new Thread(() -> {
             Globals globals = JsePlatform.standardGlobals();
-            //LuaValue engine = CoerceJavaToLua.coerce(GameEngine.getInstance());
-            //globals.set("engine", engine);
-
             try {
                 LuaValue chunk = globals.loadfile("scripts/test.lua");
                 chunk.call();

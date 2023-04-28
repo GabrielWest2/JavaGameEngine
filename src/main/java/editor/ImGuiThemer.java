@@ -129,7 +129,7 @@ public class ImGuiThemer {
         style.setColor(FrameBg, 0.11f, 0.11f, 0.11f, 1.00f);
         style.setColor(FrameBgHovered, 0.51f, 0.36f, 0.15f, 1.00f);
         style.setColor(FrameBgActive, 0.78f, 0.55f, 0.21f, 1.00f);
-        style.setColor(TitleBg, 0.51f, 0.36f, 0.15f, 1.00f);
+        style.setColor(TitleBg, 0.91f, 0.64f, 0.13f, 1.00f);
         style.setColor(TitleBgActive, 0.91f, 0.64f, 0.13f, 1.00f);
         style.setColor(TitleBgCollapsed, 0.00f, 0.00f, 0.00f, 0.51f);
         style.setColor(MenuBarBg, 0.11f, 0.11f, 0.11f, 1.00f);
@@ -155,8 +155,8 @@ public class ImGuiThemer {
         style.setColor(Tab, 0.51f, 0.36f, 0.15f, 1.00f);
         style.setColor(TabHovered, 0.91f, 0.64f, 0.13f, 1.00f);
         style.setColor(TabActive, 0.78f, 0.55f, 0.21f, 1.00f);
-        style.setColor(TabUnfocused, 0.07f, 0.10f, 0.15f, 0.97f);
-        style.setColor(TabUnfocusedActive, 0.14f, 0.26f, 0.42f, 1.00f);
+        style.setColor(TabUnfocused, 0.51f, 0.36f, 0.15f, 1.00f);
+        style.setColor(TabUnfocusedActive, 0.51f, 0.36f, 0.15f, 1.00f);
         style.setColor(PlotLines, 0.61f, 0.61f, 0.61f, 1.00f);
         style.setColor(PlotLinesHovered, 1.00f, 0.43f, 0.35f, 1.00f);
         style.setColor(PlotHistogram, 0.90f, 0.70f, 0.00f, 1.00f);
@@ -180,7 +180,7 @@ public class ImGuiThemer {
         style.setGrabRounding(4);
         style.setTabRounding(4);
 
-        style.setWindowTitleAlign(1f, 0.5f);
+       // style.setWindowTitleAlign(1f, 0.5f);
         style.setWindowMenuButtonPosition(0);
         style.setDisplaySafeAreaPadding(4, 4);
 

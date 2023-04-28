@@ -14,8 +14,11 @@ uniform mat4 viewMatrix;
 uniform mat4 projectionMatrix;
 uniform vec3 lightPosition;
 
+uniform vec4 plane;
+
 void main(void){
     vec4 worldPosition = transformationMatrix * vec4(position, 1.0);
+    gl_ClipDistance[0] = dot(worldPosition, plane);
     gl_Position = projectionMatrix * viewMatrix * worldPosition;
     pass_textureCoords = textureCoords;
 

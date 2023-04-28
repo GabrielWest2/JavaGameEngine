@@ -82,7 +82,7 @@ public class TextureLoader {
         for (int t = 0; t < textureFiles.length; t++) {
             int[] pixels = null;
             try {
-                BufferedImage image = ImageIO.read(new FileInputStream("C:\\Users\\gabed\\IdeaProjects\\GraphicsEngine\\res\\skybox\\" + textureFiles[t] + ".png"));
+                BufferedImage image = ImageIO.read(new FileInputStream("res/skybox/" + textureFiles[t] + ".png"));
                 width = image.getWidth();
                 height = image.getHeight();
                 pixels = new int[width * height];
@@ -121,8 +121,8 @@ public class TextureLoader {
 
 
     public static Texture getTexture(String path) {
-        Texture texture = loadImage("C:\\Users\\gabed\\IdeaProjects\\GraphicsEngine\\res\\" + path);
-        textureIDs.add(texture.getTextureID());
+        Texture texture = loadImage("res/" + path);
+        textureIDs.add(texture.textureID());
         return texture;
     }
 

@@ -5,15 +5,16 @@ import engine.input.Keyboard;
 import engine.input.Mouse;
 import engine.util.Time;
 import org.joml.Math;
+import org.joml.Vector2f;
 import org.joml.Vector3f;
 
 import static org.lwjgl.glfw.GLFW.*;
 
 public class Camera {
-    private final float MOVEMENT_SPEED = 10f;
-    private final float FAST_MOVEMENT_SPEED = 30f;
-    private Vector3f position = new Vector3f(0, 0, 0);
-    private Vector3f rotation = new Vector3f(0, 0, 0);
+    private static final float MOVEMENT_SPEED = 10f;
+    private static final float FAST_MOVEMENT_SPEED = 30f;
+    private Vector3f position;
+    private Vector3f rotation;
 
 
     public Camera(Vector3f position, Vector3f rotation) {
@@ -21,40 +22,44 @@ public class Camera {
         this.rotation = rotation;
     }
 
-    public Camera() {
-    }
 
     public void update() {
         if (GameViewportWindow.focused) {
             float vx = 0, vy = 0, vz = 0;
             boolean ctrl = Keyboard.isKeyPressed(GLFW_KEY_LEFT_CONTROL);
+            float speed = (ctrl ? FAST_MOVEMENT_SPEED : MOVEMENT_SPEED);
             if (Keyboard.isKeyPressed(GLFW_KEY_W)) {
-                vx = -Math.sin(Math.toRadians(rotation.y)) * (ctrl ? FAST_MOVEMENT_SPEED : MOVEMENT_SPEED);
-                vz = -Math.cos(Math.toRadians(rotation.y)) * (ctrl ? FAST_MOVEMENT_SPEED : MOVEMENT_SPEED);
+                vx += -Math.sin(Math.toRadians(rotation.y));
+                vz += -Math.cos(Math.toRadians(rotation.y));
             }
             if (Keyboard.isKeyPressed(GLFW_KEY_S)) {
-                vx = Math.sin(Math.toRadians(rotation.y)) * (ctrl ? FAST_MOVEMENT_SPEED : MOVEMENT_SPEED);
-                vz = Math.cos(Math.toRadians(rotation.y)) * (ctrl ? FAST_MOVEMENT_SPEED : MOVEMENT_SPEED);
+                vx += Math.sin(Math.toRadians(rotation.y));
+                vz += Math.cos(Math.toRadians(rotation.y));
             }
             if (Keyboard.isKeyPressed(GLFW_KEY_A)) {
-                vx = -Math.sin(Math.toRadians(rotation.y + 90)) * (ctrl ? FAST_MOVEMENT_SPEED : MOVEMENT_SPEED);
-                vz = -Math.cos(Math.toRadians(rotation.y + 90)) * (ctrl ? FAST_MOVEMENT_SPEED : MOVEMENT_SPEED);
+                vx += -Math.sin(Math.toRadians(rotation.y + 90));
+                vz += -Math.cos(Math.toRadians(rotation.y + 90));
             }
             if (Keyboard.isKeyPressed(GLFW_KEY_D)) {
-                vx = -Math.sin(Math.toRadians(rotation.y - 90)) * (ctrl ? FAST_MOVEMENT_SPEED : MOVEMENT_SPEED);
-                vz = -Math.cos(Math.toRadians(rotation.y - 90)) * (ctrl ? FAST_MOVEMENT_SPEED : MOVEMENT_SPEED);
+                vx += -Math.sin(Math.toRadians(rotation.y - 90));
+                vz += -Math.cos(Math.toRadians(rotation.y - 90));
             }
             if (Keyboard.isKeyPressed(GLFW_KEY_SPACE)) {
-                vy += (ctrl ? FAST_MOVEMENT_SPEED : MOVEMENT_SPEED);
+                vy += 1;
             }
             if (Keyboard.isKeyPressed(GLFW_KEY_LEFT_SHIFT)) {
-                vy -= (ctrl ? FAST_MOVEMENT_SPEED : MOVEMENT_SPEED);
+                vy -= 1;
             }
 
-            Vector3f move = new Vector3f(Time.getDeltaTime() * vx, Time.getDeltaTime() * vy, Time.getDeltaTime() * vz);
+            Vector3f move = new Vector3f(Time.getDeltaTime() * vx * speed, Time.getDeltaTime() * vy * speed, Time.getDeltaTime() * vz * speed);
             this.moveBy(move);
             this.rotateBy(new Vector3f(Mouse.getMouseDy() / 20f, Mouse.getMouseDx() / 20f, 0));
         }
+    }
+
+    public void waterInvert(float level){
+        position.y = level - (position.y - level);
+        rotation.x = -rotation.x;
     }
 
     public void moveBy(Vector3f vec) {

@@ -32,6 +32,15 @@
 
 
     <dependencies>
+
+        <dependency>
+            <groupId>org.reflections</groupId>
+            <artifactId>reflections</artifactId>
+            <version>0.10.2</version>
+        </dependency>
+
+
+
         <!-- https://mvnrepository.com/artifact/de.fabmax/physx-jni -->
         <dependency>
             <groupId>de.fabmax</groupId>

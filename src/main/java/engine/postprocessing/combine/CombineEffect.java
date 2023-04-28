@@ -2,7 +2,6 @@ package engine.postprocessing.combine;
 
 import engine.postprocessing.PostProcessingEffect;
 
-import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL13.*;
 
 public class CombineEffect extends PostProcessingEffect {

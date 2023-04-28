@@ -1,20 +1,16 @@
 package editor;
+import engine.GameEngine;
+import engine.Renderer;
+import engine.postprocessing.PostProcessing;
 import imgui.ImGui;
 import imgui.flag.ImGuiWindowFlags;
+import imgui.type.ImFloat;
 import scripting.LuaScriptingManager;
 
 public class DebugWindow {
 
-    private static final int[] terrainSize = new int[]{80};
-    private static final float[] terrainRez = new float[]{0.5f};
-    private static final float[] terrainScale = new float[]{10};
-    private static final float[] terrainAmplitude = new float[]{2};
-    private static final float[] terrainOffsetX = new float[]{0};
-    private static final float[] terrainOffsetY = new float[]{0};
-    private static final float[] coloredit1 = new float[]{255f / 255f, 217f / 255f, 66f / 255f};
-    private static final float[] coloredit2 = new float[]{102f / 255f, 204f / 255f, 71f / 255f};
     private static final LuaScriptingManager scriptingManager;
-
+    public static float waterMovement;
     static {
         scriptingManager = new LuaScriptingManager();
     }
@@ -26,6 +22,15 @@ public class DebugWindow {
         if (ImGui.button("LOAD LUA CODE")) {
             scriptingManager.loadCode();
         }
+        float[] floats = new float[]{
+                waterMovement
+        };
+        if(ImGui.dragFloat("water", floats, 0.005f)){
+            waterMovement = floats[0];
+        }
+
+        ImGui.image(GameEngine.refractionBuffer.getDepthTexture(), 1920/10f, 1080/10f, 0, 1, 1, 0);
+        ImGui.image(GameEngine.reflectionBuffer.getDepthTexture(), 1920/10f, 1080/10f, 0, 1, 1, 0);
 
         ImGui.end();
     }

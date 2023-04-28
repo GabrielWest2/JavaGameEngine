@@ -47,6 +47,7 @@ public class DisplayManager {
         glfwDefaultWindowHints(); // optional, the current window hints are already the default
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE); // the window will stay hidden after creation
         glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE); // the window will be resizable
+        //glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE); // the window will be resizable
         glfwWindowHint(GLFW_SAMPLES, 4);
 
         // Create the window
@@ -54,7 +55,7 @@ public class DisplayManager {
         if (window == NULL)
             throw new RuntimeException("Failed to create the GLFW window");
 
-        // Setup a key callback. It will be called every time a key is pressed, repeated or released.
+        // Set up a key callback. It will be called every time a key is pressed, repeated or released.
 
 
         // Get the thread stack and push a new frame
@@ -85,7 +86,6 @@ public class DisplayManager {
         glfwShowWindow(window);
         glfwWindowHint(GLFW_SAMPLES, 4);
         GL.createCapabilities();
-        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
         initImGui();
     }
 
@@ -97,7 +97,7 @@ public class DisplayManager {
 
         io.setIniFilename("imgui.ini");
         io.setConfigFlags(ImGuiConfigFlags.DockingEnable);
-        io.getFonts().addFontFromFileTTF("res/font/Roboto-Medium.ttf", 17);
+        io.getFonts().addFontFromFileTTF("res/engine/font/Roboto-Medium.ttf", 17);
         imGuiGlfw.init(window, true);
         imGuiGl3.init(glslVersion);
 
@@ -125,8 +125,6 @@ public class DisplayManager {
     public static void newImguiFrame() {
         imGuiGlfw.newFrame();
         ImGui.newFrame();
-
-
     }
 
     public static void endImguiFrame() {
@@ -145,7 +143,7 @@ public class DisplayManager {
         glfwSetWindowSizeCallback(window, (window, w, h) -> {
             width = w;
             height = h;
-            GameEngine.getInstance().renderer.UpdateProjection();
+            GameEngine.getInstance().renderer.updateProjection();
             glViewport(0, 0, width, height);
             Framebuffer.setFrameBufferSize(width, height);
             System.out.println("Resized window! " + w + "  " + h);

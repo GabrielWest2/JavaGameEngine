@@ -1,5 +1,6 @@
-package engine.ecs.component;
+package engine.ecs;
 
+import editor.CustomHudName;
 import editor.Range;
 import engine.ecs.Entity;
 import engine.util.Color;
@@ -20,9 +21,22 @@ public class Component {
     public Entity entity;
 
     public void onAdded() {
+        Field[] fields = this.getClass().getDeclaredFields();
+        for (Field field : fields) {
+            if (Modifier.isTransient(field.getModifiers()))
+                continue;
+
+            hasFields = true;
+        }
     }
 
     public void onVariableChanged() {
+    }
+
+    public boolean hasFields = false;
+
+    public boolean hasFields() {
+        return hasFields;
     }
 
     public void GUI() {
@@ -44,7 +58,9 @@ public class Component {
                 String name = field.getName();
 
                 Range range = field.getAnnotation(Range.class);
-
+                CustomHudName hudName = field.getAnnotation(CustomHudName.class);
+                if(hudName != null)
+                    name = hudName.displayName();
 
                 if (type == int.class) {
                     int val = (int) value;
@@ -124,5 +140,9 @@ public class Component {
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
+    }
+
+    public boolean canBeRemoved(){
+        return true;
     }
 }

@@ -9,7 +9,7 @@ import static org.lwjgl.glfw.GLFW.*;
 
 public class Mouse {
     private static float x = 0, y = 0, dx = 0, dy = 0;
-    private static boolean mouseHidden = true;
+    private static boolean mouseHidden = false;
 
     public static boolean isMouseHidden() {
         return mouseHidden;
@@ -22,12 +22,6 @@ public class Mouse {
     }
 
     public static void update() {
-
-        /*if(ImGui.isMouseClicked(0))
-            GameEngineAPI.leftClick();
-        if(ImGui.isMouseClicked(1))
-            GameEngineAPI.rightClick();*/
-
         dx = x - ImGui.getMousePosX();
         dy = y - ImGui.getMousePosY();
         x = ImGui.getMousePosX();

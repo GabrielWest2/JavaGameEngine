@@ -2,6 +2,7 @@ package engine.shader;
 
 import engine.ecs.Light;
 import org.joml.Matrix4f;
+import org.joml.Vector4f;
 
 public class TerrainShader extends ShaderProgram {
 
@@ -41,6 +42,13 @@ public class TerrainShader extends ShaderProgram {
     public void setMaterial(float shineDamper, float reflectivity) {
         super.loadUniform(super.getUniformLocation("shineDamper"), shineDamper);
         super.loadUniform(super.getUniformLocation("reflectivity"), reflectivity);
+    }
+    public void setClipPlane(Vector4f plane) {
+        super.loadUniform(super.getUniformLocation("plane"), plane);
+    }
+
+    public void setTextureScale(float scale){
+        super.loadUniform(super.getUniformLocation("textureScale"), scale);
     }
 
 }

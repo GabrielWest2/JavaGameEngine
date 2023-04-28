@@ -20,7 +20,7 @@ import static org.lwjgl.opengl.GL13.*;
 public class PostProcessing {
 
     private static final float[] POSITIONS = {-1f, 1f, -1f, -1f, 1f, 1f, 1f, -1f};
-    public static int quad, v;
+    private static int quad, v;
     public static ContrastEffect contrastEffect = new ContrastEffect();
     public static HorizontalBlurEffect horizontalBlurEffect = new HorizontalBlurEffect();
     public static VerticalBlurEffect verticalBlurEffect = new VerticalBlurEffect();

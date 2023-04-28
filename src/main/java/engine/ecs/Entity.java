@@ -1,7 +1,6 @@
 package engine.ecs;
 
 import engine.GameEngine;
-import engine.ecs.component.Component;
 import engine.ecs.component.ModelRenderer;
 import engine.ecs.component.Transform;
 import engine.model.Model;

@@ -1,6 +1,7 @@
 package engine.model;
 
 import engine.GameEngine;
+import engine.ecs.component.Water;
 import engine.texture.Texture;
 import engine.texture.TextureLoader;
 import org.lwjgl.BufferUtils;
@@ -103,6 +104,15 @@ public class ModelCreator {
         storeDataInAttributeList(2, 3, normals);
         unbindVAO();
         return new TexturedModel(vaoID, positions.length, texture);
+    }
+
+    public WaterModel loadToWaterVAO(float[] positions, int[] indices, float[] textureCoords) {
+        int vaoID = createVAO();
+        bindIndicesBuffer(indices);
+        storeDataInAttributeList(0, 3, positions);
+        storeDataInAttributeList(1, 2, textureCoords);
+        unbindVAO();
+        return new WaterModel(vaoID, positions.length);
     }
 
     public TerrianModel loadToTerrainVAO(float[] positions, int[] indices, float[] textureCoords, float[] normals, Texture texture) {

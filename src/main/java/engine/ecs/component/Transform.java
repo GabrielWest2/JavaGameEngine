@@ -1,10 +1,15 @@
 package engine.ecs.component;
 
+import editor.CustomHudName;
+import engine.ecs.Component;
 import org.joml.Vector3f;
 
 public class Transform extends Component {
+    @CustomHudName(displayName = "Position")
     private Vector3f position = new Vector3f(0, 0, 0);
+    @CustomHudName(displayName = "Rotation")
     private Vector3f rotation = new Vector3f(0, 0, 0);
+    @CustomHudName(displayName = "Scale")
     private Vector3f scale = new Vector3f(1, 1, 1);
 
     public Transform(Vector3f position, Vector3f rotation, Vector3f scale) {
@@ -16,7 +21,6 @@ public class Transform extends Component {
     public Transform(Vector3f position, Vector3f rotation) {
         this.position = position;
         this.rotation = rotation;
-        this.scale = scale;
     }
 
     public Transform() {
@@ -61,5 +65,10 @@ public class Transform extends Component {
 
     public void setScale(Vector3f scale) {
         this.scale = scale;
+    }
+
+    @Override
+    public boolean canBeRemoved() {
+        return false;
     }
 }

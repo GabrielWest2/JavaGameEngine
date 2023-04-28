@@ -1,5 +1,7 @@
 package engine.ecs.component;
 
+import editor.Range;
+import engine.ecs.Component;
 import engine.model.Model;
 
 /**
@@ -8,6 +10,10 @@ import engine.model.Model;
  */
 public class ModelRenderer extends Component {
     public Model model;
+    public boolean cullBack = true;
+    public float shineDamper = 20;
+    @Range(max = 2)
+    public float reflectivity = 0.5f;
 
     public ModelRenderer() {
 
@@ -21,7 +27,13 @@ public class ModelRenderer extends Component {
         return model;
     }
 
-    public void setModel(Model model) {
+    public Component setModel(Model model) {
         this.model = model;
+        return this;
     }
+
+    public static <T extends Component> Class<ModelRenderer> clazz(){
+        return ModelRenderer.class;
+    }
+
 }

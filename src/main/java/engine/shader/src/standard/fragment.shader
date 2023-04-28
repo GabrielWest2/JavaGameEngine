@@ -14,6 +14,14 @@ uniform float shineDamper;
 uniform float reflectivity;
 
 void main(void){
+
+    vec4 sampled = texture(textureSampler, vec2(pass_textureCoords.x, 1.0f - pass_textureCoords.y));
+
+    //Discard transparent pixels
+    if(sampled.a < 0.75){
+        discard;
+    }
+
  vec3 unitNormal = normalize(pass_normal);
  vec3 unitLightVector = normalize(pass_toLight);
 
@@ -28,8 +36,8 @@ void main(void){
  float specularFactor = dot(reflectLightDirection, unitVectorToCamera);
  specularFactor = max(specularFactor, 0.0);
  float dampedFactor = pow(specularFactor, shineDamper);
- vec3 finalSpecular = dampedFactor * lightColor;
+ vec3 finalSpecular = dampedFactor * lightColor * reflectivity;
 
 
- out_Color = vec4(diffuse, 1.0) * texture(textureSampler, pass_textureCoords * 10) + vec4(finalSpecular, 1.0);
+ out_Color = vec4(diffuse, 1.0) * sampled + vec4(finalSpecular, 1.0);
 }

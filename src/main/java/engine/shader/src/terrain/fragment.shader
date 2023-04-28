@@ -12,8 +12,12 @@ uniform sampler2D textureSampler;
 uniform vec3 lightColor;
 uniform float shineDamper;
 uniform float reflectivity;
+uniform float textureScale;
 
 void main(void){
+
+
+
  vec3 unitNormal = normalize(pass_normal);
  vec3 unitLightVector = normalize(pass_toLight);
 
@@ -31,7 +35,5 @@ void main(void){
  vec3 finalSpecular = dampedFactor * lightColor;
 
 
- //out_Color = vec4(diffuse, 1.0) * texture(textureSampler, pass_textureCoords * 10) + vec4(finalSpecular, 1.0);
- out_Color = vec4(diffuse, 1.0) + vec4(finalSpecular, 1.0);
- //out_Color = vec4(pass_normal, 1.0);
+ out_Color = vec4(diffuse, 1.0) * texture(textureSampler, pass_textureCoords * textureScale) + vec4(finalSpecular, 1.0);
 }
