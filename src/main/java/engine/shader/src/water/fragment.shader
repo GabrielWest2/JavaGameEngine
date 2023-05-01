@@ -15,11 +15,11 @@ uniform sampler2D normalMap;
 uniform sampler2D refractionDepthTexture;
 uniform float moveFactor;
 uniform vec3 lightColor;
+uniform float shineDamper = 20.0;
+uniform float reflectivity = 0.5;
 
 
 const float waveStrength = 0.04;
-const float shineDamper = 20.0;
-const float reflectivity = 0.5;
 
 void main(void){
     vec2 ndc = (clipSpace.xy/clipSpace.w)/2.0 + 0.5;
@@ -37,7 +37,7 @@ void main(void){
 
 
 
-    vec2 distortedTexCoords = texture(dudv, vec2(pass_textureCoords.x + moveFactor, pass_textureCoords.y)).rg*0.1;
+    vec2 distortedTexCoords = texture(dudv, vec2(pass_textureCoords.x * 25 + moveFactor, pass_textureCoords.y * 25)).rg*0.1;
     distortedTexCoords = pass_textureCoords + vec2(distortedTexCoords.x, distortedTexCoords.y+moveFactor);
     vec2 totalDistortion = (texture(dudv, distortedTexCoords).rg * 2.0 - 1.0) * waveStrength * clamp(waterDepth / 20.0, 0.0, 1.0);
 
@@ -53,7 +53,7 @@ void main(void){
 
     vec3 viewVector = normalize(toCamera);
     float fresnelFactor = dot(viewVector, normal);
-    fresnelFactor = clamp(fresnelFactor, 0.2, 0.75);
+    fresnelFactor = clamp(fresnelFactor, 0.0, 0.35);
 
 
 
@@ -62,7 +62,8 @@ void main(void){
     specular = pow(specular, shineDamper);
     vec3 specularHighlights = lightColor * specular * reflectivity;
 
+    fresnelFactor *= 0.5;
     out_Color = mix(reflectColor, refractColor, fresnelFactor);
     out_Color = mix(out_Color, vec4(0.411764, 0.713725, 0.941176, 1), 0.15) + vec4(specularHighlights.xyz, 0.0);
-    out_Color.a = clamp(waterDepth / 10.0, 0.0, 1.0);
+    out_Color.a = clamp(waterDepth / 5.0, 0.3, 1.0);
 }

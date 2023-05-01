@@ -30,6 +30,10 @@ public class Component {
         }
     }
 
+    public void onRemoved() {
+
+    }
+
     public void onVariableChanged() {
     }
 

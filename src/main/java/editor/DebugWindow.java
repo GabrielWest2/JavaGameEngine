@@ -10,7 +10,6 @@ import scripting.LuaScriptingManager;
 public class DebugWindow {
 
     private static final LuaScriptingManager scriptingManager;
-    public static float waterMovement;
     static {
         scriptingManager = new LuaScriptingManager();
     }
@@ -22,15 +21,9 @@ public class DebugWindow {
         if (ImGui.button("LOAD LUA CODE")) {
             scriptingManager.loadCode();
         }
-        float[] floats = new float[]{
-                waterMovement
-        };
-        if(ImGui.dragFloat("water", floats, 0.005f)){
-            waterMovement = floats[0];
-        }
 
-        ImGui.image(GameEngine.refractionBuffer.getDepthTexture(), 1920/10f, 1080/10f, 0, 1, 1, 0);
-        ImGui.image(GameEngine.reflectionBuffer.getDepthTexture(), 1920/10f, 1080/10f, 0, 1, 1, 0);
+        ImGui.image(GameEngine.refractionBuffer.getColorTexture(), 1920/10f, 1080/10f, 0, 1, 1, 0);
+        ImGui.image(GameEngine.reflectionBuffer.getColorTexture(), 1920/10f, 1080/10f, 0, 1, 1, 0);
 
         ImGui.end();
     }

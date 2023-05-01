@@ -35,5 +35,4 @@ public class ModelRenderer extends Component {
     public static <T extends Component> Class<ModelRenderer> clazz(){
         return ModelRenderer.class;
     }
-
 }

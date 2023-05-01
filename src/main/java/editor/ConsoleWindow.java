@@ -12,7 +12,7 @@ public class ConsoleWindow {
 
     public static void init() {
         newConsole = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(newConsole));
+        //System.setOut(new PrintStream(newConsole));
     }
     public static void render() {
         ImGui.begin("Console");

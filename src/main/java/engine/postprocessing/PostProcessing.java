@@ -58,13 +58,18 @@ public class PostProcessing {
         GL30.glBindVertexArray(0);
     }
 
-    public static void doPostProcessing(int colorBuffer) {
+    public static void doPostProcessing(int colorBuffer, int depthBuffer) {
         start();
 
         finalBuffer.bind();
-        contrastEffect.render(colorBuffer);
+        contrastEffect.render(colorBuffer, depthBuffer);
         finalBuffer.unbind();
 
+        /*
+        finalBuffer.bind();
+        contrastEffect.render(colorBuffer);
+        finalBuffer.unbind();
+        */
 		/*
 		framebuffer.bind();
 		contrastEffect.render(colorBuffer);

@@ -3,8 +3,10 @@ package engine;
 import editor.GameViewportWindow;
 import engine.input.Keyboard;
 import engine.input.Mouse;
+import engine.util.MatrixBuilder;
 import engine.util.Time;
 import org.joml.Math;
+import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
@@ -15,11 +17,12 @@ public class Camera {
     private static final float FAST_MOVEMENT_SPEED = 30f;
     private Vector3f position;
     private Vector3f rotation;
-
+    private Matrix4f viewMatrix;
 
     public Camera(Vector3f position, Vector3f rotation) {
         this.position = position;
         this.rotation = rotation;
+        viewMatrix = MatrixBuilder.createViewMatrix(this);
     }
 
 
@@ -55,11 +58,13 @@ public class Camera {
             this.moveBy(move);
             this.rotateBy(new Vector3f(Mouse.getMouseDy() / 20f, Mouse.getMouseDx() / 20f, 0));
         }
+        this.viewMatrix = MatrixBuilder.createViewMatrix(this);
     }
 
     public void waterInvert(float level){
         position.y = level - (position.y - level);
         rotation.x = -rotation.x;
+        this.viewMatrix = MatrixBuilder.createViewMatrix(this);
     }
 
     public void moveBy(Vector3f vec) {
@@ -84,5 +89,9 @@ public class Camera {
 
     public void setRotation(Vector3f rotation) {
         this.rotation = rotation;
+    }
+
+    public Matrix4f getViewMatrix() {
+        return viewMatrix;
     }
 }

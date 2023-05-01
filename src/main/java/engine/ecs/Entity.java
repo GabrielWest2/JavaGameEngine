@@ -56,6 +56,8 @@ public class Entity {
     }
 
     public Entity removeComponent(Component component) {
+        component.onRemoved();
+        component.entity = null;
         components.remove(component);
         return this;
     }

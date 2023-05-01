@@ -39,10 +39,10 @@ public class MatrixBuilder {
     }
 
     public static Matrix4f createViewMatrix(Camera camera) {
+        System.out.println("Updating View Matrix");
         Matrix4f matrix = new Matrix4f();
         Vector3f forward = new Vector3f();
         Matrix3f normal = new Matrix3f();
-        //matrix.identity().translate(camera.getPosition()).setRotationXYZ((float)Math.toRadians(camera.getRotation().x), (float)Math.toRadians(camera.getRotation().y), (float)Math.toRadians(camera.getRotation().z));
         matrix.identity()
                 .rotateX((float) Math.toRadians(-camera.getRotation().x))
                 .rotateY((float) Math.toRadians(-camera.getRotation().y))

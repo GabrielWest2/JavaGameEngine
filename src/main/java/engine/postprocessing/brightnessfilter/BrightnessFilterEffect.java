@@ -14,7 +14,7 @@ public class BrightnessFilterEffect extends PostProcessingEffect {
     }
 
 
-    public void render(int colorBuffer) {
+    public void render(int colorBuffer, int depthTexture) {
         start();
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, colorBuffer);

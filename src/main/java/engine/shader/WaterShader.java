@@ -35,6 +35,11 @@ public class WaterShader extends ShaderProgram{
         super.loadUniform(super.getUniformLocation("lightColor"), light.getColor());
     }
 
+    public void setMaterial(float shineDamper, float reflectivity) {
+        super.loadUniform(super.getUniformLocation("shineDamper"), shineDamper);
+        super.loadUniform(super.getUniformLocation("reflectivity"), reflectivity);
+    }
+
     public void loadWaterMovement(float moveFactor){
         super.loadUniform(super.getUniformLocation("moveFactor"), moveFactor);
     }

@@ -101,7 +101,7 @@ public class DisplayManager {
         imGuiGlfw.init(window, true);
         imGuiGl3.init(glslVersion);
 
-        ImGuiThemer.DarkTheme();
+        ImGuiThemer.GoldTheme();
     }
 
     public static void createDockspace() {

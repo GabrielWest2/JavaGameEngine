@@ -1,14 +1,14 @@
 package editor;
 
+import engine.GameEngine;
 import engine.ecs.Component;
+import engine.ecs.Entity;
 import engine.input.Keyboard;
 import engine.input.Mouse;
 import engine.texture.Texture;
 import engine.texture.TextureLoader;
 import imgui.ImGui;
-import imgui.flag.ImGuiSelectableFlags;
-import imgui.flag.ImGuiTreeNodeFlags;
-import imgui.flag.ImGuiWindowFlags;
+import imgui.flag.*;
 import imgui.type.ImBoolean;
 import imgui.type.ImString;
 import org.lwjgl.glfw.GLFW;
@@ -58,6 +58,19 @@ public class InspectorWindow {
             if (ImGui.inputText("Name", string)){
                 ExplorerWindow.selectedEntity.setName(string.get());
             }
+
+            ImGui.pushStyleColor(ImGuiCol.Button, 255, 0, 0, 255);
+            ImGui.pushStyleColor(ImGuiCol.ButtonHovered, 138, 6, 6, 255);
+            if(ImGui.button("Delete", -1,  30)){
+                GameEngine.getInstance().loadedScene.removeEntity(ExplorerWindow.selectedEntity);
+                ExplorerWindow.selectedEntity = null;
+                ImGui.popStyleColor();
+                ImGui.popStyleColor();
+                ImGui.end();
+                return;
+            }
+            ImGui.popStyleColor();
+            ImGui.popStyleColor();
 
             for (Component component : ExplorerWindow.selectedEntity.getComponents()) {
                 if(component.canBeRemoved()){
@@ -125,6 +138,7 @@ public class InspectorWindow {
                                 try {
                                     if (ExplorerWindow.selectedEntity.getComponent(c) == null) {
                                         Component component = (Component) c.getDeclaredConstructor().newInstance();
+                                        component.entity = ExplorerWindow.selectedEntity;
                                         ExplorerWindow.selectedEntity.addComponent(component);
                                     }
                                 } catch (InstantiationException | IllegalAccessException | NoSuchMethodException |

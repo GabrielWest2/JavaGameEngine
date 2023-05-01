@@ -5,10 +5,7 @@ import engine.ecs.component.Water;
 import engine.texture.Texture;
 import engine.texture.TextureLoader;
 import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL15;
-import org.lwjgl.opengl.GL20;
-import org.lwjgl.opengl.GL30;
+import org.lwjgl.opengl.*;
 
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
@@ -135,6 +132,26 @@ public class ModelCreator {
         unbindVAO();
         return new TexturedModel(vaoID, positions.capacity(), texture);
     }
+    public VegetationModel loadToVegetationVAO(FloatBuffer positions, IntBuffer indices, FloatBuffer textureCoords, FloatBuffer normals, Texture texture) {
+        int vaoID = createVAO();
+        bindIndicesBuffer(indices);
+        storeDataInAttributeList(0, 3, positions);
+        storeDataInAttributeList(1, 2, textureCoords);
+        storeDataInAttributeList(2, 3, normals);
+        unbindVAO();
+        return new VegetationModel(vaoID, positions.capacity(), texture);
+    }
+
+
+    public Model loadToVAO(FloatBuffer positions, IntBuffer indices, FloatBuffer textureCoords, FloatBuffer normals) {
+        int vaoID = createVAO();
+        bindIndicesBuffer(indices);
+        storeDataInAttributeList(0, 3, positions);
+        storeDataInAttributeList(1, 2, textureCoords);
+        storeDataInAttributeList(2, 3, normals);
+        unbindVAO();
+        return new Model(vaoID, positions.capacity());
+    }
 
     private int createVAO() {
         int vaoID = GL30.glGenVertexArrays();
@@ -143,7 +160,7 @@ public class ModelCreator {
         return vaoID;
     }
 
-    private void storeDataInAttributeList(int attributeNumber, int coordinateSize, float[] data) {
+    private int storeDataInAttributeList(int attributeNumber, int coordinateSize, float[] data) {
         int vboID = GL15.glGenBuffers();
         vbos.add(vboID);
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vboID);
@@ -151,15 +168,19 @@ public class ModelCreator {
         GL15.glBufferData(GL15.GL_ARRAY_BUFFER, buffer, GL15.GL_STATIC_DRAW);
         GL20.glVertexAttribPointer(attributeNumber, coordinateSize, GL11.GL_FLOAT, false, 0, 0);
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
+
+        return vboID;
     }
 
-    private void storeDataInAttributeList(int attributeNumber, int coordinateSize, FloatBuffer data) {
+    private int storeDataInAttributeList(int attributeNumber, int coordinateSize, FloatBuffer data) {
         int vboID = GL15.glGenBuffers();
         vbos.add(vboID);
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vboID);
         GL15.glBufferData(GL15.GL_ARRAY_BUFFER, data, GL15.GL_STATIC_DRAW);
         GL20.glVertexAttribPointer(attributeNumber, coordinateSize, GL11.GL_FLOAT, false, 0, 0);
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
+
+        return vboID;
     }
 
 
@@ -176,19 +197,21 @@ public class ModelCreator {
         GL30.glBindVertexArray(0);
     }
 
-    private void bindIndicesBuffer(int[] indices) {
+    private int bindIndicesBuffer(int[] indices) {
         int vboID = GL15.glGenBuffers();
         vbos.add(vboID);
         GL15.glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboID);
         IntBuffer buffer = storeDataInIntBuffer(indices);
         GL15.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, buffer, GL15.GL_STATIC_DRAW);
+        return vboID;
     }
 
-    private void bindIndicesBuffer(IntBuffer buffer) {
+    private int bindIndicesBuffer(IntBuffer buffer) {
         int vboID = GL15.glGenBuffers();
         vbos.add(vboID);
         GL15.glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboID);
         GL15.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, buffer, GL15.GL_STATIC_DRAW);
+        return vboID;
     }
 
 

@@ -15,7 +15,7 @@ public class ContrastEffect extends PostProcessingEffect {
     }
 
 
-    public void render(int colorBuffer) {
+    public void render(int colorBuffer, int depthBuffer) {
         start();
         loadUniform(getUniformLocation("contrast"), contrast);
         glActiveTexture(GL_TEXTURE0);

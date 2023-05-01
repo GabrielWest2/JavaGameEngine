@@ -4,7 +4,7 @@ import engine.GameEngine;
 import engine.ecs.Component;
 
 public class Water extends Component {
-    public int width = 40;
+    public int width = 1000;
 
     @Override
     public void onAdded() {

@@ -15,5 +15,5 @@ public abstract class PostProcessingEffect extends ShaderProgram {
     }
 
 
-    public abstract void render(int buff);
+    public abstract void render(int color, int depth);
 }

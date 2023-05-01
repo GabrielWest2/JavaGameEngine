@@ -3,7 +3,6 @@ package engine.model;
 import de.javagl.obj.*;
 import engine.GameEngine;
 import engine.texture.Texture;
-import engine.texture.TextureLoader;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -30,8 +29,12 @@ public class OBJLoader {
                 HashMap<String, Texture> textures = new HashMap<>();
                 for (int i = 0; i < materialMeshes.size(); i++) {
                     Obj materialMesh = materialMeshes.values().stream().toList().get(i);
-                    TexturedModel model = GameEngine.getInstance().modelCreator.loadToTexturedVAO(ObjData.getVertices(materialMesh), ObjData.getFaceVertexIndices(materialMesh), ObjData.getTexCoords(materialMesh, 2), ObjData.getNormals(materialMesh), texture);
                     String name = materialMeshes.keySet().stream().toList().get(i);
+                    TexturedModel model;
+
+                    model = GameEngine.getInstance().modelCreator.loadToTexturedVAO(ObjData.getVertices(materialMesh), ObjData.getFaceVertexIndices(materialMesh), ObjData.getTexCoords(materialMesh, 2), ObjData.getNormals(materialMesh), texture);
+
+
                     System.out.println(name);
                     models.put(name, model);
                     //TODO set default texture?
@@ -49,6 +52,31 @@ public class OBJLoader {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public static VegetationModel loadVegetationTexturedOBJ(String path, Texture texture) {
+        try {
+            InputStream inputStream = new FileInputStream("res/" + path);
+            Obj obj = ObjUtils.convertToRenderable(ObjReader.read(inputStream));
+            VegetationModel model = GameEngine.getInstance().modelCreator.loadToVegetationVAO(ObjData.getVertices(obj), ObjData.getFaceVertexIndices(obj), ObjData.getTexCoords(obj, 2), ObjData.getNormals(obj), texture);
+            return model;
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    public static Model loadOBJWithoutMTL(String path) {
+        try {
+            InputStream inputStream = new FileInputStream("res/" + path);
+             Obj obj = ObjUtils.convertToRenderable(ObjReader.read(inputStream));
+
+            Model model = GameEngine.getInstance().modelCreator.loadToVAO(ObjData.getVertices(obj), ObjData.getFaceVertexIndices(obj), ObjData.getTexCoords(obj, 2), ObjData.getNormals(obj));
+            return model;
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static float[] getFloats(Object[] values) {

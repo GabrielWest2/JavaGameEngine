@@ -34,10 +34,6 @@ public class ObjRenderer extends Component {
         }
     }
 
-    public ObjRenderer(Model model) {
-        this.model = model;
-    }
-
     public Model getModel() {
         return model;
     }
@@ -48,4 +44,5 @@ public class ObjRenderer extends Component {
         onVariableChanged();
         return this;
     }
+
 }

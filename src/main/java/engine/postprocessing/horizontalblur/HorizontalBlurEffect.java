@@ -13,7 +13,7 @@ public class HorizontalBlurEffect extends PostProcessingEffect {
     }
 
 
-    public void render(int colorBuffer) {
+    public void render(int colorBuffer, int depthBuffer) {
         start();
         loadUniform(getUniformLocation("targetHeight"), (float) DisplayManager.getHeight() / 7f);
         glActiveTexture(GL_TEXTURE0);
