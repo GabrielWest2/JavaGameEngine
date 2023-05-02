@@ -20,8 +20,8 @@ import java.util.HashMap;
  * @Date 7/23/2022
  */
 public class TerrainManager {
-    public static int terrainWidth = 200;
-    public static float unitSize = 0.1f;
+    public static int terrainWidth = 2000;
+    public static float unitSize = 0.05f;
     public static float textureScale = 20f;
 
     public static float offsetX = 0;
@@ -117,7 +117,7 @@ public class TerrainManager {
             int green = (color & 0xff00) >> 8;
             int red = (color & 0xff0000) >> 16;
             System.out.println(red);
-            return red/10f;
+            return red/5f;
         }catch(Exception e){
             e.printStackTrace();
         }
