@@ -5,7 +5,6 @@ import engine.display.DisplayManager;
 import engine.ecs.Entity;
 import engine.ecs.component.ModelRenderer;
 import engine.ecs.component.ObjRenderer;
-import engine.ecs.component.Terrain;
 import engine.ecs.component.Transform;
 import engine.model.*;
 import engine.postprocessing.PostProcessing;
@@ -13,6 +12,7 @@ import engine.shader.*;
 import engine.util.MatrixBuilder;
 import imgui.ImGui;
 import org.joml.Matrix4f;
+import org.joml.Vector3f;
 import org.joml.Vector4f;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
@@ -27,16 +27,16 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL13.GL_MULTISAMPLE;
 
 public class Renderer {
-    private WaterShader waterShader;
-    private StaticShader defaultShader;
-    private SkyboxShader skyboxShader;
-    private TerrainShader terrainShader;
-    private GridShader gridShader;
-    private GrassShader vegetationShader;
+    private static WaterShader waterShader;
+    private static StaticShader defaultShader;
+    private static SkyboxShader skyboxShader;
+    private static TerrainShader terrainShader;
+    private static GridShader gridShader;
+    private static GrassShader vegetationShader;
 
 
 
-    public void updateProjection() {
+    public static void updateProjection() {
         Matrix4f mat = MatrixBuilder.createProjectionMatrix();
         defaultShader.start();
         defaultShader.loadProjectionMatrix(mat);
@@ -64,7 +64,7 @@ public class Renderer {
 
     }
 
-    public void prepare() {
+    public static void init() {
         glEnable(GL_MULTISAMPLE);
         // Set the clear color
         glClearColor(0.5f, 0.5f, 1.0f, 1.0f);
@@ -81,7 +81,7 @@ public class Renderer {
         updateProjection();
     }
 
-    public void renderTerrainDetails(List<Transform> transforms, VegetationModel model){
+    public static void renderTerrainDetails(List<Transform> transforms, VegetationModel model){
         glDisable(GL_CULL_FACE);
         vegetationShader.start();
         vegetationShader.loadLight(GameEngine.getInstance().light);
@@ -109,7 +109,7 @@ public class Renderer {
         glEnable(GL_CULL_FACE);
     }
 
-    public void renderTerrainDetails(List<Transform> transforms, MultiTexturedModel m){
+    public static void renderTerrainDetails(List<Transform> transforms, MultiTexturedModel m){
         glDisable(GL_CULL_FACE);
         for(String materialName : m.getMaterialModels().keySet()){
             if (m.getMaterialTextures().get(materialName) == null)
@@ -143,7 +143,7 @@ public class Renderer {
     }
 
 
-    private void renderVegetationModel(VegetationModel model, Transform transform, float damper, float reflect) {
+    private static void renderVegetationModel(VegetationModel model, Transform transform, float damper, float reflect) {
         glDisable(GL_CULL_FACE);
         vegetationShader.start();
         vegetationShader.loadLight(GameEngine.getInstance().light);
@@ -167,15 +167,13 @@ public class Renderer {
         glEnable(GL_CULL_FACE);
     }
 
-    public void render(Entity entity) {
+    public static void render(Entity entity) {
         ModelRenderer mr = entity.getComponent(ModelRenderer.class);
         ObjRenderer obj = entity.getComponent(ObjRenderer.class);
 
         if(mr != null && mr.getModel() != null) {
             Model m = mr.getModel();
-            if (TerrianModel.class.isAssignableFrom(m.getClass()))
-                renderTerrain((TerrianModel) m, entity.getComponent(Terrain.class), entity.getTransform(), mr.shineDamper, mr.reflectivity);
-            else if (VegetationModel.class.isAssignableFrom(m.getClass()))
+            if (VegetationModel.class.isAssignableFrom(m.getClass()))
                 renderVegetationModel((VegetationModel) m, entity.getTransform(), mr.shineDamper, mr.reflectivity);
             else if (TexturedModel.class.isAssignableFrom(m.getClass()))
                 renderTextured((TexturedModel) m, entity.getTransform(), mr.cullBack, mr.shineDamper, mr.reflectivity);
@@ -183,8 +181,6 @@ public class Renderer {
                 renderSkybox((SkyboxModel) m);
             else if (MultiTexturedModel.class.isAssignableFrom(m.getClass()))
                 renderMultiTexturedModel((MultiTexturedModel) m, entity.getTransform(), mr.cullBack, mr.shineDamper, mr.reflectivity);
-            else if (WaterModel.class.isAssignableFrom(m.getClass()))
-                renderWater((WaterModel) m, entity.getTransform(), mr.shineDamper, mr.reflectivity);
             else
                 renderDefault(entity);
         }
@@ -194,14 +190,10 @@ public class Renderer {
             if (TexturedModel.class.isAssignableFrom(m.getClass()))
                 renderTextured((TexturedModel) m, entity.getTransform(), obj.cullBack, obj.shineDamper, obj.reflectivity);
         }
-
-
-
-
     }
 
 
-    private void renderWater(WaterModel model, Transform transform, float damper, float reflect) {
+    public static void renderWater(WaterModel model, Vector3f position, float damper, float reflect) {
         glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -211,7 +203,7 @@ public class Renderer {
         waterShader.loadWaterMovement(GameEngine.waterMovement);
         waterShader.loadLight(GameEngine.getInstance().light);
         waterShader.loadCameraPosition(GameEngine.getInstance().camera.getPosition());
-        waterShader.loadTransformationMatrix(MatrixBuilder.createTransformationMatrix(transform.getPosition(), transform.getRotation(), transform.getScale()));
+        waterShader.loadTransformationMatrix(MatrixBuilder.createTransformationMatrix(position, new Vector3f(0, 0, 0), new Vector3f(1, 1, 1)));
         waterShader.loadViewMatrix(GameEngine.getInstance().camera.getViewMatrix());
         GL30.glBindVertexArray(model.getVaoID());
         GL20.glEnableVertexAttribArray(0);
@@ -239,7 +231,7 @@ public class Renderer {
         glDisable(GL_BLEND);
     }
 
-    private void renderMultiTexturedModel(MultiTexturedModel m, Transform transform, boolean cull, float damper, float reflect) {
+    private static void renderMultiTexturedModel(MultiTexturedModel m, Transform transform, boolean cull, float damper, float reflect) {
         if(cull)
             glEnable(GL_CULL_FACE);
         else
@@ -271,7 +263,7 @@ public class Renderer {
         glEnable(GL_CULL_FACE);
     }
 
-    private void renderDefault(Entity entity) {
+    private static void renderDefault(Entity entity) {
         ModelRenderer mr = entity.getComponent(ModelRenderer.class);
         Model m = mr.getModel();
         if(mr.cullBack)
@@ -298,7 +290,7 @@ public class Renderer {
         glEnable(GL_CULL_FACE);
     }
 
-    private void renderTextured(TexturedModel model, Transform transform, boolean cull, float damper, float reflect) {
+    private static void renderTextured(TexturedModel model, Transform transform, boolean cull, float damper, float reflect) {
         if(cull)
             glEnable(GL_CULL_FACE);
         else
@@ -325,14 +317,12 @@ public class Renderer {
     }
 
 
-    public void renderTerrain(TerrianModel model, Terrain terrain, Transform transform, float damper, float reflect) {
-        if(terrain == null)
-            return;
+    public static void renderTerrain(TerrianModel model, float damper, float reflect) {
         terrainShader.start();
         terrainShader.loadLight(GameEngine.getInstance().light);
         terrainShader.setMaterial(damper, reflect);
-        terrainShader.setTextureScale(terrain.getTextureScale());
-        terrainShader.loadTransformationMatrix(MatrixBuilder.createTransformationMatrix(transform.getPosition(), transform.getRotation(), transform.getScale()));
+        terrainShader.setTextureScale(TerrainManager.textureScale);
+        //terrainShader.loadTransformationMatrix(MatrixBuilder.defaultTransformation);
         terrainShader.loadViewMatrix(GameEngine.getInstance().camera.getViewMatrix());
         terrainShader.setClipPlane(new Vector4f(0, GameEngine.getInstance().clipDirection, 0, GameEngine.getInstance().clipHeight));
         GL30.glBindVertexArray(model.getVaoID());
@@ -349,7 +339,7 @@ public class Renderer {
         terrainShader.stop();
     }
 
-    public void renderSkybox(SkyboxModel model) {
+    public static void renderSkybox(SkyboxModel model) {
         skyboxShader.start();
         skyboxShader.loadViewMatrix(MatrixBuilder.createStationaryViewMatrix(GameEngine.getInstance().camera));
         GL30.glBindVertexArray(model.getVaoID());
@@ -363,14 +353,14 @@ public class Renderer {
         skyboxShader.stop();
     }
 
-    public void beginFrame() {
-
+    public static void beginFrame() {
         DisplayManager.newImguiFrame();
         DisplayManager.createDockspace();
         glEnable(GL_CULL_FACE);
+        glEnable(GL_CLIP_PLANE0);
     }
 
-    public void endScene(Framebuffer fb) {
+    public static void endScene(Framebuffer fb) {
 
         PostProcessing.doPostProcessing(fb.getColorTexture(), fb.getDepthTexture());
 
@@ -388,7 +378,7 @@ public class Renderer {
         glfwPollEvents();
     }
 
-    public void cleanUp() {
+    public static void cleanUp() {
         defaultShader.cleanUp();
         skyboxShader.cleanUp();
         terrainShader.cleanUp();

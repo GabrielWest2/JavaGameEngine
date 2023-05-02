@@ -20,10 +20,6 @@ public class TerrainShader extends ShaderProgram {
         super.bindAttribute(2, "normal");
     }
 
-    public void loadTransformationMatrix(Matrix4f matrix) {
-        super.loadUniform(super.getUniformLocation("transformationMatrix"), matrix);
-
-    }
 
     @Override
     public void loadProjectionMatrix(Matrix4f matrix) {

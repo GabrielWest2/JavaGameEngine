@@ -1,5 +1,6 @@
 package engine.texture;
 
+import org.lwjgl.opengl.EXTTextureFilterAnisotropic;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 
@@ -15,9 +16,10 @@ import java.util.List;
 
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL12.GL_CLAMP_TO_EDGE;
-import static org.lwjgl.opengl.GL12.GL_TEXTURE_WRAP_R;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE_CUBE_MAP;
 import static org.lwjgl.opengl.GL13.GL_TEXTURE_CUBE_MAP_POSITIVE_X;
+import static org.lwjgl.opengl.GL14.GL_TEXTURE_LOD_BIAS;
+import static org.lwjgl.opengl.GL30.glGenerateMipmap;
 
 public class TextureLoader {
 
@@ -48,8 +50,12 @@ public class TextureLoader {
 
         int result = glGenTextures();
         glBindTexture(GL_TEXTURE_2D, result);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_LOD_BIAS, 0);
+
+        float amount = Math.min(4f, GL11.glGetFloat(EXTTextureFilterAnisotropic.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT));
+        glTexParameterf(GL_TEXTURE_2D, EXTTextureFilterAnisotropic.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, amount);
 
         IntBuffer buffer = ByteBuffer.allocateDirect(data.length << 2)
                 .order(ByteOrder.nativeOrder()).asIntBuffer();
@@ -57,21 +63,9 @@ public class TextureLoader {
 
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA,
                 GL_UNSIGNED_BYTE, buffer);
+        glGenerateMipmap(GL_TEXTURE_2D);
         glBindTexture(GL_TEXTURE_2D, 0);
         return new Texture(result);
-    }
-
-    public static int createTexture(int width, int height) {
-        int result = glGenTextures();
-        glBindTexture(GL_TEXTURE_2D, result);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA,
-                GL_UNSIGNED_BYTE, 0);
-
-        glBindTexture(GL_TEXTURE_2D, 0);
-        return result;
     }
 
     public static int loadCubeMap(String[] textureFiles) {
@@ -120,7 +114,7 @@ public class TextureLoader {
     }
 
 
-    public static Texture getTexture(String path) {
+    public static Texture loadTexture(String path) {
         Texture texture = loadImage("res/" + path);
         textureIDs.add(texture.textureID());
         return texture;

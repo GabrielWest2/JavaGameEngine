@@ -17,7 +17,6 @@ public class Mouse {
 
     public static void setMouseHidden(boolean hidden) {
         mouseHidden = hidden;
-        System.out.println(hidden);
         glfwSetInputMode(DisplayManager.window, GLFW_CURSOR, hidden ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL);
     }
 

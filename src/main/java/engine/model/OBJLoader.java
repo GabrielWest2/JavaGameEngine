@@ -21,8 +21,6 @@ public class OBJLoader {
                     ObjReader.read(inputStream));
 
             Map<String, Obj> materialMeshes = ObjSplitting.splitByMaterialGroups(obj);
-            System.out.println("Checking meshes numbers : " + materialMeshes.size());
-
 
             if(materialMeshes.size() != 0) {
                 HashMap<String, TexturedModel> models = new HashMap<>();
@@ -32,10 +30,9 @@ public class OBJLoader {
                     String name = materialMeshes.keySet().stream().toList().get(i);
                     TexturedModel model;
 
-                    model = GameEngine.getInstance().modelCreator.loadToTexturedVAO(ObjData.getVertices(materialMesh), ObjData.getFaceVertexIndices(materialMesh), ObjData.getTexCoords(materialMesh, 2), ObjData.getNormals(materialMesh), texture);
+                    model = ModelCreator.loadToTexturedVAO(ObjData.getVertices(materialMesh), ObjData.getFaceVertexIndices(materialMesh), ObjData.getTexCoords(materialMesh, 2), ObjData.getNormals(materialMesh), texture);
 
 
-                    System.out.println(name);
                     models.put(name, model);
                     //TODO set default texture?
                     textures.put(name, null);
@@ -43,7 +40,7 @@ public class OBJLoader {
                 MultiTexturedModel model = new MultiTexturedModel(models, textures);
                 return model;
             }else {
-                TexturedModel model = GameEngine.getInstance().modelCreator.loadToTexturedVAO(ObjData.getVertices(obj), ObjData.getFaceVertexIndices(obj), ObjData.getTexCoords(obj, 2), ObjData.getNormals(obj), texture);
+                TexturedModel model = ModelCreator.loadToTexturedVAO(ObjData.getVertices(obj), ObjData.getFaceVertexIndices(obj), ObjData.getTexCoords(obj, 2), ObjData.getNormals(obj), texture);
                 return model;
             }
 
@@ -58,7 +55,7 @@ public class OBJLoader {
         try {
             InputStream inputStream = new FileInputStream("res/" + path);
             Obj obj = ObjUtils.convertToRenderable(ObjReader.read(inputStream));
-            VegetationModel model = GameEngine.getInstance().modelCreator.loadToVegetationVAO(ObjData.getVertices(obj), ObjData.getFaceVertexIndices(obj), ObjData.getTexCoords(obj, 2), ObjData.getNormals(obj), texture);
+            VegetationModel model = ModelCreator.loadToVegetationVAO(ObjData.getVertices(obj), ObjData.getFaceVertexIndices(obj), ObjData.getTexCoords(obj, 2), ObjData.getNormals(obj), texture);
             return model;
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -71,7 +68,7 @@ public class OBJLoader {
             InputStream inputStream = new FileInputStream("res/" + path);
              Obj obj = ObjUtils.convertToRenderable(ObjReader.read(inputStream));
 
-            Model model = GameEngine.getInstance().modelCreator.loadToVAO(ObjData.getVertices(obj), ObjData.getFaceVertexIndices(obj), ObjData.getTexCoords(obj, 2), ObjData.getNormals(obj));
+            Model model = ModelCreator.loadToVAO(ObjData.getVertices(obj), ObjData.getFaceVertexIndices(obj), ObjData.getTexCoords(obj, 2), ObjData.getNormals(obj));
             return model;
 
         } catch (IOException e) {

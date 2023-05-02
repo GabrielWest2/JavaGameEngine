@@ -2,7 +2,6 @@ package editor;
 
 import engine.GameEngine;
 import engine.ecs.Component;
-import engine.ecs.Entity;
 import engine.input.Keyboard;
 import engine.input.Mouse;
 import engine.texture.Texture;
@@ -48,7 +47,7 @@ public class InspectorWindow {
             }
         }
         if(searchIcon == null)
-            searchIcon = TextureLoader.getTexture("engine/search.png");
+            searchIcon = TextureLoader.loadTexture("engine/search.png");
 
         ImGui.begin("Inspector");
         //Remove after iterating to prevent java.util.ConcurrentModificationException

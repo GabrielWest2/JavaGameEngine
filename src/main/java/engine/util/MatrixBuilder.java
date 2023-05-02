@@ -11,6 +11,7 @@ public class MatrixBuilder {
     private static final float FOV = 90;
     private static final float NEAR_PLANE = 0.1f;
     private static final float FAR_PLANE = 1500f;
+    public static final Matrix4f defaultTransformation = new Matrix4f().identity();
 
     public static Matrix4f createTransformationMatrix(Vector3f offset, Vector3f rotation, Vector3f scale) {
         Matrix4f worldMatrix = new Matrix4f();
@@ -39,7 +40,6 @@ public class MatrixBuilder {
     }
 
     public static Matrix4f createViewMatrix(Camera camera) {
-        System.out.println("Updating View Matrix");
         Matrix4f matrix = new Matrix4f();
         Vector3f forward = new Vector3f();
         Matrix3f normal = new Matrix3f();

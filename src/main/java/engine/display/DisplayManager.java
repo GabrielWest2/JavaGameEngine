@@ -2,6 +2,7 @@ package engine.display;
 
 import editor.ImGuiThemer;
 import engine.GameEngine;
+import engine.Renderer;
 import engine.shader.Framebuffer;
 import imgui.ImGui;
 import imgui.ImGuiIO;
@@ -48,7 +49,7 @@ public class DisplayManager {
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE); // the window will stay hidden after creation
         glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE); // the window will be resizable
         //glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE); // the window will be resizable
-        glfwWindowHint(GLFW_SAMPLES, 4);
+        glfwWindowHint(GLFW_SAMPLES, 8);
 
         // Create the window
         window = glfwCreateWindow(width, height, "Game", NULL, NULL);
@@ -143,7 +144,7 @@ public class DisplayManager {
         glfwSetWindowSizeCallback(window, (window, w, h) -> {
             width = w;
             height = h;
-            GameEngine.getInstance().renderer.updateProjection();
+            Renderer.updateProjection();
             glViewport(0, 0, width, height);
             Framebuffer.setFrameBufferSize(width, height);
             System.out.println("Resized window! " + w + "  " + h);

@@ -9,7 +9,6 @@ out vec3 pass_normal;
 out vec3 pass_toLight;
 out vec3 pass_toCamera;
 
-uniform mat4 transformationMatrix;
 uniform mat4 viewMatrix;
 uniform mat4 projectionMatrix;
 uniform vec3 lightPosition;
@@ -18,7 +17,7 @@ uniform vec4 plane;
 
 void main(void){
 
-    vec4 worldPosition = transformationMatrix * vec4(position, 1.0);
+    vec4 worldPosition = vec4(position, 1.0);
     gl_Position = projectionMatrix * viewMatrix * worldPosition;
     pass_textureCoords = textureCoords;
 

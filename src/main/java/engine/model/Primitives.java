@@ -11,7 +11,7 @@ public class Primitives {
     public static Model cube;
 
     static {
-        cube = OBJLoader.loadTexturedOBJ("cube.obj", TextureLoader.getTexture("white.png"));
+        cube = OBJLoader.loadTexturedOBJ("cube.obj", TextureLoader.loadTexture("white.png"));
     }
 
 }

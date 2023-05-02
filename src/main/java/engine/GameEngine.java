@@ -6,10 +6,7 @@ import engine.audio.AudioSource;
 import engine.display.DisplayManager;
 import engine.ecs.Entity;
 import engine.ecs.Light;
-import engine.ecs.component.ModelRenderer;
-import engine.ecs.component.Terrain;
 import engine.ecs.component.Transform;
-import engine.ecs.component.Water;
 import engine.input.Keyboard;
 import engine.input.Mouse;
 import engine.model.*;
@@ -20,7 +17,6 @@ import engine.shader.Framebuffer;
 import engine.texture.Texture;
 import engine.texture.TextureLoader;
 import engine.util.Time;
-import org.joml.Math;
 import org.joml.Vector3f;
 import scripting.LuaScriptingManager;
 
@@ -45,14 +41,12 @@ public class GameEngine {
     public static Framebuffer frameBuffer;
     public static float waterMovement = 0f;
     public static float grassMovement = 0f;
-    public ModelCreator modelCreator;
-    public Renderer renderer;
     public Camera camera;
     public Light light;
     public Scene loadedScene;
     public SkyboxModel skybox;
     public final int waterHeight = 0;
-    public int clipHeight = 0;
+    public float clipHeight = 0;
     public float clipDirection = 1;
 
     public static void main(String[] args) {
@@ -69,9 +63,9 @@ public class GameEngine {
         loop();
         glfwFreeCallbacks(DisplayManager.window);
         glfwDestroyWindow(DisplayManager.window);
-        modelCreator.cleanUp();
+        ModelCreator.cleanUp();
         TextureLoader.cleanUp();
-        renderer.cleanUp();
+        Renderer.cleanUp();
         AudioManager.cleanUp();
         glfwTerminate();
         glfwSetErrorCallback(null).free();
@@ -80,20 +74,18 @@ public class GameEngine {
 
 
     private void loop() {
-        grass = TextureLoader.getTexture("Terrain/Texture_Grass_Diffuse_Light.png");
-        waterDUDV = TextureLoader.getTexture("waterDUDV.png");
-        waterNormalMap = TextureLoader.getTexture("waterNormalMap.png");
-        modelCreator = new ModelCreator();
-        cube = OBJLoader.loadTexturedOBJ("stall.obj", TextureLoader.getTexture("stallTexture.png"));
+        grass = TextureLoader.loadTexture("Terrain/Texture_Grass_Diffuse_Light.png");
+        waterDUDV = TextureLoader.loadTexture("waterDUDV.png");
+        waterNormalMap = TextureLoader.loadTexture("waterNormalMap.png");
+        cube = OBJLoader.loadTexturedOBJ("stall.obj", TextureLoader.loadTexture("stallTexture.png"));
         loadedScene = new Scene("testScene");
-        skybox = modelCreator.createSkyboxModel(new String[]{"right", "left", "top", "bottom", "back", "front"});
-        renderer = new Renderer();
-        renderer.prepare();
-
-
+        skybox = ModelCreator.createSkyboxModel(new String[]{"right", "left", "top", "bottom", "back", "front"});
+        Renderer.init();
         PostProcessing.init();
         ConsoleWindow.init();
-        Physics.setUpPhysics();
+        Physics.init();
+        TerrainManager.init();
+        WaterManger.init();
         AudioManager.init();
 
         int sound = -1;
@@ -110,33 +102,19 @@ public class GameEngine {
 
 
         String tree = "Birch";
-        VegetationModel grassModel =  OBJLoader.loadVegetationTexturedOBJ("grass.obj", TextureLoader.getTexture("Terrain/Brush_Grass_01.png"));
+        VegetationModel grassModel =  OBJLoader.loadVegetationTexturedOBJ("grass.obj", TextureLoader.loadTexture("Terrain/Brush_Grass_01.png"));
         MultiTexturedModel flowerModel = (MultiTexturedModel) OBJLoader.loadTexturedOBJ("flowers.obj", null);
-        flowerModel.setTexture("Plants", TextureLoader.getTexture("flowers.png"));
+        flowerModel.setTexture("Plants", TextureLoader.loadTexture("flowers.png"));
 
-        /*MultiTexturedModel treeModel1 = (MultiTexturedModel) OBJLoader.loadTexturedOBJ("OBJ/" + tree + "Tree_1.obj", null);
-        treeModel1.setTexture("" + tree + "Tree_Bark", TextureLoader.getTexture("Textures/" + tree + "Tree_Bark.png"));
-        treeModel1.setTexture("" + tree + "Tree_Leaves", TextureLoader.getTexture("Textures/" + tree + "Tree_Leaves" +(Math.round(Math.random()*2)+1) + ".png"));
-        */
 
         MultiTexturedModel treeModel1 = (MultiTexturedModel) OBJLoader.loadTexturedOBJ("tree.obj", null);
-        treeModel1.setTexture("trunk_Mat.001", TextureLoader.getTexture("Textures/NormalTree_Bark.png"));
-        treeModel1.setTexture("leafes_Mat.001", TextureLoader.getTexture("leaf02.png"));
+        treeModel1.setTexture("trunk_Mat.001", TextureLoader.loadTexture("Textures/NormalTree_Bark.png"));
+        treeModel1.setTexture("leafes_Mat.001", TextureLoader.loadTexture("leaf02.png"));
 
 
-        Terrain terrain = new Terrain();
-        terrain.amplitude = 20;
-        terrain.scale = 2;
-        terrain.textureScale = 20;
-        loadedScene.addEntity(new Entity("Terrain").addComponent(terrain));
-        terrain.entity.getComponent(ModelRenderer.class).reflectivity = 0.1f;
-        terrain.entity.getComponent(ModelRenderer.class).shineDamper = 50.0f;
-        Entity water = new Entity("Water");
-        water.addComponent(new Water());
-        water.getTransform().setPosition(new Vector3f(-500, 0, -500));
-        loadedScene.addEntity(water);
         List<Transform> grassPositions = new ArrayList<>();
         List<Transform> flowerPositions = new ArrayList<>();
+        /*
         for(float x = 0; x < terrain.terrainWidth; x += 0.5f){
             for(float z = 0; z < terrain.terrainWidth; z += 0.5f) {
                 float height = terrain.calculateHeight(x, z);
@@ -174,7 +152,7 @@ public class GameEngine {
             e.getTransform().getPosition().z = y;
             e.getTransform().setRotation(terrain.calculateObjectRotation(x, y).mul(0.1f));
             loadedScene.addEntity(e);
-        }
+        }*/
 
         light = new Light(new Vector3f(10, 30, 10), new Vector3f(255 / 255f, 241  / 255f, 204 / 255f));
 
@@ -182,10 +160,10 @@ public class GameEngine {
         refractionBuffer = new Framebuffer(DisplayManager.getWidth(), DisplayManager.getHeight(), Framebuffer.DEPTH_TEXTURE);
         frameBuffer = new Framebuffer(DisplayManager.getWidth(), DisplayManager.getHeight(), Framebuffer.DEPTH_TEXTURE);
 
-        glEnable(GL_CLIP_PLANE0);
+
 
         while (!glfwWindowShouldClose(DisplayManager.window)) {
-            renderer.beginFrame();
+            Renderer.beginFrame();
             Time.updateTime();
             Mouse.update();
             camera.update();
@@ -204,13 +182,12 @@ public class GameEngine {
 
             refractionBuffer.bind();
             clipDirection = -1;
-            clipHeight = waterHeight;
+            clipHeight = waterHeight+0.01f;
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
-            renderer.renderSkybox(skybox);
+            Renderer.renderSkybox(skybox);
+            TerrainManager.renderChunks();
             for (Entity entity : loadedScene.getEntities()) {
-                if(entity.getComponent(Water.class) != null)
-                    continue;
-                renderer.render(entity);
+                Renderer.render(entity);
             }
             refractionBuffer.unbind();
 
@@ -219,11 +196,10 @@ public class GameEngine {
             clipHeight = -waterHeight;
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
             camera.waterInvert(clipHeight);
-            renderer.renderSkybox(skybox);
+            Renderer.renderSkybox(skybox);
+            TerrainManager.renderChunks();
             for (Entity entity : loadedScene.getEntities()) {
-                if(entity.getComponent(Water.class) != null)
-                    continue;
-                renderer.render(entity);
+                Renderer.render(entity);
             }
             camera.waterInvert(clipHeight);
             reflectionBuffer.unbind();
@@ -232,14 +208,16 @@ public class GameEngine {
             clipDirection = -1;
             clipHeight = 10000;
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
-            renderer.renderSkybox(skybox);
+            Renderer.renderSkybox(skybox);
+            TerrainManager.renderChunks();
+            WaterManger.render();
             for (Entity entity : loadedScene.getEntities())
-                renderer.render(entity);
-            renderer.renderTerrainDetails( grassPositions, grassModel);
-            renderer.renderTerrainDetails(flowerPositions, flowerModel);
+                Renderer.render(entity);
+            Renderer.renderTerrainDetails( grassPositions, grassModel);
+            Renderer.renderTerrainDetails(flowerPositions, flowerModel);
             frameBuffer.unbind();
 
-            renderer.endScene(frameBuffer);
+            Renderer.endScene(frameBuffer);
         }
     }
 }

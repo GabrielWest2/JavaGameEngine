@@ -22,7 +22,7 @@ public class Physics {
     private static DynamicsWorld dynamicsWorld;
     private static HashMap<RigidBody, Rigidbody3D> bodies = new HashMap<>();
 
-    public static void setUpPhysics() {
+    public static void init() {
         BroadphaseInterface broadphase = new DbvtBroadphase();
         CollisionConfiguration collisionConfiguration = new DefaultCollisionConfiguration();
         CollisionDispatcher dispatcher = new CollisionDispatcher(collisionConfiguration);
@@ -52,7 +52,6 @@ public class Physics {
         for (RigidBody rb : bodies.keySet()){
             Rigidbody3D comp = bodies.get(rb);
             Vector3f origin = rb.getMotionState().getWorldTransform(new Transform()).origin;
-            System.out.println(origin);
             comp.entity.getTransform().setPosition(new org.joml.Vector3f(origin.x, origin.y, origin.z));
         }
     }

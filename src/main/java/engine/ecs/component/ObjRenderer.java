@@ -27,7 +27,7 @@ public class ObjRenderer extends Component {
     public void onVariableChanged() {
         try {
             if (new File("res/" + filePath).exists() && !new File("res/" + filePath).isDirectory() && new File("res/" + texturePath).exists() && !new File("res/" + texturePath).isDirectory())
-                this.model = OBJLoader.loadTexturedOBJ(filePath, TextureLoader.getTexture(texturePath));
+                this.model = OBJLoader.loadTexturedOBJ(filePath, TextureLoader.loadTexture(texturePath));
 
         }catch (Exception e){
             e.printStackTrace();
