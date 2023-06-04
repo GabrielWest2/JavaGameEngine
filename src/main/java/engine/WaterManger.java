@@ -1,12 +1,12 @@
 package engine;
 
-import engine.ecs.component.ModelRenderer;
 import engine.model.ModelCreator;
 import engine.model.WaterModel;
 import org.joml.Vector3f;
 
 public class WaterManger {
-    public static int width = 1000;
+    public static int width = 1500;
+    public static final int waterHeight = 0;
     private static WaterModel waterModel;
 
     public static void init() {
@@ -14,7 +14,7 @@ public class WaterManger {
     }
 
     public static void render(){
-        Renderer.renderWater(waterModel, new Vector3f(-500, 0, -500), 20.0f, 0.1f);
+        Renderer.renderWater(waterModel, new Vector3f( -500, waterHeight, -500), 20.0f, 0.1f);
     }
 
     public static void generateWaterMesh() {

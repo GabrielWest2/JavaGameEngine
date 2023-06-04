@@ -7,6 +7,7 @@ import engine.display.DisplayManager;
 import engine.ecs.Entity;
 import engine.ecs.Light;
 import engine.ecs.component.Transform;
+import engine.hud.HudManager;
 import engine.input.Keyboard;
 import engine.input.Mouse;
 import engine.model.*;
@@ -18,12 +19,11 @@ import engine.texture.Texture;
 import engine.texture.TextureLoader;
 import engine.util.Time;
 import org.joml.Vector3f;
+import org.lwjgl.opengl.GL11;
 import scripting.LuaScriptingManager;
 
 import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
@@ -41,11 +41,12 @@ public class GameEngine {
     public static Framebuffer frameBuffer;
     public static float waterMovement = 0f;
     public static float grassMovement = 0f;
+    public static VegetationModel grassModel;
     public Camera camera;
     public Light light;
     public Scene loadedScene;
     public SkyboxModel skybox;
-    public final int waterHeight = 0;
+
     public float clipHeight = 0;
     public float clipDirection = 1;
 
@@ -72,7 +73,9 @@ public class GameEngine {
     }
 
 
+    private boolean wireframe = false;
 
+    Transform t = new Transform(new Vector3f(0, 0, 0), new Vector3f(0, 0, 0), new Vector3f(1, 1, 1));
     private void loop() {
         grass = TextureLoader.loadTexture("Terrain/Texture_Grass_Diffuse_Light.png");
         waterDUDV = TextureLoader.loadTexture("waterDUDV.png");
@@ -102,7 +105,7 @@ public class GameEngine {
 
 
         String tree = "Birch";
-        VegetationModel grassModel =  OBJLoader.loadVegetationTexturedOBJ("grass.obj", TextureLoader.loadTexture("Terrain/Brush_Grass_01.png"));
+        grassModel =  OBJLoader.loadVegetationTexturedOBJ("grass.obj", TextureLoader.loadTexture("Terrain/Brush_Grass_01.png"));
         MultiTexturedModel flowerModel = (MultiTexturedModel) OBJLoader.loadTexturedOBJ("flowers.obj", null);
         flowerModel.setTexture("Plants", TextureLoader.loadTexture("flowers.png"));
 
@@ -112,49 +115,7 @@ public class GameEngine {
         treeModel1.setTexture("leafes_Mat.001", TextureLoader.loadTexture("leaf02.png"));
 
 
-        List<Transform> grassPositions = new ArrayList<>();
-        List<Transform> flowerPositions = new ArrayList<>();
-        /*
-        for(float x = 0; x < terrain.terrainWidth; x += 0.5f){
-            for(float z = 0; z < terrain.terrainWidth; z += 0.5f) {
-                float height = terrain.calculateHeight(x, z);
-                if(height <= 0)
-                    continue;
-                boolean flowers = Math.random() > 0.95;
-
-                float newX = (float) (x + ((Math.random()-0.5f) * 0.75f));
-                float newZ = (float) (z + ((Math.random()-0.5f) * 0.75f));
-                float scale = flowers ? 0.6f : (float) (Math.random() * 0.1f) + 0.3f;
-
-                if(flowers)
-                    flowerPositions.add(new Transform(new Vector3f(newX, height, newZ), terrain.calculateObjectRotation(newX, newZ), new Vector3f(scale)));
-                else
-                    grassPositions.add(new Transform(new Vector3f(newX, height, newZ), terrain.calculateObjectRotation(newX, newZ), new Vector3f(scale)));
-            }
-        }
-        for(int i = 0; i < 20; i ++){
-            boolean foundSpot = false;
-            float height = 1.0f;
-            float x = 0.0f, y = 0.0f;
-            while(!foundSpot){
-                x = (float) (Math.random() * terrain.terrainWidth);
-                y = (float) (Math.random() * terrain.terrainWidth);
-                if(terrain.calculateHeight(x, y) > 0){
-                    foundSpot = true;
-                    height = terrain.calculateHeight(x, y);
-                }
-            }
-            Entity e = new Entity("Tree" + x+":"+y).addComponent(new ModelRenderer().setModel(treeModel1));
-            e.getComponent(ModelRenderer.class).cullBack = false;
-            e.getTransform().setScale(new Vector3f(1));
-            e.getTransform().getPosition().x = x;
-            e.getTransform().getPosition().y = height;
-            e.getTransform().getPosition().z = y;
-            e.getTransform().setRotation(terrain.calculateObjectRotation(x, y).mul(0.1f));
-            loadedScene.addEntity(e);
-        }*/
-
-        light = new Light(new Vector3f(10, 30, 10), new Vector3f(255 / 255f, 241  / 255f, 204 / 255f));
+        light = new Light(new Vector3f(10, 3000, 10), new Vector3f(255 / 255f, 241  / 255f, 204 / 255f));
 
         reflectionBuffer = new Framebuffer(DisplayManager.getWidth(), DisplayManager.getHeight(), Framebuffer.DEPTH_TEXTURE);
         refractionBuffer = new Framebuffer(DisplayManager.getWidth(), DisplayManager.getHeight(), Framebuffer.DEPTH_TEXTURE);
@@ -177,47 +138,46 @@ public class GameEngine {
             if(Keyboard.isKeyPressedThisFrame(GLFW_KEY_F)){
                 source.play(sound);
             }
+            if(Keyboard.isKeyPressedThisFrame(GLFW_KEY_Z)){
+                wireframe = !wireframe;
+            }
             if(Mouse.isMousePressed(0))
                 LuaScriptingManager.LeftClick();
 
             refractionBuffer.bind();
             clipDirection = -1;
-            clipHeight = waterHeight+0.01f;
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
-            Renderer.renderSkybox(skybox);
-            TerrainManager.renderChunks();
-            for (Entity entity : loadedScene.getEntities()) {
-                Renderer.render(entity);
-            }
+            clipHeight = WaterManger.waterHeight+0.01f;
+            renderScene();
             refractionBuffer.unbind();
 
             reflectionBuffer.bind();
             clipDirection = 1;
-            clipHeight = -waterHeight;
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
+            clipHeight = -WaterManger.waterHeight;
             camera.waterInvert(clipHeight);
-            Renderer.renderSkybox(skybox);
-            TerrainManager.renderChunks();
-            for (Entity entity : loadedScene.getEntities()) {
-                Renderer.render(entity);
-            }
+            renderScene();
             camera.waterInvert(clipHeight);
             reflectionBuffer.unbind();
 
             frameBuffer.bind();
             clipDirection = -1;
             clipHeight = 10000;
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
-            Renderer.renderSkybox(skybox);
-            TerrainManager.renderChunks();
+            renderScene();
             WaterManger.render();
-            for (Entity entity : loadedScene.getEntities())
-                Renderer.render(entity);
-            Renderer.renderTerrainDetails( grassPositions, grassModel);
-            Renderer.renderTerrainDetails(flowerPositions, flowerModel);
+            HudManager.renderHud();
             frameBuffer.unbind();
-
             Renderer.endScene(frameBuffer);
         }
+    }
+
+    private void renderScene(){
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
+        Renderer.renderSkybox(skybox);
+        GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, wireframe ? GL11.GL_LINE : GL_FILL);
+        TerrainManager.renderChunks();
+        GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL_FILL);
+        for (Entity entity : loadedScene.getEntities()) {
+            Renderer.render(entity);
+        }
+        Renderer.renderTextured(Primitives.plane, t);
     }
 }

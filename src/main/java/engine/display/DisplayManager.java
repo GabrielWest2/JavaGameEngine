@@ -3,6 +3,7 @@ package engine.display;
 import editor.ImGuiThemer;
 import engine.GameEngine;
 import engine.Renderer;
+import engine.hud.HudManager;
 import engine.shader.Framebuffer;
 import imgui.ImGui;
 import imgui.ImGuiIO;
@@ -22,6 +23,8 @@ import org.lwjgl.system.MemoryStack;
 import java.nio.IntBuffer;
 
 import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.nanovg.NanoVG.nvgBeginFrame;
+import static org.lwjgl.nanovg.NanoVGGL3.*;
 import static org.lwjgl.opengl.GL11.glViewport;
 import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.system.MemoryUtil.NULL;
@@ -85,8 +88,8 @@ public class DisplayManager {
 
         // Make the window visible
         glfwShowWindow(window);
-        glfwWindowHint(GLFW_SAMPLES, 4);
         GL.createCapabilities();
+        HudManager.init();
         initImGui();
     }
 
@@ -104,6 +107,7 @@ public class DisplayManager {
 
         ImGuiThemer.GoldTheme();
     }
+
 
     public static void createDockspace() {
         int windowFlags = ImGuiWindowFlags.MenuBar | ImGuiWindowFlags.NoDocking;

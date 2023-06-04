@@ -1,5 +1,6 @@
 package engine.model;
 
+import engine.TerrainManager;
 import engine.texture.Texture;
 import engine.texture.TextureLoader;
 import org.lwjgl.BufferUtils;
@@ -17,7 +18,7 @@ import static org.lwjgl.opengles.GLES20.GL_ELEMENT_ARRAY_BUFFER;
 
 public class ModelCreator {
 
-    private static final float SIZE = 600f;
+    private static final float SIZE = 825f;
 
     private static final float[] VERTICES = {
             -SIZE, SIZE, -SIZE,
@@ -113,14 +114,14 @@ public class ModelCreator {
         return new WaterModel(vaoID, positions.length);
     }
 
-    public static TerrianModel loadToTerrainVAO(float[] positions, int[] indices, float[] textureCoords, float[] normals, Texture texture) {
+    public static TerrainModel loadToTerrainVAO(float[] positions, int[] indices, float[] textureCoords, float[] normals) {
         int vaoID = createVAO();
         bindIndicesBuffer(indices);
         storeDataInAttributeList(0, 3, positions);
         storeDataInAttributeList(1, 2, textureCoords);
         storeDataInAttributeList(2, 3, normals);
         unbindVAO();
-        return new TerrianModel(vaoID, positions.length * 3, texture);
+        return new TerrainModel(vaoID, positions.length * 3, TerrainManager.splatmap, TerrainManager.t1, TerrainManager.t2, TerrainManager.t3, TerrainManager.t4);
     }
 
 

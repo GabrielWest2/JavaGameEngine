@@ -8,10 +8,14 @@ import engine.texture.TextureLoader;
  */
 public class Primitives {
 
-    public static Model cube;
+    public static TexturedModel cube;
+    public static TexturedModel plane;
+    public static TexturedModel sphere;
 
     static {
-        cube = OBJLoader.loadTexturedOBJ("cube.obj", TextureLoader.loadTexture("white.png"));
+        cube = OBJLoader.loadSimpleTexturedOBJ("engine/primitive/cube.obj", TextureLoader.loadTexture("white.png"));
+        plane = OBJLoader.loadSimpleTexturedOBJ("engine/primitive/plane.obj", TextureLoader.loadTexture("white.png"));
+        sphere = OBJLoader.loadSimpleTexturedOBJ("engine/primitive/sphere.obj", TextureLoader.loadTexture("white.png"));
     }
 
 }

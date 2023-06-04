@@ -21,6 +21,7 @@ public class Framebuffer {
     private final int depthBufferType;
     private int width;
     private int height;
+    private int divisor;
     private int frameBuffer;
     private int colorTexture;
     private int depthTexture;
@@ -39,10 +40,31 @@ public class Framebuffer {
     public Framebuffer(int width, int height, int depthBufferType) {
         this.width = width;
         this.height = height;
+        this.divisor = 1;
         this.depthBufferType = depthBufferType;
         instances.add(this);
         initialiseFrameBuffer(depthBufferType);
     }
+
+    /**
+     * Creates an FBO of a specified width and height, with the desired type of
+     * depth buffer attachment.
+     *
+     * @param width           - the width of the FBO.
+     * @param height          - the height of the FBO.
+     * @param divisor - an int indicating the divisor of the screen size (default: 1)
+     * @param depthBufferType - an int indicating the type of depth buffer attachment that
+     *                        this FBO should use.
+     */
+    public Framebuffer(int width, int height, int divisor, int depthBufferType) {
+        this.width = width;
+        this.height = height;
+        this.divisor = divisor;
+        this.depthBufferType = depthBufferType;
+        instances.add(this);
+        initialiseFrameBuffer(depthBufferType);
+    }
+
 
     /**
      * Deletes the frame buffer and its attachments, then creates
@@ -51,8 +73,8 @@ public class Framebuffer {
     public static void setFrameBufferSize(int width, int height) {
         for (Framebuffer fb : instances) {
             fb.cleanUp();
-            fb.width = width;
-            fb.height = height;
+            fb.width = width / fb.divisor;
+            fb.height = height / fb.divisor;
             fb.initialiseFrameBuffer(fb.depthBufferType);
         }
     }

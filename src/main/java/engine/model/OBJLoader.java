@@ -37,12 +37,33 @@ public class OBJLoader {
                     //TODO set default texture?
                     textures.put(name, null);
                 }
+
                 MultiTexturedModel model = new MultiTexturedModel(models, textures);
                 return model;
             }else {
                 TexturedModel model = ModelCreator.loadToTexturedVAO(ObjData.getVertices(obj), ObjData.getFaceVertexIndices(obj), ObjData.getTexCoords(obj, 2), ObjData.getNormals(obj), texture);
                 return model;
             }
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public static TexturedModel loadSimpleTexturedOBJ(String path, Texture texture) {
+        try {
+            InputStream inputStream = new FileInputStream("res/" + path);
+            Obj obj = ObjUtils.convertToRenderable(
+                    ObjReader.read(inputStream));
+
+            Map<String, Obj> materialMeshes = ObjSplitting.splitByMaterialGroups(obj);
+
+
+            TexturedModel model = ModelCreator.loadToTexturedVAO(ObjData.getVertices(obj), ObjData.getFaceVertexIndices(obj), ObjData.getTexCoords(obj, 2), ObjData.getNormals(obj), texture);
+            return model;
+
 
 
         } catch (IOException e) {

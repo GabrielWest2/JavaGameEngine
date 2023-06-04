@@ -53,7 +53,7 @@ void main(void){
 
     vec3 viewVector = normalize(toCamera);
     float fresnelFactor = dot(viewVector, normal);
-    fresnelFactor = clamp(fresnelFactor, 0.0, 0.35);
+    fresnelFactor = clamp(fresnelFactor, 0.0, 1.0);
 
 
 
@@ -62,7 +62,7 @@ void main(void){
     specular = pow(specular, shineDamper);
     vec3 specularHighlights = lightColor * specular * reflectivity;
 
-    fresnelFactor *= 0.25;
+    //resnelFactor *= 0.25;
     out_Color = mix(reflectColor, refractColor, fresnelFactor);
     out_Color = mix(out_Color, vec4(0.411764, 0.713725, 0.941176, 1), 0.15) + vec4(specularHighlights.xyz, 0.0);
     out_Color.a = clamp(waterDepth / 5.0, 0.0, 1.0);

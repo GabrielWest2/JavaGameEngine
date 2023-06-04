@@ -22,7 +22,13 @@ const float waveAmount = 0.05;
 
 void main(void){
     vec4 worldPosition = transformationMatrix * vec4(position, 1.0);
-    worldPosition = worldPosition + vec4(sin(moveFactor + worldPosition.x + worldPosition.y + worldPosition.z)*waveAmount * position.y, 0, cos(moveFactor + worldPosition.x - worldPosition.y + worldPosition.z)*waveAmount  * position.y, 0.0);
+    worldPosition = worldPosition + vec4(
+    sin(moveFactor + worldPosition.x + worldPosition.y + worldPosition.z)*waveAmount * position.y, 
+    0, 
+    cos(moveFactor + worldPosition.x - worldPosition.y + worldPosition.z)*waveAmount  * position.y, 0.0);
+    
+    
+    
     gl_ClipDistance[0] = dot(worldPosition, plane);
     gl_Position = projectionMatrix * viewMatrix * worldPosition;
     pass_textureCoords = textureCoords;

@@ -61,7 +61,6 @@ public class Renderer {
         vegetationShader.start();
         vegetationShader.loadProjectionMatrix(mat);
         vegetationShader.stop();
-
     }
 
     public static void init() {
@@ -69,6 +68,8 @@ public class Renderer {
         // Set the clear color
         glClearColor(0.5f, 0.5f, 1.0f, 1.0f);
         glEnable(GL_DEPTH_TEST);
+        glEnable(GL_STENCIL_TEST);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
         glEnable(GL_CULL_FACE);
         glCullFace(GL_BACK);
 
@@ -290,7 +291,11 @@ public class Renderer {
         glEnable(GL_CULL_FACE);
     }
 
-    private static void renderTextured(TexturedModel model, Transform transform, boolean cull, float damper, float reflect) {
+    public static void renderTextured(TexturedModel model, Transform transform){
+        renderTextured(model, transform, true, 20, 0.5f);
+    }
+
+    public static void renderTextured(TexturedModel model, Transform transform, boolean cull, float damper, float reflect) {
         if(cull)
             glEnable(GL_CULL_FACE);
         else
@@ -317,11 +322,13 @@ public class Renderer {
     }
 
 
-    public static void renderTerrain(TerrianModel model, float damper, float reflect) {
+
+    public static void renderTerrain(TerrainModel model, float damper, float reflect) {
         terrainShader.start();
         terrainShader.loadLight(GameEngine.getInstance().light);
         terrainShader.setMaterial(damper, reflect);
-        terrainShader.setTextureScale(TerrainManager.textureScale);
+        terrainShader.setTextureScales(TerrainManager.textureScale1,TerrainManager.textureScale2, TerrainManager.textureScale3, TerrainManager.textureScale4);
+        terrainShader.connectTextures();
         //terrainShader.loadTransformationMatrix(MatrixBuilder.defaultTransformation);
         terrainShader.loadViewMatrix(GameEngine.getInstance().camera.getViewMatrix());
         terrainShader.setClipPlane(new Vector4f(0, GameEngine.getInstance().clipDirection, 0, GameEngine.getInstance().clipHeight));
@@ -329,8 +336,20 @@ public class Renderer {
         GL20.glEnableVertexAttribArray(0);
         GL20.glEnableVertexAttribArray(1);
         GL20.glEnableVertexAttribArray(2);
+
         GL13.glActiveTexture(GL13.GL_TEXTURE0);
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, model.getTexture().textureID());
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, model.getSplat().textureID());
+
+        GL13.glActiveTexture(GL13.GL_TEXTURE1);
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, model.getT1().textureID());
+        GL13.glActiveTexture(GL13.GL_TEXTURE2);
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, model.getT2().textureID());
+        GL13.glActiveTexture(GL13.GL_TEXTURE3);
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, model.getT3().textureID());
+        GL13.glActiveTexture(GL13.GL_TEXTURE4);
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, model.getT4().textureID());
+
+
         GL11.glDrawElements(GL11.GL_TRIANGLES, model.getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
         GL20.glDisableVertexAttribArray(1);
         GL20.glDisableVertexAttribArray(2);
@@ -355,9 +374,18 @@ public class Renderer {
 
     public static void beginFrame() {
         DisplayManager.newImguiFrame();
+
         DisplayManager.createDockspace();
         glEnable(GL_CULL_FACE);
         glEnable(GL_CLIP_PLANE0);
+        glEnable(GL_MULTISAMPLE);
+        // Set the clear color
+        glClearColor(0.5f, 0.5f, 1.0f, 1.0f);
+        glEnable(GL_DEPTH_TEST);
+        glEnable(GL_STENCIL_TEST);
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_BACK);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     }
 
     public static void endScene(Framebuffer fb) {

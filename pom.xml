@@ -32,6 +32,20 @@
 
 
     <dependencies>
+
+        <dependency>
+            <groupId>org.lwjgl</groupId>
+            <artifactId>lwjgl-nanovg</artifactId>
+            <version>${lwjgl.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.lwjgl</groupId>
+            <artifactId>lwjgl-nanovg</artifactId>
+            <version>${lwjgl.version}</version>
+            <classifier>natives-windows</classifier>
+            <scope>runtime</scope>
+        </dependency>
+
         <!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
         <dependency>
             <groupId>commons-io</groupId>
@@ -46,8 +60,14 @@
         </dependency>
 
 
-
         <!-- https://mvnrepository.com/artifact/de.fabmax/physx-jni -->
+        <!-- https://mvnrepository.com/artifact/com.twelvemonkeys.imageio/imageio-tga -->
+        <dependency>
+            <groupId>com.twelvemonkeys.imageio</groupId>
+            <artifactId>imageio-tga</artifactId>
+            <version>3.9.4</version>
+        </dependency>
+
         <dependency>
             <groupId>de.fabmax</groupId>
             <artifactId>physx-jni</artifactId>

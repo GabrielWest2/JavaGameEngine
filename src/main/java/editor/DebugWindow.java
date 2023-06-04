@@ -1,10 +1,12 @@
 package editor;
 import engine.GameEngine;
 import engine.Renderer;
+import engine.TerrainManager;
 import engine.postprocessing.PostProcessing;
 import imgui.ImGui;
 import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImFloat;
+import imgui.type.ImInt;
 import scripting.LuaScriptingManager;
 
 public class DebugWindow {
@@ -14,8 +16,17 @@ public class DebugWindow {
         scriptingManager = new LuaScriptingManager();
     }
 
+    private static int lod = 1;
+
     public static void render() {
         ImGui.begin("Debug Window", ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse);
+
+        ImInt i = new ImInt(lod);
+        if(ImGui.inputInt("Terrain Lod", i) && i.get() > 0 && i.get() < 11){
+            lod =  i.get();
+            TerrainManager.regenerateChunks(lod);
+        }
+
 
         ImGui.text("Lua Settings");
         if (ImGui.button("LOAD LUA CODE")) {

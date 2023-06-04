@@ -43,7 +43,7 @@ public class Physics {
 
     public static void render() {
         for (RigidBody rb : bodies.keySet()){
-            bodies.get(rb).render();
+          //  bodies.get(rb).render();
         }
     }
 
