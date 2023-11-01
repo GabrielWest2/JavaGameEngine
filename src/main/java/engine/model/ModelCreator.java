@@ -121,7 +121,8 @@ public class ModelCreator {
         storeDataInAttributeList(1, 2, textureCoords);
         storeDataInAttributeList(2, 3, normals);
         unbindVAO();
-        return new TerrainModel(vaoID, positions.length * 3, TerrainManager.splatmap, TerrainManager.t1, TerrainManager.t2, TerrainManager.t3, TerrainManager.t4);
+        //TODO replaced splat map with t1 to get it to shutup
+        return new TerrainModel(vaoID, positions.length * 3, TerrainManager.t1, TerrainManager.t1, TerrainManager.t2, TerrainManager.t3, TerrainManager.t4);
     }
 
 

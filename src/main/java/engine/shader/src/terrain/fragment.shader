@@ -54,5 +54,6 @@ void main(void){
  float finalG = (color1.g * textureMixes.r) + (color2.g * textureMixes.g) + (color3.g * textureMixes.b) + (color4.g * textureMixes.a);
  float finalB = (color1.b * textureMixes.r) + (color2.b * textureMixes.g) + (color3.b * textureMixes.b) + (color4.b * textureMixes.a);
 
- out_Color = vec4(diffuse, 1.0) *  vec4(finalR, finalG, finalB, 1.0) + vec4(finalSpecular, 1.0);
+  //out_Color = vec4(diffuse, 1.0) *  vec4(finalR, finalG, finalB, 1.0) + vec4(finalSpecular, 1.0);
+  out_Color = vec4(color1.rgb, 1.0);
 }

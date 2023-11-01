@@ -17,7 +17,7 @@ public class Mouse {
 
     public static void setMouseHidden(boolean hidden) {
         mouseHidden = hidden;
-        glfwSetInputMode(DisplayManager.window, GLFW_CURSOR, hidden ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL);
+        //glfwSetInputMode(DisplayManager.window, GLFW_CURSOR, hidden ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL);
     }
 
     public static void update() {
@@ -29,8 +29,9 @@ public class Mouse {
         if (!mouseHidden) {
             dx = 0;
             dy = 0;
-            if (ImGui.isMouseClicked(0) && GameViewportWindow.focused)
+            if (ImGui.isMouseClicked(0) && GameViewportWindow.focused) {
                 setMouseHidden(true);
+            }
         } else {
             if (Keyboard.isKeyPressed(GLFW_KEY_ESCAPE)) {
                 setMouseHidden(false);

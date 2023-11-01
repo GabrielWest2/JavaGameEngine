@@ -13,9 +13,9 @@ public class Primitives {
     public static TexturedModel sphere;
 
     static {
-        cube = OBJLoader.loadSimpleTexturedOBJ("engine/primitive/cube.obj", TextureLoader.loadTexture("white.png"));
-        plane = OBJLoader.loadSimpleTexturedOBJ("engine/primitive/plane.obj", TextureLoader.loadTexture("white.png"));
-        sphere = OBJLoader.loadSimpleTexturedOBJ("engine/primitive/sphere.obj", TextureLoader.loadTexture("white.png"));
+        //cube = OBJLoader.loadSimpleTexturedOBJ("engine/primitive/cube.obj", TextureLoader.loadTexture("white.png"));
+        //plane = OBJLoader.loadSimpleTexturedOBJ("engine/primitive/plane.obj", TextureLoader.loadTexture("white.png"));
+        //sphere = OBJLoader.loadSimpleTexturedOBJ("engine/primitive/sphere.obj", TextureLoader.loadTexture("white.png"));
     }
 
 }

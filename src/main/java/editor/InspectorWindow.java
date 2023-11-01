@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 public class InspectorWindow {
 
     private static boolean popup = false;
-    private static Texture searchIcon = null;
+    //private static Texture searchIcon = null;
     private static boolean wasPressed = false;
     private static boolean innerMenuHovered = false;
     private static String search = "";
@@ -46,8 +46,8 @@ public class InspectorWindow {
                 i++;
             }
         }
-        if(searchIcon == null)
-            searchIcon = TextureLoader.loadTexture("engine/search.png");
+        //if(searchIcon == null)
+        //    searchIcon = TextureLoader.loadTexture("engine/search.png");
 
         ImGui.begin("Inspector");
         //Remove after iterating to prevent java.util.ConcurrentModificationException
@@ -112,7 +112,7 @@ public class InspectorWindow {
                 {
                     if(pressedThisFrame && !ImGui.isWindowHovered() && !innerMenuHovered)
                         popup = false;
-                    ImGui.image(searchIcon.textureID(), 20, 20, 0, 0);
+                    //ImGui.image(searchIcon.textureID(), 20, 20, 0, 0);
                     ImGui.sameLine();
 
                     ImGui.pushItemWidth(-1);

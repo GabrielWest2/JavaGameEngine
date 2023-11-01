@@ -34,20 +34,20 @@ public class HudManager {
             System.out.println("Could not init nanovg");
         }
 
-        red = NanoVGImageUtils.loadImage("hud/red.png");
-        gray = NanoVGImageUtils.loadImage("hud/gray.png");
-        yellow = NanoVGImageUtils.loadImage("hud/yellow.png");
-        dpad = NanoVGImageUtils.loadImage("hud/dpad.png");
-        roundBombPlus = NanoVGImageUtils.loadImage("hud/cubeBomb.png");
+        //red = NanoVGImageUtils.loadImage("hud/red.png");
+        //gray = NanoVGImageUtils.loadImage("hud/gray.png");
+        //yellow = NanoVGImageUtils.loadImage("hud/yellow.png");
+        //dpad = NanoVGImageUtils.loadImage("hud/dpad.png");
+        //roundBombPlus = NanoVGImageUtils.loadImage("hud/cubeBomb.png");
         for(int y = 0; y < 2; y ++) {
             for (int i = 0; i < 15; i++) {
                 if((y*15 + i) > 22)
                     break;
-                images.add(new HudImage((y*15 + i) > 12 ? yellow : red, 25 + (33 * i), 17 + (29 * y), 30, 24));
+                //images.add(new HudImage((y*15 + i) > 12 ? yellow : red, 25 + (33 * i), 17 + (29 * y), 30, 24));
             }
         }
-        images.add(new HudImage(dpad,60, 130, 50, 50));
-        images.add(new HudImage(roundBombPlus,60, 80, 50, 50));
+        //images.add(new HudImage(dpad,60, 130, 50, 50));
+        //images.add(new HudImage(roundBombPlus,60, 80, 50, 50));
     }
 
 

@@ -77,10 +77,12 @@ public class GameEngine {
 
     Transform t = new Transform(new Vector3f(0, 0, 0), new Vector3f(0, 0, 0), new Vector3f(1, 1, 1));
     private void loop() {
-        grass = TextureLoader.loadTexture("Terrain/Texture_Grass_Diffuse_Light.png");
+        System.out.println("DIR: ");
+        System.out.println(System.getProperty("user.dir"));
+        grass = TextureLoader.loadTexture("Terrain/Texture_Grass_Diffuse.png");
         waterDUDV = TextureLoader.loadTexture("waterDUDV.png");
         waterNormalMap = TextureLoader.loadTexture("waterNormalMap.png");
-        cube = OBJLoader.loadTexturedOBJ("stall.obj", TextureLoader.loadTexture("stallTexture.png"));
+        //cube = OBJLoader.loadTexturedOBJ("stall.obj", TextureLoader.loadTexture("stallTexture.png"));
         loadedScene = new Scene("testScene");
         skybox = ModelCreator.createSkyboxModel(new String[]{"right", "left", "top", "bottom", "back", "front"});
         Renderer.init();
@@ -91,6 +93,7 @@ public class GameEngine {
         WaterManger.init();
         AudioManager.init();
 
+        /*
         int sound = -1;
         try{
             sound = AudioManager.loadSound("res/audio/rito.wav");
@@ -99,20 +102,22 @@ public class GameEngine {
         }
 
         AudioSource source = new AudioSource();
+
+         */
         camera = new Camera(new Vector3f(30, 10, 30), new Vector3f(0, 25, 0));
 
         DisplayManager.setCallbacks();
 
 
-        String tree = "Birch";
-        grassModel =  OBJLoader.loadVegetationTexturedOBJ("grass.obj", TextureLoader.loadTexture("Terrain/Brush_Grass_01.png"));
-        MultiTexturedModel flowerModel = (MultiTexturedModel) OBJLoader.loadTexturedOBJ("flowers.obj", null);
-        flowerModel.setTexture("Plants", TextureLoader.loadTexture("flowers.png"));
+        //String tree = "Birch";
+        //grassModel =  OBJLoader.loadVegetationTexturedOBJ("grass.obj", TextureLoader.loadTexture("Terrain/Brush_Grass_01.png"));
+       // MultiTexturedModel flowerModel = (MultiTexturedModel) OBJLoader.loadTexturedOBJ("flowers.obj", null);
+        //flowerModel.setTexture("Plants", TextureLoader.loadTexture("flowers.png"));
 
 
-        MultiTexturedModel treeModel1 = (MultiTexturedModel) OBJLoader.loadTexturedOBJ("tree.obj", null);
-        treeModel1.setTexture("trunk_Mat.001", TextureLoader.loadTexture("Textures/NormalTree_Bark.png"));
-        treeModel1.setTexture("leafes_Mat.001", TextureLoader.loadTexture("leaf02.png"));
+        //MultiTexturedModel treeModel1 = (MultiTexturedModel) OBJLoader.loadTexturedOBJ("tree.obj", null);
+        //treeModel1.setTexture("trunk_Mat.001", TextureLoader.loadTexture("Textures/NormalTree_Bark.png"));
+        //treeModel1.setTexture("leafes_Mat.001", TextureLoader.loadTexture("leaf02.png"));
 
 
         light = new Light(new Vector3f(10, 3000, 10), new Vector3f(255 / 255f, 241  / 255f, 204 / 255f));
@@ -136,7 +141,7 @@ public class GameEngine {
             waterMovement %=1;
 
             if(Keyboard.isKeyPressedThisFrame(GLFW_KEY_F)){
-                source.play(sound);
+               // source.play(sound);
             }
             if(Keyboard.isKeyPressedThisFrame(GLFW_KEY_Z)){
                 wireframe = !wireframe;
@@ -171,13 +176,15 @@ public class GameEngine {
 
     private void renderScene(){
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
+        glDisable(GL_CLIP_PLANE0);
         Renderer.renderSkybox(skybox);
+        glEnable(GL_CLIP_PLANE0);
         GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, wireframe ? GL11.GL_LINE : GL_FILL);
         TerrainManager.renderChunks();
         GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL_FILL);
         for (Entity entity : loadedScene.getEntities()) {
             Renderer.render(entity);
         }
-        Renderer.renderTextured(Primitives.plane, t);
+        //Renderer.renderTextured(Primitives.plane, t);
     }
 }

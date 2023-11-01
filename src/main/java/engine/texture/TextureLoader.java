@@ -30,6 +30,9 @@ public class TextureLoader {
         int[] pixels = null;
         try {
             BufferedImage image = ImageIO.read(new FileInputStream(path));
+            if(image == null){
+                System.out.println("Image is null!!");
+            }
             width = image.getWidth();
             height = image.getHeight();
             pixels = new int[width * height];

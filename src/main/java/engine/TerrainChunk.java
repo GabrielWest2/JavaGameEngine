@@ -3,12 +3,15 @@ package engine;
 import engine.ecs.component.Transform;
 import engine.model.ModelCreator;
 import engine.model.TerrainModel;
+import engine.util.FastNoiseLite;
 import org.joml.Math;
 import org.joml.Vector3f;
 
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+
+import static engine.TerrainManager.noise;
 
 public class TerrainChunk {
     private TerrainModel model;
@@ -93,7 +96,8 @@ public class TerrainChunk {
         }
     }
     public float getTextureHeight(int x, int y){
-
+        //return 10;
+        /*
         x = Math.clamp(x, 1, TerrainManager.heightMap.getWidth()-2);
         y = TerrainManager.heightMap.getHeight()-Math.clamp(y, 1, TerrainManager.heightMap.getHeight()-1);
         try {
@@ -113,8 +117,10 @@ public class TerrainChunk {
         }
 
         return 0;
+        */
 
-
+        noise.SetNoiseType(FastNoiseLite.NoiseType.Perlin);
+        return noise.GetNoise((x + 2323) * 1, (y + 43434) * 1) * 50 + 1;
         //noise.SetNoiseType(FastNoiseLite.NoiseType.Perlin);
         //return noise.GetNoise((x + offsetX) * scale, (y + offsetY) * scale) * amplitude + 1;
     }

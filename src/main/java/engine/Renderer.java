@@ -363,10 +363,14 @@ public class Renderer {
         skyboxShader.loadViewMatrix(MatrixBuilder.createStationaryViewMatrix(GameEngine.getInstance().camera));
         GL30.glBindVertexArray(model.getVaoID());
         GL20.glEnableVertexAttribArray(0);
+        GL20.glEnableVertexAttribArray(1);
+        GL20.glEnableVertexAttribArray(2);
         GL13.glActiveTexture(GL13.GL_TEXTURE0);
         GL11.glBindTexture(GL13.GL_TEXTURE_CUBE_MAP, model.getCubemapTexture());
         GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, model.getVertexCount());
         GL20.glDisableVertexAttribArray(0);
+        GL20.glDisableVertexAttribArray(1);
+        GL20.glDisableVertexAttribArray(2);
         GL30.glBindVertexArray(0);
         skyboxShader.stop();
         skyboxShader.stop();
