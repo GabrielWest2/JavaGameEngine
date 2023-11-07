@@ -169,6 +169,7 @@ public class GameEngine {
             renderScene();
             WaterManger.render();
             HudManager.renderHud();
+            Physics.render();
             frameBuffer.unbind();
             Renderer.endScene(frameBuffer);
         }
@@ -177,7 +178,9 @@ public class GameEngine {
     private void renderScene(){
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
         glDisable(GL_CLIP_PLANE0);
+        glDisable(GL_DEPTH_TEST);
         Renderer.renderSkybox(skybox);
+        glEnable(GL_DEPTH_TEST);
         glEnable(GL_CLIP_PLANE0);
         GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, wireframe ? GL11.GL_LINE : GL_FILL);
         TerrainManager.renderChunks();

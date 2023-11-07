@@ -3,6 +3,7 @@ package engine.ecs.component;
 import com.bulletphysics.collision.shapes.BoxShape;
 import com.bulletphysics.collision.shapes.CollisionShape;
 import engine.ecs.Component;
+import engine.ecs.Entity;
 import org.joml.Vector3f;
 
 public class BoxCollider extends Component {
@@ -13,7 +14,8 @@ public class BoxCollider extends Component {
     }
 
     @Override
-    public void onAdded(){
+    public void onAdded(Entity parent){
+        super.onAdded(parent);
         Rigidbody3D rb = entity.getComponent(Rigidbody3D.class);
         if(rb == null) {
             rb = new Rigidbody3D();

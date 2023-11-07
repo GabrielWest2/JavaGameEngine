@@ -17,22 +17,22 @@ public class Entity {
     public Entity(Transform transform, Model model) {
         this.transform = transform;
         components = new ArrayList<>();
-        components.add(transform);
-        components.add(new ModelRenderer(model));
+        addComponent(transform);
+        addComponent(new ModelRenderer(model));
     }
 
     public Entity(String name, Transform transform) {
         this.name = name;
         this.transform = transform;
         components = new ArrayList<>();
-        components.add(transform);
+        addComponent(transform);
 
     }
 
     public Entity() {
         this.transform = new Transform(new Vector3f(0, 0, 0), new Vector3f(0, 0, 0));
         components = new ArrayList<>();
-        components.add(transform);
+        addComponent(transform);
 
     }
 
@@ -40,7 +40,7 @@ public class Entity {
         this.name = name;
         this.transform = new Transform(new Vector3f(0, 0, 0), new Vector3f(0, 0, 0));
         components = new ArrayList<>();
-        components.add(transform);
+        addComponent(transform);
 
     }
 
@@ -51,7 +51,7 @@ public class Entity {
     public Entity addComponent(Component component) {
         component.entity = this;
         components.add(component);
-        component.onAdded();
+        component.onAdded(this);
         return this;
     }
 

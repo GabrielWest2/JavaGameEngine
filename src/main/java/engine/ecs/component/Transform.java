@@ -2,7 +2,10 @@ package engine.ecs.component;
 
 import editor.CustomHudName;
 import engine.ecs.Component;
+import org.joml.Quaternionf;
 import org.joml.Vector3f;
+
+import javax.vecmath.Quat4f;
 
 public class Transform extends Component {
     @CustomHudName(displayName = "Position")
@@ -70,5 +73,15 @@ public class Transform extends Component {
     @Override
     public boolean canBeRemoved() {
         return false;
+    }
+
+    @Override
+    public void onVariableChanged(){
+        Rigidbody3D rb = entity.getComponent(Rigidbody3D.class);
+        if(rb != null){
+            Quaternionf f = new Quaternionf();
+            f.rotateXYZ(rotation.x, rotation.y, rotation.z);
+            rb.setPosition(new javax.vecmath.Vector3f(position.x, position.y, position.z), new Quat4f(f.x, f.y, f.z, f.w));
+        }
     }
 }

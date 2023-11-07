@@ -105,7 +105,7 @@ public class DisplayManager {
         imGuiGlfw.init(window, true);
         imGuiGl3.init(glslVersion);
 
-        ImGuiThemer.GoldTheme();
+        ImGuiThemer.NewDarkTheme();
     }
 
 

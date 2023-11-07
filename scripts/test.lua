@@ -17,14 +17,16 @@ function Update()
 end
 
 function LeftClick()
+    print("[LUA] hi")
         if engine.loadedScene:getEntities():size() > 1 then
-            tex = textureLoader:getTexture("white.png")
-            model = objLoader:loadTexturedOBJ("dragon.obj", tex);
-
-            entity = engine.loadedScene:getEntities():get(1)
-            rendererClass = modelRenderer:clazz()
-            renderer = entity:getComponent(rendererClass)
-            renderer:setModel(model)
+            print("[LUA] more than one")
+--            tex = textureLoader:getTexture("white.png")
+--            model = objLoader:loadTexturedOBJ("dragon.obj", tex);
+--
+--            entity = engine.loadedScene:getEntities():get(1)
+--            rendererClass = modelRenderer:clazz()
+--            renderer = entity:getComponent(rendererClass)
+--            renderer:setModel(model)
             --entity:getTransform():getPosition().y = entity:getTransform():getPosition().y + time:getDeltaTime()
         end
 end

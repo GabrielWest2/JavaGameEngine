@@ -15,6 +15,9 @@ public class WindowMenubar {
     public static void render() {
         if (ImGui.beginMainMenuBar()) {
             if (ImGui.beginMenu("Themes")) {
+                if(ImGui.menuItem("Dark Theme")){
+                    ImGuiThemer.NewDarkTheme();
+                }
                 if (ImGui.menuItem("Default Theme")) {
                     ImGuiThemer.DarkTheme();
                 }
@@ -35,7 +38,7 @@ public class WindowMenubar {
                     GameEngine.getInstance().loadedScene.addEntity(new Entity());
                 }
                 if (ImGui.menuItem("Add OBJ Component")) {
-                    GameEngine.getInstance().loadedScene.addEntity(new Entity().addComponent(new ObjRenderer()));
+                    GameEngine.getInstance().loadedScene.addEntity(new Entity().addComponent(new ObjRenderer().setPaths("crate.obj", "crate.png")));
                 }
 
                 ImGui.endMenu();

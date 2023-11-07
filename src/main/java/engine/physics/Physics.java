@@ -5,6 +5,7 @@ import com.bulletphysics.collision.broadphase.DbvtBroadphase;
 import com.bulletphysics.collision.dispatch.CollisionConfiguration;
 import com.bulletphysics.collision.dispatch.CollisionDispatcher;
 import com.bulletphysics.collision.dispatch.DefaultCollisionConfiguration;
+import com.bulletphysics.collision.shapes.CollisionShape;
 import com.bulletphysics.dynamics.DiscreteDynamicsWorld;
 import com.bulletphysics.dynamics.DynamicsWorld;
 import com.bulletphysics.dynamics.RigidBody;
@@ -13,7 +14,9 @@ import com.bulletphysics.dynamics.constraintsolver.SequentialImpulseConstraintSo
 import com.bulletphysics.linearmath.Transform;
 import engine.ecs.component.Rigidbody3D;
 import engine.util.Time;
+import org.joml.Quaternionf;
 
+import javax.vecmath.Quat4f;
 import javax.vecmath.Vector3f;
 import java.util.HashMap;
 
@@ -43,7 +46,10 @@ public class Physics {
 
     public static void render() {
         for (RigidBody rb : bodies.keySet()){
-          //  bodies.get(rb).render();
+            CollisionShape sh = rb.getCollisionShape();
+            if(sh != null){
+                System.out.println(sh.getName());
+            }
         }
     }
 
@@ -52,7 +58,10 @@ public class Physics {
         for (RigidBody rb : bodies.keySet()){
             Rigidbody3D comp = bodies.get(rb);
             Vector3f origin = rb.getMotionState().getWorldTransform(new Transform()).origin;
+            Quat4f rotation = rb.getMotionState().getWorldTransform(new Transform()).getRotation(new Quat4f());
+            rotation.
             comp.entity.getTransform().setPosition(new org.joml.Vector3f(origin.x, origin.y, origin.z));
+            comp.entity.getTransform().setRotation(new org.joml.Vector3f(origin.x, origin.y, origin.z));
         }
     }
 

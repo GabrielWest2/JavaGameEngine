@@ -57,7 +57,6 @@ public class Camera {
             Vector3f move = new Vector3f(Time.getDeltaTime() * vx * speed, Time.getDeltaTime() * vy * speed, Time.getDeltaTime() * vz * speed);
             this.moveBy(move);
             if(Mouse.isMousePressed(1)) {
-                System.out.println("Mouse clicked!");
                 this.rotateBy(new Vector3f(Mouse.getMouseDy() / 20f, Mouse.getMouseDx() / 20f, 0));
             }
         }

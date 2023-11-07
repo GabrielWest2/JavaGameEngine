@@ -11,6 +11,88 @@ import static imgui.flag.ImGuiCol.*;
  */
 public class ImGuiThemer {
 
+    public static void NewDarkTheme(){
+        ImGuiStyle style = ImGui.getStyle();
+        style.setColor(Text, 1.00f, 1.00f, 1.00f, 1.00f);
+        style.setColor(TextDisabled, 0.50f, 0.50f, 0.50f, 1.00f);
+        style.setColor(WindowBg, 0.10f, 0.10f, 0.10f, 1.00f);
+        style.setColor(ChildBg, 0.00f, 0.00f, 0.00f, 0.00f);
+        style.setColor(PopupBg, 0.19f, 0.19f, 0.19f, 0.92f);
+        style.setColor(Border, 0.19f, 0.19f, 0.19f, 0.29f);
+        style.setColor(BorderShadow, 0.00f, 0.00f, 0.00f, 0.24f);
+        style.setColor(FrameBg, 0.05f, 0.05f, 0.05f, 0.54f);
+        style.setColor(FrameBgHovered, 0.19f, 0.19f, 0.19f, 0.54f);
+        style.setColor(FrameBgActive, 0.20f, 0.22f, 0.23f, 1.00f);
+        style.setColor(TitleBg, 0.00f, 0.00f, 0.00f, 1.00f);
+        style.setColor(TitleBgActive, 0.06f, 0.06f, 0.06f, 1.00f);
+        style.setColor(TitleBgCollapsed, 0.00f, 0.00f, 0.00f, 1.00f);
+        style.setColor(MenuBarBg, 0.14f, 0.14f, 0.14f, 1.00f);
+        style.setColor(ScrollbarBg, 0.05f, 0.05f, 0.05f, 0.54f);
+        style.setColor(ScrollbarGrab, 0.34f, 0.34f, 0.34f, 0.54f);
+        style.setColor(ScrollbarGrabHovered, 0.40f, 0.40f, 0.40f, 0.54f);
+        style.setColor(ScrollbarGrabActive, 0.56f, 0.56f, 0.56f, 0.54f);
+        style.setColor(CheckMark, 252.0f/256.0f, 26.0f / 256.0f, 26.0f / 256.0f, 1.00f);
+        style.setColor(SliderGrab, 0.34f, 0.34f, 0.34f, 0.54f);
+        style.setColor(SliderGrabActive, 0.56f, 0.56f, 0.56f, 0.54f);
+        style.setColor(Button, 0.05f, 0.05f, 0.05f, 0.54f);
+        style.setColor(ButtonHovered, 0.19f, 0.19f, 0.19f, 0.54f);
+        style.setColor(ButtonActive, 0.20f, 0.22f, 0.23f, 1.00f);
+        style.setColor(Header, 0.00f, 0.00f, 0.00f, 0.52f);
+        style.setColor(HeaderHovered, 0.00f, 0.00f, 0.00f, 0.36f);
+        style.setColor(HeaderActive, 0.20f, 0.22f, 0.23f, 0.33f);
+        style.setColor(Separator, 0.28f, 0.28f, 0.28f, 0.29f);
+        style.setColor(SeparatorHovered, 0.44f, 0.44f, 0.44f, 0.29f);
+        style.setColor(SeparatorActive, 0.40f, 0.44f, 0.47f, 1.00f);
+        style.setColor(ResizeGrip, 0.28f, 0.28f, 0.28f, 0.29f);
+        style.setColor(ResizeGripHovered, 0.44f, 0.44f, 0.44f, 0.29f);
+        style.setColor(ResizeGripActive, 0.40f, 0.44f, 0.47f, 1.00f);
+        style.setColor(Tab, 0.00f, 0.00f, 0.00f, 0.52f);
+        style.setColor(TabHovered, 0.14f, 0.14f, 0.14f, 1.00f);
+        style.setColor(TabActive, 0.20f, 0.20f, 0.20f, 0.36f);
+        style.setColor(TabUnfocused, 0.00f, 0.00f, 0.00f, 0.52f);
+        style.setColor(TabUnfocusedActive, 0.14f, 0.14f, 0.14f, 1.00f);
+        style.setColor(DockingPreview, 252.0f / 256.0f, 127.0f / 256.0f, 127.0f / 256.0f, 1.00f);
+        style.setColor(DockingEmptyBg, 0.0898f, 0.0898f, 0.0898f, 1.00f);
+        style.setColor(PlotLines, 1.00f, 0.00f, 0.00f, 1.00f);
+        style.setColor(PlotLinesHovered, 1.00f, 0.00f, 0.00f, 1.00f);
+        style.setColor(PlotHistogram, 1.00f, 0.00f, 0.00f, 1.00f);
+        style.setColor(PlotHistogramHovered, 1.00f, 0.00f, 0.00f, 1.00f);
+        style.setColor(TableHeaderBg, 0.00f, 0.00f, 0.00f, 0.52f);
+        style.setColor(TableBorderStrong, 0.00f, 0.00f, 0.00f, 0.52f);
+        style.setColor(TableBorderLight, 0.28f, 0.28f, 0.28f, 0.29f);
+        style.setColor(TableRowBg, 0.00f, 0.00f, 0.00f, 0.00f);
+        style.setColor(TableRowBgAlt, 1.00f, 1.00f, 1.00f, 0.06f);
+        style.setColor(TextSelectedBg, 0.20f, 0.22f, 0.23f, 1.00f);
+        style.setColor(DragDropTarget, 0.33f, 0.67f, 0.86f, 1.00f);
+        style.setColor(NavHighlight, 1.00f, 0.00f, 0.00f, 1.00f);
+        style.setColor(NavWindowingHighlight, 1.00f, 0.00f, 0.00f, 0.70f);
+        style.setColor(NavWindowingDimBg, 1.00f, 0.00f, 0.00f, 0.20f);
+        style.setColor(ModalWindowDimBg, 1.00f, 0.00f, 0.00f, 0.35f);
+
+        style.setWindowPadding(8.00f, 8.00f);
+        style.setFramePadding(5.00f, 2.00f);
+        style.setCellPadding(6.00f, 6.00f);
+        style.setItemSpacing(6.00f, 6.00f);
+        style.setItemInnerSpacing(6.00f, 6.00f);
+        style.setTouchExtraPadding(0.00f, 0.00f);
+        style.setIndentSpacing(25);
+        style.setScrollbarSize(15);
+        style.setGrabMinSize(10);
+        style.setWindowBorderSize(1);
+        style.setChildBorderSize(1);
+        style.setPopupBorderSize(1);
+        style.setFrameBorderSize(1);
+        style.setTabBorderSize(1);
+        style.setWindowRounding(7);
+        style.setChildRounding(4);
+        style.setFrameRounding(3);
+        style.setPopupRounding(4);
+        style.setScrollbarRounding(9);
+        style.setGrabRounding(3);
+        style.setLogSliderDeadzone(4);
+        style.setTabRounding(4);
+    }
+    
     public static void DarkTheme() {
         ImGuiStyle style = ImGui.getStyle();
         style.setColor(Text, 0.95f, 0.96f, 0.98f, 1.00f);
