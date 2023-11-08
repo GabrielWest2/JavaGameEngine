@@ -1,6 +1,7 @@
 package engine;
 
 import editor.ConsoleWindow;
+import editor.GameViewportWindow;
 import engine.audio.AudioManager;
 import engine.audio.AudioSource;
 import engine.display.DisplayManager;
@@ -18,6 +19,7 @@ import engine.shader.Framebuffer;
 import engine.texture.Texture;
 import engine.texture.TextureLoader;
 import engine.util.Time;
+import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import org.lwjgl.opengl.GL11;
 import scripting.LuaScriptingManager;
@@ -75,7 +77,7 @@ public class GameEngine {
 
     private boolean wireframe = false;
 
-    Transform t = new Transform(new Vector3f(0, 0, 0), new Vector3f(0, 0, 0), new Vector3f(1, 1, 1));
+    Transform t = new Transform();
     private void loop() {
         System.out.println("DIR: ");
         System.out.println(System.getProperty("user.dir"));
@@ -171,7 +173,8 @@ public class GameEngine {
             HudManager.renderHud();
             Physics.render();
             frameBuffer.unbind();
-            Renderer.endScene(frameBuffer);
+
+            Renderer.endScene(frameBuffer, camera, loadedScene.getEntities().isEmpty() ? null : loadedScene.getEntities().get(0));
         }
     }
 

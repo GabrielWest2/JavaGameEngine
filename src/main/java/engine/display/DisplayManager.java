@@ -7,6 +7,7 @@ import engine.hud.HudManager;
 import engine.shader.Framebuffer;
 import imgui.ImGui;
 import imgui.ImGuiIO;
+import imgui.extension.imguizmo.ImGuizmo;
 import imgui.flag.ImGuiCond;
 import imgui.flag.ImGuiConfigFlags;
 import imgui.flag.ImGuiStyleVar;
@@ -51,7 +52,7 @@ public class DisplayManager {
         glfwDefaultWindowHints(); // optional, the current window hints are already the default
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE); // the window will stay hidden after creation
         glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE); // the window will be resizable
-        //glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE); // the window will be resizable
+        glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE); // the window will be maximized
         glfwWindowHint(GLFW_SAMPLES, 8);
 
         // Create the window
@@ -93,7 +94,6 @@ public class DisplayManager {
         initImGui();
     }
 
-
     private static void initImGui() {
         ImGui.createContext();
 
@@ -129,7 +129,9 @@ public class DisplayManager {
 
     public static void newImguiFrame() {
         imGuiGlfw.newFrame();
+
         ImGui.newFrame();
+        ImGuizmo.beginFrame();
     }
 
     public static void endImguiFrame() {
@@ -145,14 +147,16 @@ public class DisplayManager {
     }
 
     public static void setCallbacks() {
-        glfwSetWindowSizeCallback(window, (window, w, h) -> {
-            width = w;
-            height = h;
-            Renderer.updateProjection();
-            glViewport(0, 0, width, height);
-            Framebuffer.setFrameBufferSize(width, height);
-            System.out.println("Resized window! " + w + "  " + h);
-        });
+        glfwSetWindowSizeCallback(window, DisplayManager::windowSizeCallback);
+    }
+
+    public static void windowSizeCallback(long window, int w, int h){
+        width = w;
+        height = h;
+        Renderer.updateProjection(w, h);
+        glViewport(0, 0, width, height);
+        Framebuffer.setFrameBufferSize(width, height);
+        System.out.println("Resized window! " + w + "  " + h);
     }
 
     public static int getWidth() {

@@ -87,11 +87,15 @@ public class TerrainChunk {
                 float newY = (float) (y + ((Math.random()-0.5f) * 0.75f));
                 float scale = (float) (Math.random() * 0.1f) + 0.3f;
 
-                Transform t = new Transform(
+                /*
+                Commented out as migrated from euler rotations to quaternion
+               // Transform t = new Transform(
                         new Vector3f(newX * unitSize, getTextureHeight(x, y), newY * unitSize),
                         new Vector3f(0, (float) (Math.random()*360f), 0),
                         new Vector3f(scale, scale, scale));
-                grassPositions.add(t);
+               // grassPositions.add(t);
+               */
+
             }
         }
     }

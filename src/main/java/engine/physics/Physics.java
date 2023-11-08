@@ -5,12 +5,16 @@ import com.bulletphysics.collision.broadphase.DbvtBroadphase;
 import com.bulletphysics.collision.dispatch.CollisionConfiguration;
 import com.bulletphysics.collision.dispatch.CollisionDispatcher;
 import com.bulletphysics.collision.dispatch.DefaultCollisionConfiguration;
+import com.bulletphysics.collision.shapes.BoxShape;
 import com.bulletphysics.collision.shapes.CollisionShape;
+import com.bulletphysics.collision.shapes.StaticPlaneShape;
 import com.bulletphysics.dynamics.DiscreteDynamicsWorld;
 import com.bulletphysics.dynamics.DynamicsWorld;
 import com.bulletphysics.dynamics.RigidBody;
+import com.bulletphysics.dynamics.RigidBodyConstructionInfo;
 import com.bulletphysics.dynamics.constraintsolver.ConstraintSolver;
 import com.bulletphysics.dynamics.constraintsolver.SequentialImpulseConstraintSolver;
+import com.bulletphysics.linearmath.DefaultMotionState;
 import com.bulletphysics.linearmath.Transform;
 import engine.ecs.component.Rigidbody3D;
 import engine.util.Time;
@@ -32,6 +36,19 @@ public class Physics {
         ConstraintSolver solver = new SequentialImpulseConstraintSolver();
         dynamicsWorld = new DiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfiguration);
         dynamicsWorld.setGravity(new Vector3f(0, -10, 0));
+
+
+        Transform groundTransform = new Transform();
+        groundTransform.setIdentity();
+        CollisionShape groundShape;
+
+        // x / z plane at y = -1.
+        groundShape = new BoxShape(new Vector3f(110, 0.1f, 110));
+        DefaultMotionState myMotionState = new DefaultMotionState(groundTransform);
+        RigidBodyConstructionInfo rbInfo = new RigidBodyConstructionInfo(0, myMotionState, groundShape, new Vector3f(0, 0, 0));
+        RigidBody body = new RigidBody(rbInfo);
+        body.setRestitution(0.9f);
+        dynamicsWorld.addRigidBody(body);
     }
 
     public static void addBody(Rigidbody3D rigidbody3D) {
@@ -59,9 +76,9 @@ public class Physics {
             Rigidbody3D comp = bodies.get(rb);
             Vector3f origin = rb.getMotionState().getWorldTransform(new Transform()).origin;
             Quat4f rotation = rb.getMotionState().getWorldTransform(new Transform()).getRotation(new Quat4f());
-            rotation.
+            //rotation.
             comp.entity.getTransform().setPosition(new org.joml.Vector3f(origin.x, origin.y, origin.z));
-            comp.entity.getTransform().setRotation(new org.joml.Vector3f(origin.x, origin.y, origin.z));
+            comp.entity.getTransform().setRotation(new org.joml.Quaternionf(rotation.x, rotation.y, rotation.z, rotation.w));
         }
     }
 

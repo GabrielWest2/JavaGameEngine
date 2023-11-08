@@ -3,15 +3,97 @@ package engine.model;
 import de.javagl.obj.*;
 import engine.GameEngine;
 import engine.texture.Texture;
+import org.lwjgl.assimp.*;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
+import java.nio.IntBuffer;
+import java.util.*;
+
+import static org.lwjgl.assimp.Assimp.aiImportFile;
 
 
 public class OBJLoader {
+    /*
+    Model loading using ASSIMP
+    adapted from
+    https://ahbejarano.gitbook.io/lwjglgamedev/chapter-09
+     */
+    public static Model loadUsingAssimp(String path, Texture texture){
+        AIScene aiScene = aiImportFile("res/" + path, 0);
+
+        assert aiScene != null;
+        return processMesh(AIMesh.create(Objects.requireNonNull(aiScene.mMeshes()).get(0)), texture);
+    }
+    private static int[] processIndices(AIMesh aiMesh) {
+        List<Integer> indices = new ArrayList<>();
+        int numFaces = aiMesh.mNumFaces();
+        AIFace.Buffer aiFaces = aiMesh.mFaces();
+        for (int i = 0; i < numFaces; i++) {
+            AIFace aiFace = aiFaces.get(i);
+            IntBuffer buffer = aiFace.mIndices();
+            while (buffer.remaining() > 0) {
+                indices.add(buffer.get());
+            }
+        }
+        return indices.stream().mapToInt(Integer::intValue).toArray();
+    }
+
+    private static float[] processTextCoords(AIMesh aiMesh) {
+        AIVector3D.Buffer buffer = aiMesh.mTextureCoords(0);
+        if (buffer == null) {
+            return new float[]{};
+        }
+        float[] data = new float[buffer.remaining() * 2];
+        int pos = 0;
+        while (buffer.remaining() > 0) {
+            AIVector3D textCoord = buffer.get();
+            data[pos++] = textCoord.x();
+            data[pos++] = 1 - textCoord.y();
+        }
+        return data;
+    }
+
+    private static float[] processVertices(AIMesh aiMesh) {
+        AIVector3D.Buffer buffer = aiMesh.mVertices();
+        float[] data = new float[buffer.remaining() * 3];
+        int pos = 0;
+        while (buffer.remaining() > 0) {
+            AIVector3D textCoord = buffer.get();
+            data[pos++] = textCoord.x();
+            data[pos++] = textCoord.y();
+            data[pos++] = textCoord.z();
+        }
+        return data;
+    }
+
+    private static float[] processNormals(AIMesh aiMesh) {
+        AIVector3D.Buffer buffer = aiMesh.mNormals();
+        float[] data = new float[buffer.remaining() * 3];
+        int pos = 0;
+        while (buffer.remaining() > 0) {
+            AIVector3D textCoord = buffer.get();
+            data[pos++] = textCoord.x();
+            data[pos++] = textCoord.y();
+            data[pos++] = textCoord.z();
+        }
+        return data;
+    }
+    private static Model processMesh(AIMesh aiMesh, Texture texture) {
+        float[] vertices = processVertices(aiMesh);
+        float[] textCoords = processTextCoords(aiMesh);
+        int[] indices = processIndices(aiMesh);
+        float[] normals = processNormals(aiMesh);
+
+        // Texture coordinates may not have been populated. We need at least the empty slots
+        if (textCoords.length == 0) {
+            int numElements = (vertices.length / 3) * 2;
+            textCoords = new float[numElements];
+        }
+
+        return ModelCreator.loadToTexturedVAO(vertices, indices, textCoords, normals, texture);
+    }
 
 
     public static Model loadTexturedOBJ(String path, Texture texture) {

@@ -218,14 +218,14 @@ public class ModelCreator {
     }
 
 
-    private static IntBuffer storeDataInIntBuffer(int[] data) {
+    public static IntBuffer storeDataInIntBuffer(int[] data) {
         IntBuffer buffer = BufferUtils.createIntBuffer(data.length);
         buffer.put(data);
         buffer.flip();
         return buffer;
     }
 
-    private static FloatBuffer storeDataInFloatBuffer(float[] data) {
+    public static FloatBuffer storeDataInFloatBuffer(float[] data) {
         FloatBuffer buffer = BufferUtils.createFloatBuffer(data.length);
         buffer.put(data);
         buffer.flip();

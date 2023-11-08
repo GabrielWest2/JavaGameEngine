@@ -35,7 +35,7 @@ public class Rigidbody3D extends Component {
         CollisionShape shape = new BoxShape(new javax.vecmath.Vector3f(1, 1, 1));
         shape.calculateLocalInertia(mass, new javax.vecmath.Vector3f(0, 0, 0));
 
-        RigidBodyConstructionInfo rigidBodyConstructionInfo = new RigidBodyConstructionInfo(mass, state, shape, new Vector3f(0, 0, 0));
+        RigidBodyConstructionInfo rigidBodyConstructionInfo = new RigidBodyConstructionInfo(mass, state, shape, new Vector3f(1, 1, 1));
         rigidBodyConstructionInfo.restitution = restitution;
         rigidBodyConstructionInfo.angularDamping = angularDamping;
 
@@ -53,6 +53,11 @@ public class Rigidbody3D extends Component {
     @Override
     public void GUI() {
         super.GUI();
+        if(ImGui.button("test")){
+            rb.setLinearVelocity(new Vector3f(5, 5, 5));
+            rb.setAngularVelocity(new Vector3f(0, 10, 2));
+        }
+
         ImGui.text("Is active: " + (rb.isActive() ? "true" : "false"));
         if(!rb.isActive() && ImGui.button("Activate")){
             rb.activate();
@@ -69,11 +74,6 @@ public class Rigidbody3D extends Component {
 
     public void setPosition(Vector3f position, Quat4f rotation){
         Transform transform = new Transform(new Matrix4f(rotation, position, 1.0f));
-        //transform.setIdentity();
-
-        ////transform.origin = (position);
-        //transform.(position);
-        //transform.setRotation(rotation);
 
         rb.setWorldTransform(transform);
         rb.getMotionState().setWorldTransform(transform);

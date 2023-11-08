@@ -30,7 +30,7 @@ public class Entity {
     }
 
     public Entity() {
-        this.transform = new Transform(new Vector3f(0, 0, 0), new Vector3f(0, 0, 0));
+        this.transform = new Transform(new Vector3f(0, 0, 0));
         components = new ArrayList<>();
         addComponent(transform);
 
@@ -38,7 +38,7 @@ public class Entity {
 
     public Entity(String name) {
         this.name = name;
-        this.transform = new Transform(new Vector3f(0, 0, 0), new Vector3f(0, 0, 0));
+        this.transform = new Transform(new Vector3f(0, 0, 0));
         components = new ArrayList<>();
         addComponent(transform);
 

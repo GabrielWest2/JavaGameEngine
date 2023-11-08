@@ -24,9 +24,21 @@ public class MatrixBuilder {
                 scale(scale.x, scale.y, scale.z);
         return worldMatrix;
     }
+    public static Matrix4f createTransformationMatrix(Vector3f offset, Quaternionf rotation, Vector3f scale) {
+        Matrix4f worldMatrix = new Matrix4f();
+        try {
+            worldMatrix.identity()
+                    .translate(offset)
+                    .rotate(((Quaternionf)rotation.clone()).normalize())
+                    .scale(scale.x, scale.y, scale.z);
+        } catch (CloneNotSupportedException e) {
+            throw new RuntimeException(e);
+        }
+        return worldMatrix;
+    }
 
-    public static Matrix4f createProjectionMatrix() {
-        float aspectRatio = (float) DisplayManager.getWidth() / (float) DisplayManager.getHeight();
+    public static Matrix4f createProjectionMatrix(int width, int height) {
+        float aspectRatio = (float) width / (float) height;
         float y_scale = (float) ((1f / Math.tan(Math.toRadians(FOV / 2f))) * aspectRatio);
         float x_scale = y_scale / aspectRatio;
         float frustum_length = FAR_PLANE - NEAR_PLANE;
@@ -41,18 +53,18 @@ public class MatrixBuilder {
         return matrix;
     }
 
-    public static Vector3f calculateMouseRay(){
+    public static Vector3f calculateMouseRay(int width, int height){
         float mouseX = Mouse.getX();
         float mouseY = Mouse.getY();
         Vector2f normalizedCoords = getNormalizedDeviceCoords(mouseX, mouseY);
         Vector4f clipCoords = new Vector4f(normalizedCoords.x, normalizedCoords.y, -1f, 1f);
-        Vector4f eyeCoords = toEyeCoords(clipCoords);
+        Vector4f eyeCoords = toEyeCoords(clipCoords, width, height);
         Vector3f worldRay = toWorldCoords(eyeCoords);
         return worldRay;
     }
 
-    public static Vector4f toEyeCoords(Vector4f clipCoords){
-        Matrix4f invertedProjection = createProjectionMatrix().invert();
+    public static Vector4f toEyeCoords(Vector4f clipCoords, int width, int height){
+        Matrix4f invertedProjection = createProjectionMatrix(width, height).invert();
         Vector4f eyeCoords = invertedProjection.transform(clipCoords);
         return new Vector4f(eyeCoords.x, eyeCoords.y, -1f, 0f);
     }

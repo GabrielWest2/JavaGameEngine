@@ -36,8 +36,8 @@ public class Renderer {
 
 
 
-    public static void updateProjection() {
-        Matrix4f mat = MatrixBuilder.createProjectionMatrix();
+    public static void updateProjection(int width, int height) {
+        Matrix4f mat = MatrixBuilder.createProjectionMatrix(width, height);
         defaultShader.start();
         defaultShader.loadProjectionMatrix(mat);
         defaultShader.stop();
@@ -79,7 +79,7 @@ public class Renderer {
         gridShader = new GridShader();
         waterShader = new WaterShader();
         vegetationShader = new GrassShader();
-        updateProjection();
+        updateProjection(DisplayManager.getWidth(), DisplayManager.getHeight());
     }
 
     public static void renderTerrainDetails(List<Transform> transforms, VegetationModel model){
@@ -392,14 +392,14 @@ public class Renderer {
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     }
 
-    public static void endScene(Framebuffer fb) {
+    public static void endScene(Framebuffer fb, Camera camera, Entity selected) {
 
         PostProcessing.doPostProcessing(fb.getColorTexture(), fb.getDepthTexture());
 
         ImGui.showDemoWindow();
 
         WindowMenubar.render();
-        GameViewportWindow.render(PostProcessing.finalBuffer);
+        GameViewportWindow.render(PostProcessing.finalBuffer, camera, selected);
         ConsoleWindow.render();
         DebugWindow.render();
         ExplorerWindow.render();

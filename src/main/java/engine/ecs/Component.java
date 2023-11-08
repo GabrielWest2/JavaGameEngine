@@ -1,11 +1,13 @@
 package engine.ecs;
 
 import editor.CustomHudName;
+import editor.NoHudRender;
 import editor.Range;
 import engine.ecs.Entity;
 import engine.util.Color;
 import imgui.ImGui;
 import imgui.type.ImString;
+import org.joml.Quaternionf;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
@@ -66,6 +68,10 @@ public class Component {
 
                 Range range = field.getAnnotation(Range.class);
                 CustomHudName hudName = field.getAnnotation(CustomHudName.class);
+                NoHudRender noRender = field.getAnnotation(NoHudRender.class);
+                if(noRender != null){
+                    continue;
+                }
                 if(hudName != null)
                     name = hudName.displayName();
 
@@ -117,7 +123,19 @@ public class Component {
                         val.set(imVec[0], imVec[1], imVec[2]);
                         onVariableChanged();
                     }
-                } else if (type == Color.class) {
+
+                } else if (type == Quaternionf.class) {
+                    Quaternionf val = (Quaternionf) value;
+                    float[] imVec = {val.x, val.y, val.z, val.w};
+                    if (ImGui.dragFloat4(name, imVec)) {
+                        val.set(imVec[0], imVec[1], imVec[2], imVec[3]);
+                        onVariableChanged();
+                    }
+                    ImGui.sameLine();
+                    if(ImGui.button("N")){
+                        val.normalize();
+                    }
+                }else if (type == Color.class) {
                     Color val = (Color) value;
                     float[] imVec = {val.r, val.g, val.b};
                     if (ImGui.colorEdit3(name, imVec)) {

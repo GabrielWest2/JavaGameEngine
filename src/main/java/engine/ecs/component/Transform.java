@@ -11,17 +11,17 @@ public class Transform extends Component {
     @CustomHudName(displayName = "Position")
     private Vector3f position = new Vector3f(0, 0, 0);
     @CustomHudName(displayName = "Rotation")
-    private Vector3f rotation = new Vector3f(0, 0, 0);
+    private Quaternionf rotation = new Quaternionf();
     @CustomHudName(displayName = "Scale")
     private Vector3f scale = new Vector3f(1, 1, 1);
 
-    public Transform(Vector3f position, Vector3f rotation, Vector3f scale) {
+    public Transform(Vector3f position, Quaternionf rotation, Vector3f scale) {
         this.position = position;
         this.rotation = rotation;
         this.scale = scale;
     }
 
-    public Transform(Vector3f position, Vector3f rotation) {
+    public Transform(Vector3f position, Quaternionf rotation) {
         this.position = position;
         this.rotation = rotation;
     }
@@ -38,9 +38,6 @@ public class Transform extends Component {
         this.position.add(vec);
     }
 
-    public void rotateBy(Vector3f vec) {
-        this.rotation.add(vec);
-    }
 
     public void scaleBy(Vector3f vec) {
         this.scale.add(vec);
@@ -54,11 +51,12 @@ public class Transform extends Component {
         this.position = position;
     }
 
-    public Vector3f getRotation() {
+    public Quaternionf getRotation() {
         return rotation;
     }
 
-    public void setRotation(Vector3f rotation) {
+    public void setRotation(Quaternionf rotation) {
+        System.out.println("Set rot");
         this.rotation = rotation;
     }
 
@@ -79,9 +77,7 @@ public class Transform extends Component {
     public void onVariableChanged(){
         Rigidbody3D rb = entity.getComponent(Rigidbody3D.class);
         if(rb != null){
-            Quaternionf f = new Quaternionf();
-            f.rotateXYZ(rotation.x, rotation.y, rotation.z);
-            rb.setPosition(new javax.vecmath.Vector3f(position.x, position.y, position.z), new Quat4f(f.x, f.y, f.z, f.w));
+            rb.setPosition(new javax.vecmath.Vector3f(position.x, position.y, position.z), new Quat4f(rotation.x, rotation.y, rotation.z, rotation.w));
         }
     }
 }
