@@ -20,7 +20,7 @@ public class Component {
      * Component Class
      */
 
-    public Entity entity;
+    public transient Entity entity;
 
     public void onAdded(Entity parent) {
         this.entity = parent;
@@ -32,6 +32,7 @@ public class Component {
                 continue;
 
             hasFields = true;
+            return;
         }
     }
 
@@ -42,7 +43,7 @@ public class Component {
     public void onVariableChanged() {
     }
 
-    public boolean hasFields = false;
+    public transient boolean hasFields = false;
 
     public boolean hasFields() {
         return hasFields;

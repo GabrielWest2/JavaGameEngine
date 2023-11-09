@@ -10,9 +10,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Entity {
-    private final Transform transform;
-    private final List<Component> components;
     private String name = "New Entity";
+    private transient final Transform transform;
+    private final List<Component> components;
+
+
 
     public Entity(Transform transform, Model model) {
         this.transform = transform;

@@ -2,6 +2,7 @@ package editor;
 
 import engine.GameEngine;
 import engine.ecs.Component;
+import engine.ecs.Entity;
 import engine.input.Keyboard;
 import engine.input.Mouse;
 import engine.texture.Texture;
@@ -10,6 +11,7 @@ import imgui.ImGui;
 import imgui.flag.*;
 import imgui.type.ImBoolean;
 import imgui.type.ImString;
+import org.luaj.vm2.ast.Exp;
 import org.lwjgl.glfw.GLFW;
 import org.reflections.Reflections;
 
@@ -70,6 +72,7 @@ public class InspectorWindow {
             }
             ImGui.popStyleColor();
             ImGui.popStyleColor();
+
 
             for (Component component : ExplorerWindow.selectedEntity.getComponents()) {
                 if(component.canBeRemoved()){

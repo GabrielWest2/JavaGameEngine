@@ -1,7 +1,9 @@
 package engine.ecs.component;
 
+import com.google.gson.TypeAdapter;
 import editor.CustomHudName;
 import engine.ecs.Component;
+import engine.ecs.Entity;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
@@ -47,8 +49,9 @@ public class Transform extends Component {
         return position;
     }
 
-    public void setPosition(Vector3f position) {
+    public Entity setPosition(Vector3f position) {
         this.position = position;
+        return this.entity;
     }
 
     public Quaternionf getRotation() {

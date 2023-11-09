@@ -14,6 +14,13 @@ public class WindowMenubar {
 
     public static void render() {
         if (ImGui.beginMainMenuBar()) {
+            if (ImGui.beginMenu("File")) {
+                if (ImGui.menuItem("Save")) {
+                    GameEngine.getInstance().loadedScene.save();
+                }
+
+                ImGui.endMenu();
+            }
             if (ImGui.beginMenu("Themes")) {
                 if(ImGui.menuItem("Dark Theme")){
                     ImGuiThemer.NewDarkTheme();
@@ -37,8 +44,8 @@ public class WindowMenubar {
                 if (ImGui.menuItem("Add Empty Component")) {
                     GameEngine.getInstance().loadedScene.addEntity(new Entity());
                 }
-                if (ImGui.menuItem("Add OBJ Component")) {
-                    GameEngine.getInstance().loadedScene.addEntity(new Entity().addComponent(new ObjRenderer().setPaths("crate.obj", "crate.png")));
+                if (ImGui.menuItem("Add Grass Block")) {
+                    GameEngine.getInstance().loadedScene.addEntity(new Entity().addComponent(new ObjRenderer().setPaths("models/grass.obj", "models/ColorPaletteBLUE.png")));
                 }
 
                 ImGui.endMenu();

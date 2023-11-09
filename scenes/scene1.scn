@@ -1,0 +1,56 @@
+{
+  "entities": [
+    {
+      "components": [
+        {
+          "position": {
+            "x": 6.0,
+            "y": 22.745,
+            "z": 15.0
+          },
+          "rotation": {
+            "x": 0.3794674,
+            "y": 0.049520347,
+            "z": 0.0038022418,
+            "w": 0.9238711
+          },
+          "scale": {
+            "x": 35.0,
+            "y": 11.0,
+            "z": 5.0
+          }
+        },
+        {
+          "cullBack": true,
+          "shineDamper": 20.0,
+          "reflectivity": 0.5,
+          "texturePath": "models/ColorPaletteBLUE.png",
+          "filePath": "models/grass.obj"
+        },
+        {
+          "halfExtents": {
+            "x": 2.5,
+            "y": 1.5,
+            "z": 2.5
+          },
+          "inertia": {
+            "x": 0.5,
+            "y": 0.5,
+            "z": 0.5
+          },
+          "canDeactivate": true,
+          "rotX": true,
+          "rotY": false,
+          "rotZ": true
+        },
+        {
+          "mass": 0.0,
+          "restitution": 0.5,
+          "angularDamping": 0.95
+        }
+      ],
+      "name": "New Entity"
+    }
+  ],
+  "name": "testScene"
+}

@@ -1,5 +1,7 @@
 package engine;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import editor.ConsoleWindow;
 import editor.ExplorerWindow;
 import editor.GameViewportWindow;
@@ -8,6 +10,7 @@ import engine.audio.AudioSource;
 import engine.display.DisplayManager;
 import engine.ecs.Entity;
 import engine.ecs.Light;
+import engine.ecs.component.ObjRenderer;
 import engine.ecs.component.Transform;
 import engine.hud.HudManager;
 import engine.input.Keyboard;
@@ -16,6 +19,8 @@ import engine.model.*;
 import engine.physics.Physics;
 import engine.postprocessing.PostProcessing;
 import engine.scene.Scene;
+import engine.serialization.EntityTypeAdapter;
+import engine.serialization.TransformTypeAdapter;
 import engine.shader.Framebuffer;
 import engine.texture.Texture;
 import engine.texture.TextureLoader;
@@ -44,6 +49,8 @@ public class GameEngine {
     public static Framebuffer frameBuffer;
     public static float waterMovement = 0f;
     public static float grassMovement = 0f;
+
+    public static Gson gson;
     public static VegetationModel grassModel;
     public Camera camera;
     public Light light;
@@ -54,6 +61,12 @@ public class GameEngine {
     public float clipDirection = 1;
 
     public static void main(String[] args) {
+        GsonBuilder gsonb = new GsonBuilder();
+        gsonb.setPrettyPrinting();
+        //gsonb.registerTypeAdapter(Entity.class, new EntityTypeAdapter());
+        //gsonb.registerTypeAdapter(Transform.class, new TransformTypeAdapter());
+        gson = gsonb.create();
+
         instance = new GameEngine();
         instance.run();
     }
@@ -82,13 +95,14 @@ public class GameEngine {
     private void loop() {
         System.out.println("DIR: ");
         System.out.println(System.getProperty("user.dir"));
-        grass = TextureLoader.loadTexture("Terrain/Texture_Grass_Diffuse.png");
-        waterDUDV = TextureLoader.loadTexture("waterDUDV.png");
-        waterNormalMap = TextureLoader.loadTexture("waterNormalMap.png");
-        //cube = OBJLoader.loadTexturedOBJ("stall.obj", TextureLoader.loadTexture("stallTexture.png"));
+        grass = TextureLoader.loadTexture("terrain/Texture_Grass_Diffuse.png");
+        waterDUDV = TextureLoader.loadTexture("water/waterDUDV.png");
+        waterNormalMap = TextureLoader.loadTexture("water/waterNormalMap.png");
         loadedScene = new Scene("testScene");
         skybox = ModelCreator.createSkyboxModel(new String[]{"right", "left", "top", "bottom", "back", "front"});
         Renderer.init();
+
+
         PostProcessing.init();
         ConsoleWindow.init();
         Physics.init();
@@ -129,6 +143,13 @@ public class GameEngine {
         refractionBuffer = new Framebuffer(DisplayManager.getWidth(), DisplayManager.getHeight(), Framebuffer.DEPTH_TEXTURE);
         frameBuffer = new Framebuffer(DisplayManager.getWidth(), DisplayManager.getHeight(), Framebuffer.DEPTH_TEXTURE);
 
+        /*
+        for(int x = 0; x < 20; x++){
+            for(int z = 0; z < 15; z++){
+                loadedScene.addEntity(new Entity("Tile" + x + ":"+z).getTransform().setPosition(new Vector3f(x*2, 0, z*2)).addComponent(new ObjRenderer().setPaths( ((x + z) % 2 == 0) ? "models/grass.obj" : "models/grass2.obj", "models/ColorPaletteBLUE.png")));
+            }
+        }
+        */
 
 
         while (!glfwWindowShouldClose(DisplayManager.window)) {
@@ -152,6 +173,7 @@ public class GameEngine {
             if(Mouse.isMousePressed(0))
                 LuaScriptingManager.LeftClick();
 
+            /*
             refractionBuffer.bind();
             clipDirection = -1;
             clipHeight = WaterManger.waterHeight+0.01f;
@@ -165,12 +187,12 @@ public class GameEngine {
             renderScene();
             camera.waterInvert(clipHeight);
             reflectionBuffer.unbind();
-
+            */
             frameBuffer.bind();
             clipDirection = -1;
             clipHeight = 10000;
             renderScene();
-            WaterManger.render();
+            //WaterManger.render();
             HudManager.renderHud();
             Physics.render();
             frameBuffer.unbind();
@@ -187,7 +209,7 @@ public class GameEngine {
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_CLIP_PLANE0);
         GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, wireframe ? GL11.GL_LINE : GL_FILL);
-        TerrainManager.renderChunks();
+        //TerrainManager.renderChunks();
         GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL_FILL);
         for (Entity entity : loadedScene.getEntities()) {
             Renderer.render(entity);

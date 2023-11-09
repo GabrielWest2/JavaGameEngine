@@ -1,7 +1,12 @@
 package engine.scene;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import engine.GameEngine;
 import engine.ecs.Entity;
+import engine.serialization.EntityTypeAdapter;
 
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,5 +61,19 @@ public class Scene {
 
     public List<Entity> getEntities() {
         return entities;
+    }
+
+    public void save() {
+
+        String json = GameEngine.gson.toJson(this);
+        try {
+            try (Writer writer = new BufferedWriter(new OutputStreamWriter(
+                    new FileOutputStream("C:/Users/gabed/OneDrive/Documents/GitHub/JavaGameEngine/scenes/scene1.scn"), "utf-8"))) {
+                writer.write(json);
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        //User user = gson.fromJson(json, User.class);
     }
 }
