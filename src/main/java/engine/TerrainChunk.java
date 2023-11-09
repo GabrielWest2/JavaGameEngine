@@ -116,7 +116,6 @@ public class TerrainChunk {
 
             return ((height)/4294967296f)*totalHeight-24;
         }catch(Exception e){
-           // System.out.println(x + "   " + y);
            // e.printStackTrace();
         }
 

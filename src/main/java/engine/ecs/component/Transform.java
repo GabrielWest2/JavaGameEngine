@@ -56,7 +56,6 @@ public class Transform extends Component {
     }
 
     public void setRotation(Quaternionf rotation) {
-        System.out.println("Set rot");
         this.rotation = rotation;
     }
 

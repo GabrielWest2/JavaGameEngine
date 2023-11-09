@@ -64,9 +64,10 @@ public class Physics {
     public static void render() {
         for (RigidBody rb : bodies.keySet()){
             CollisionShape sh = rb.getCollisionShape();
-            if(sh != null){
-                System.out.println(sh.getName());
-            }
+            //if(sh != null){
+            //    System.out.println(sh.getName());
+            //}
+            //TODO Render wireframe collider gizmo
         }
     }
 

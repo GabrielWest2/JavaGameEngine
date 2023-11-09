@@ -5,6 +5,7 @@ import engine.Renderer;
 import engine.display.DisplayManager;
 import engine.ecs.Entity;
 import engine.ecs.component.Transform;
+import engine.input.Keyboard;
 import engine.input.Mouse;
 import engine.shader.Framebuffer;
 import engine.util.MatrixBuilder;
@@ -17,8 +18,12 @@ import imgui.flag.ImGuiStyleVar;
 import imgui.flag.ImGuiWindowFlags;
 import org.joml.Math;
 import org.joml.Matrix4f;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 
 import java.nio.FloatBuffer;
+
+import static org.lwjgl.glfw.GLFW.*;
 
 public class GameViewportWindow {
     public static boolean focused = false;
@@ -54,7 +59,7 @@ public class GameViewportWindow {
     };
 
 
-
+    static int currentGizmoOperation = Operation.TRANSLATE;
 
     public static void render(Framebuffer buff, Camera camera, Entity selected) {
         //Remove the border between the edge of the window and the image
@@ -83,7 +88,15 @@ public class GameViewportWindow {
 
 
         int currentMode = Mode.LOCAL;
-        int currentGizmoOperation = Operation.TRANSLATE;
+
+        if(Keyboard.isKeyPressedThisFrame(GLFW_KEY_T)){
+            currentGizmoOperation = Operation.TRANSLATE;
+        }else if(Keyboard.isKeyPressedThisFrame(GLFW_KEY_G)){
+            currentGizmoOperation = Operation.ROTATE;
+        }else if(Keyboard.isKeyPressedThisFrame(GLFW_KEY_H)){
+            currentGizmoOperation = Operation.SCALE;
+        }
+
 
         ImGuizmo.setOrthographic(false);
         ImGuizmo.setEnabled(true);
@@ -102,9 +115,20 @@ public class GameViewportWindow {
             ImGuizmo.manipulate(view, proj, model, currentGizmoOperation, currentMode);
 
             if(ImGuizmo.isUsing()){
-                Matrix4f newModel = new Matrix4f(FloatBuffer.wrap(model));
+                float[] pos = new float[3];
+                float[] rot = new float[3];
+                float[] sca = new float[3];
+                ImGuizmo.decomposeMatrixToComponents(model, pos, rot, sca);
+                System.out.println(Math.toDegrees(rot[0]) + "   " + Math.toDegrees(rot[1]) + "   " + Math.toDegrees(rot[2]));
+                Quaternionf quat = new Quaternionf();
 
+                quat.rotateZ(Math.toRadians(rot[2]));
+                quat.rotateY(Math.toRadians(rot[1]));
+                quat.rotateX(Math.toRadians(rot[0]));
 
+                selected.getTransform().setPosition(new Vector3f(pos[0], pos[1], pos[2]));
+                selected.getTransform().setRotation(quat);
+                selected.getTransform().setScale(new Vector3f(sca[0], sca[1], sca[2]));
             }
         }
         ImGui.end();

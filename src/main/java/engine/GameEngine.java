@@ -1,6 +1,7 @@
 package engine;
 
 import editor.ConsoleWindow;
+import editor.ExplorerWindow;
 import editor.GameViewportWindow;
 import engine.audio.AudioManager;
 import engine.audio.AudioSource;
@@ -174,7 +175,7 @@ public class GameEngine {
             Physics.render();
             frameBuffer.unbind();
 
-            Renderer.endScene(frameBuffer, camera, loadedScene.getEntities().isEmpty() ? null : loadedScene.getEntities().get(0));
+            Renderer.endScene(frameBuffer, camera, ExplorerWindow.selectedEntity);
         }
     }
 
