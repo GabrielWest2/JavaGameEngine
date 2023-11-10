@@ -10837,15 +10837,15 @@
       ]
     },
     {
-      "name": "New Entity",
+      "name": "Banner1",
       "components": [
         {
           "subc": "engine.ecs.component.Transform",
           "data": {
             "position": {
-              "x": 32.901608,
+              "x": 32.903175,
               "y": 6.5453806,
-              "z": 1.7249229
+              "z": 1.8771329
             },
             "rotation": {
               "x": 0.0,
@@ -10854,9 +10854,81 @@
               "w": 0.70345306
             },
             "scale": {
-              "x": 0.99995434,
+              "x": 0.99995077,
               "y": 1.0000149,
-              "z": 0.99995434
+              "z": 0.99995077
+            }
+          }
+        },
+        {
+          "subc": "engine.ecs.component.ObjRenderer",
+          "data": {
+            "cullBack": true,
+            "shineDamper": 20.0,
+            "reflectivity": 0.5,
+            "texturePath": "models/ColorPaletteBLUE.png",
+            "filePath": "models/banner/banner.obj"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Banner2",
+      "components": [
+        {
+          "subc": "engine.ecs.component.Transform",
+          "data": {
+            "position": {
+              "x": 32.903,
+              "y": 6.545,
+              "z": 6.216277
+            },
+            "rotation": {
+              "x": 0.0,
+              "y": 0.70710677,
+              "z": 0.0,
+              "w": 0.70710677
+            },
+            "scale": {
+              "x": 1.0000384,
+              "y": 1.0000384,
+              "z": 1.0000384
+            }
+          }
+        },
+        {
+          "subc": "engine.ecs.component.ObjRenderer",
+          "data": {
+            "cullBack": true,
+            "shineDamper": 20.0,
+            "reflectivity": 0.5,
+            "texturePath": "models/banner/ColorPaletteRed.png",
+            "filePath": "models/banner/banner.obj"
+          }
+        }
+      ]
+    },
+    {
+      "name": "New Entity",
+      "components": [
+        {
+          "subc": "engine.ecs.component.Transform",
+          "data": {
+            "position": {
+              "x": 32.903,
+              "y": 6.999351,
+              "z": 4.110012
+            },
+            "rotation": {
+              "x": 0.0,
+              "y": 0.70710677,
+              "z": 0.0,
+              "w": 0.70710677
+            },
+            "scale": {
+              "x": 1.2500331,
+              "y": 1.2500331,
+              "z": 1.0000331
             }
           }
         },

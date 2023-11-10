@@ -41,6 +41,7 @@ public class GameEngine {
     public static Framebuffer reflectionBuffer;
     public static Framebuffer refractionBuffer;
     public static Framebuffer frameBuffer;
+    public static Framebuffer mousePickingBuffer;
     public static float waterMovement = 0f;
     public static float grassMovement = 0f;
 
@@ -137,16 +138,9 @@ public class GameEngine {
         reflectionBuffer = new Framebuffer(DisplayManager.getWidth(), DisplayManager.getHeight(), Framebuffer.DEPTH_TEXTURE);
         refractionBuffer = new Framebuffer(DisplayManager.getWidth(), DisplayManager.getHeight(), Framebuffer.DEPTH_TEXTURE);
         frameBuffer = new Framebuffer(DisplayManager.getWidth(), DisplayManager.getHeight(), Framebuffer.DEPTH_TEXTURE);
+        mousePickingBuffer = new Framebuffer(DisplayManager.getWidth(), DisplayManager.getHeight(), Framebuffer.DEPTH_TEXTURE);
 
-        /*
-        for(int x = 0; x < 20; x++){
-            for(int z = 0; z < 15; z++){
-                loadedScene.addEntity(new Entity("Tile" + x + ":"+z).getTransform().setPosition(new Vector3f(x*2, 0, z*2)).addComponent(new ObjRenderer().setPaths( ((x + z) % 2 == 0) ? "models/grass.obj" : "models/grass2.obj", "models/ColorPaletteBLUE.png")));
-            }
-        }
-        */
-
-
+       
         while (!glfwWindowShouldClose(DisplayManager.window)) {
             Renderer.beginFrame();
             Time.updateTime();
@@ -167,6 +161,10 @@ public class GameEngine {
             }
             if(Mouse.isMousePressed(0))
                 LuaScriptingManager.LeftClick();
+
+            mousePickingBuffer.bind();
+            renderToMousePickingBuffer();
+            mousePickingBuffer.unbind();
 
             /*
             refractionBuffer.bind();
@@ -192,7 +190,7 @@ public class GameEngine {
             Physics.render();
             frameBuffer.unbind();
 
-            Renderer.endScene(frameBuffer, camera, ExplorerWindow.selectedEntity);
+            Renderer.endScene(frameBuffer, mousePickingBuffer, camera, ExplorerWindow.selectedEntity);
         }
     }
 
@@ -210,5 +208,19 @@ public class GameEngine {
             Renderer.render(entity);
         }
         //Renderer.renderTextured(Primitives.plane, t);
+    }
+
+    private void renderToMousePickingBuffer(){
+        glClearColor(0, 0, 0, 1);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
+        glDisable(GL_CLIP_PLANE0);
+        glEnable(GL_DEPTH_TEST);
+        GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL_FILL);
+        int i = 0;
+        for (Entity entity : loadedScene.getEntities()) {
+            Renderer.renderPicking(entity, i+1);
+            i++;
+        }
+        glEnable(GL_CLIP_PLANE0);
     }
 }

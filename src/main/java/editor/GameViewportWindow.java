@@ -1,6 +1,7 @@
 package editor;
 
 import engine.Camera;
+import engine.GameEngine;
 import engine.Renderer;
 import engine.ecs.Entity;
 import engine.ecs.component.Transform;
@@ -17,14 +18,47 @@ import imgui.flag.ImGuiStyleVar;
 import imgui.flag.ImGuiWindowFlags;
 import org.joml.Math;
 import org.joml.Quaternionf;
+import org.joml.Vector2f;
 import org.joml.Vector3f;
 
+import static com.jogamp.opengl.GL.GL_FLOAT;
+import static com.jogamp.opengl.GL.GL_UNSIGNED_BYTE;
 import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.opengl.GL11.glReadBuffer;
+import static org.lwjgl.opengl.GL11.glReadPixels;
+import static org.lwjgl.opengles.GLES20.GL_COLOR_ATTACHMENT0;
+import static org.lwjgl.opengles.GLES20.GL_RGBA;
 
 public class GameViewportWindow {
     public static boolean focused = false;
     private static ImVec2 previousWindowSize = new ImVec2(-1, -1);
     private static int currentGizmoOperation = Operation.TRANSLATE;
+
+
+    public static void sampleFb(Framebuffer buffer, int xCoord, int yCoord){
+        buffer.bind();
+        float pixels[] = new float[4];
+        glReadBuffer(GL_COLOR_ATTACHMENT0);
+        glReadPixels(xCoord, yCoord, 1, 1, GL_RGBA, GL_FLOAT, pixels);
+        float red = pixels[0];
+        float green = pixels[1];
+        float blue = pixels[2];
+        if(!Float.isNaN(red)){
+            int newR = java.lang.Math.round(red * 0xff);
+            int newG = java.lang.Math.round(green * 0xff) << 8;
+            int newB = java.lang.Math.round(blue * 0xff) << 16;
+            int index = newR + newB + newG - 1;
+            if(Mouse.isMousePressed(0)){
+                if(index < GameEngine.getInstance().loadedScene.getEntities().size() && index >= 0) {
+                    ExplorerWindow.selectedEntity = GameEngine.getInstance().loadedScene.getEntities().get(index);
+                }else {
+                    ExplorerWindow.selectedEntity = null;
+                }
+            }
+            System.out.println(index);
+        }
+        buffer.unbind();
+    }
 
     /**
      * Game viewport render function
@@ -32,7 +66,8 @@ public class GameViewportWindow {
      * @param camera the {@code Camera} to be used to render transformation gizmos
      * @param selected the currently selected {@code Entity}
      */
-    public static void render(Framebuffer buff, Camera camera, Entity selected) {
+    public static void render(Framebuffer buff, Framebuffer pickingBuffer, Camera camera, Entity selected) {
+
         //Remove the border between the edge of the window and the image
         ImGui.pushStyleVar(ImGuiStyleVar.WindowPadding, 0, 0);
         ImGui.begin("Game Viewport", ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse);
@@ -63,34 +98,47 @@ public class GameViewportWindow {
         }
 
 
+        Vector2f mousePos = Mouse.getPos();
+        boolean mouseOverViewport = false;
+        int scaledCoordX = (int) ((int) (mousePos.x - ImGui.getWindowPosX()) / windowSize.x * pickingBuffer.getWidth());
+        int scaledCoordY = pickingBuffer.getHeight() - (int) ((int) (mousePos.y - ImGui.getWindowPosY()) / windowSize.y * pickingBuffer.getHeight());
+        if(mousePos.x > ImGui.getWindowPosX() && mousePos.x < ImGui.getWindowPosX() + windowSize.x && mousePos.y > ImGui.getWindowPosY() && mousePos.y < ImGui.getWindowPosY() + windowSize.y){
+            mouseOverViewport = true;
+        }
+
+
         ImGuizmo.setOrthographic(false);
         ImGuizmo.setEnabled(true);
         ImGuizmo.setDrawList();
         ImGuizmo.setRect(ImGui.getWindowPosX(), ImGui.getWindowPosY(), windowSize.x, windowSize.y);
 
-
+        float model[] = null;
         if(selected != null) {
             Transform t = selected.getTransform();
-            float[] model = MatrixBuilder.createTransformationMatrix(t.getPosition(), t.getRotation(), t.getScale()).get(new float[16]);
+            model = MatrixBuilder.createTransformationMatrix(t.getPosition(), t.getRotation(), t.getScale()).get(new float[16]);
             ImGuizmo.manipulate(view, proj, model, currentGizmoOperation, currentMode);
 
-            if(ImGuizmo.isUsing()){
-                float[] pos = new float[3];
-                float[] rot = new float[3];
-                float[] sca = new float[3];
-                ImGuizmo.decomposeMatrixToComponents(model, pos, rot, sca);
-                System.out.println(Math.toDegrees(rot[0]) + "   " + Math.toDegrees(rot[1]) + "   " + Math.toDegrees(rot[2]));
-                Quaternionf quat = new Quaternionf();
-
-                quat.rotateZ(Math.toRadians(rot[2]));
-                quat.rotateY(Math.toRadians(rot[1]));
-                quat.rotateX(Math.toRadians(rot[0]));
-
-                selected.getTransform().setPosition(new Vector3f(pos[0], pos[1], pos[2]));
-                selected.getTransform().setRotation(quat);
-                selected.getTransform().setScale(new Vector3f(sca[0], sca[1], sca[2]));
-            }
         }
+
+        if(ImGuizmo.isUsing()){
+            float[] pos = new float[3];
+            float[] rot = new float[3];
+            float[] sca = new float[3];
+            ImGuizmo.decomposeMatrixToComponents(model, pos, rot, sca);
+            System.out.println(Math.toDegrees(rot[0]) + "   " + Math.toDegrees(rot[1]) + "   " + Math.toDegrees(rot[2]));
+            Quaternionf quat = new Quaternionf();
+
+            quat.rotateZ(Math.toRadians(rot[2]));
+            quat.rotateY(Math.toRadians(rot[1]));
+            quat.rotateX(Math.toRadians(rot[0]));
+
+            selected.getTransform().setPosition(new Vector3f(pos[0], pos[1], pos[2]));
+            selected.getTransform().setRotation(quat);
+            selected.getTransform().setScale(new Vector3f(sca[0], sca[1], sca[2]));
+        }else if(mouseOverViewport){
+            sampleFb(pickingBuffer, scaledCoordX, scaledCoordY);
+        }
+
         ImGui.end();
         ImGui.popStyleVar();
     }

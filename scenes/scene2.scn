@@ -1,0 +1,31 @@
+{
+  "entities": [
+    {
+      "name": "New Entity",
+      "components": [
+        {
+          "subc": "engine.ecs.component.Transform",
+          "data": {
+            "position": {
+              "x": 18.734705,
+              "y": 7.103164,
+              "z": 0.0
+            },
+            "rotation": {
+              "x": 0.21629523,
+              "y": 0.7029595,
+              "z": 0.32444283,
+              "w": 0.59481186
+            },
+            "scale": {
+              "x": 9.0,
+              "y": 11.0,
+              "z": 15.0
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "name": "testScene"
+}

@@ -4,12 +4,12 @@ import engine.ecs.Light;
 import org.joml.Matrix4f;
 import org.joml.Vector4f;
 
-public class StaticShader extends ShaderProgram {
+public class StandardShader extends ShaderProgram {
 
     private static final String vertexPath = "src/main/java/engine/shader/src/standard/vertex.shader";
     private static final String fragmentPath = "src/main/java/engine/shader/src/standard/fragment.shader";
 
-    public StaticShader() {
+    public StandardShader() {
         super(vertexPath, fragmentPath);
     }
 

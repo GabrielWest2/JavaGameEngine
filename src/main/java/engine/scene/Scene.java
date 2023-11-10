@@ -61,26 +61,35 @@ public class Scene {
         return null;
     }
 
+    /**
+     * @return all entities in this scene
+     */
     public List<Entity> getEntities() {
         return entities;
     }
 
-    public void save() {
-
+    /**
+     * Saves the currently loaded {@code Scene} to a file
+     * @param path the path to save the loaded {@code Scene} to
+     */
+    public void save(String path) {
         String json = GameEngine.gson.toJson(this);
         try {
             try (Writer writer = new BufferedWriter(new OutputStreamWriter(
-                    new FileOutputStream("C:/Users/gabed/OneDrive/Documents/GitHub/JavaGameEngine/scenes/scene1.scn"), "utf-8"))) {
+                    new FileOutputStream(path), "utf-8"))) {
                 writer.write(json);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        //User user = gson.fromJson(json, User.class);
     }
 
-    public void load() {
-        File file = new File("C:/Users/gabed/OneDrive/Documents/GitHub/JavaGameEngine/scenes/scene1.scn");
+    /**
+     * Deserializes and loads a {@code Scene} from a file
+     * @param path the path of the {@code Scene} file
+     */
+    public void load(String path) {
+        File file = new File(path);
         String str = null;
         try {
             str = FileUtils.readFileToString(file, StandardCharsets.UTF_8);

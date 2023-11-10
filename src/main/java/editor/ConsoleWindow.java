@@ -18,6 +18,7 @@ public class ConsoleWindow {
         ImGui.begin("Console");
         if (ImGui.smallButton("Clear")) {
             newConsole.reset();
+
         }
         ImGui.sameLine();
         if (ImGui.smallButton("Copy"))
@@ -29,7 +30,14 @@ public class ConsoleWindow {
 
         ImGui.separator();
         ImGui.beginChildFrame(1, ImGui.getContentRegionMaxX(), ImGui.getContentRegionAvail().y);
-        ImGui.textWrapped(newConsole.toString());
+        String msg = newConsole.toString();
+        if(msg.length() > 2000){
+            String newStr = msg.substring(msg.length() - 2000, msg.length());
+            ImGui.textWrapped(newStr);
+        }else{
+            ImGui.textWrapped(msg);
+        }
+
         if(autoscroll)
             ImGui.setScrollHereY(1.0f);
         ImGui.endChildFrame();

@@ -6,6 +6,9 @@ import engine.ecs.component.ObjRenderer;
 import engine.WaterManger;
 import imgui.ImGui;
 
+import javax.swing.*;
+import java.io.File;
+
 /**
  * @author gabed
  * @Date 7/23/2022
@@ -16,11 +19,36 @@ public class WindowMenubar {
         if (ImGui.beginMainMenuBar()) {
             if (ImGui.beginMenu("File")) {
                 if (ImGui.menuItem("Save")) {
-                    GameEngine.getInstance().loadedScene.save();
+                    // parent component of the dialog
+                    JFrame parentFrame = new JFrame();
+
+                    JFileChooser fileChooser = new JFileChooser("scenes/");
+                    fileChooser.setDialogTitle("Save Scene");
+
+                    int userSelection = fileChooser.showSaveDialog(parentFrame);
+
+                    if (userSelection == JFileChooser.APPROVE_OPTION) {
+                        File fileToSave = fileChooser.getSelectedFile();
+                        System.out.println("Save as file: " + fileToSave.getAbsolutePath());
+                        GameEngine.getInstance().loadedScene.save(fileToSave.getAbsolutePath());
+                    }
+
                 }
 
                 if (ImGui.menuItem("Load")) {
-                    GameEngine.getInstance().loadedScene.load();
+                    // parent component of the dialog
+                    JFrame parentFrame = new JFrame();
+
+                    JFileChooser fileChooser = new JFileChooser("scenes/");
+                    fileChooser.setDialogTitle("Save Scene");
+
+                    int userSelection = fileChooser.showOpenDialog(parentFrame);
+
+                    if (userSelection == JFileChooser.APPROVE_OPTION) {
+                        File fileToSave = fileChooser.getSelectedFile();
+                        GameEngine.getInstance().loadedScene.load(fileToSave.getAbsolutePath());
+                    }
+
                 }
 
                 ImGui.endMenu();

@@ -4,6 +4,7 @@ import editor.GameViewportWindow;
 import engine.display.DisplayManager;
 import imgui.ImGui;
 import imgui.ImVec2;
+import org.joml.Vector2f;
 
 import static org.lwjgl.glfw.GLFW.*;
 
@@ -61,5 +62,9 @@ public class Mouse {
 
     public static float getY() {
         return y;
+    }
+
+    public static Vector2f getPos() {
+        return new Vector2f(x, y);
     }
 }

@@ -10,8 +10,8 @@ import engine.model.*;
 import engine.postprocessing.PostProcessing;
 import engine.shader.*;
 import engine.util.MatrixBuilder;
-import imgui.ImGui;
 import org.joml.Matrix4f;
+import org.joml.Random;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 import org.lwjgl.opengl.GL11;
@@ -28,11 +28,12 @@ import static org.lwjgl.opengl.GL13.GL_MULTISAMPLE;
 
 public class Renderer {
     private static WaterShader waterShader;
-    private static StaticShader defaultShader;
+    private static StandardShader defaultShader;
     private static SkyboxShader skyboxShader;
     private static TerrainShader terrainShader;
     private static GridShader gridShader;
     private static GrassShader vegetationShader;
+    private static MousePickingShader mousePickingShader;
 
 
 
@@ -61,6 +62,10 @@ public class Renderer {
         vegetationShader.start();
         vegetationShader.loadProjectionMatrix(mat);
         vegetationShader.stop();
+
+        mousePickingShader.start();
+        mousePickingShader.loadProjectionMatrix(mat);
+        mousePickingShader.stop();
     }
 
     public static void init() {
@@ -73,12 +78,13 @@ public class Renderer {
         glEnable(GL_CULL_FACE);
         glCullFace(GL_BACK);
 
-        defaultShader = new StaticShader();
+        defaultShader = new StandardShader();
         skyboxShader = new SkyboxShader();
         terrainShader = new TerrainShader();
         gridShader = new GridShader();
         waterShader = new WaterShader();
         vegetationShader = new GrassShader();
+        mousePickingShader = new MousePickingShader();
         updateProjection(DisplayManager.getWidth(), DisplayManager.getHeight());
     }
 
@@ -185,11 +191,22 @@ public class Renderer {
             else
                 renderDefault(entity);
         }
-
         if(obj != null && obj.getModel() != null) {
             Model m = obj.getModel();
             if (TexturedModel.class.isAssignableFrom(m.getClass()))
                 renderTextured((TexturedModel) m, entity.getTransform(), obj.cullBack, obj.shineDamper, obj.reflectivity);
+        }
+
+    }
+
+    public static void renderPicking(Entity entity, int entityId) {
+        ModelRenderer mr = entity.getComponent(ModelRenderer.class);
+        ObjRenderer obj = entity.getComponent(ObjRenderer.class);
+
+        if(obj != null && obj.getModel() != null) {
+            Model m = obj.getModel();
+            if (TexturedModel.class.isAssignableFrom(m.getClass()))
+                renderMousePicking((TexturedModel) m, entity.getTransform(), obj.cullBack, entityId);
         }
     }
 
@@ -288,6 +305,36 @@ public class Renderer {
         GL20.glDisableVertexAttribArray(0);
         GL30.glBindVertexArray(0);
         defaultShader.stop();
+        glEnable(GL_CULL_FACE);
+    }
+
+    private static void renderMousePicking(TexturedModel model, Transform transform, boolean cull, int entityId) {
+        if(cull)
+            glEnable(GL_CULL_FACE);
+        else
+            glDisable(GL_CULL_FACE);
+        mousePickingShader.start();
+
+        float red = (float) (entityId & 0xff) / 0xff;
+        float green = (float) ((entityId >> 8) & 0xff) / 0xff;
+        float blue = (float) ((entityId >> 16) & 0xff) / 0xff;
+       // float alpha = (float) ((entityId >> 24) & 0xff) / 0xff;
+
+        mousePickingShader.loadColor(new Vector4f(red, green, blue, 1.0f));
+        mousePickingShader.loadTransformationMatrix(MatrixBuilder.createTransformationMatrix(transform.getPosition(), transform.getRotation(), transform.getScale()));
+        mousePickingShader.loadViewMatrix(GameEngine.getInstance().camera.getViewMatrix());
+        GL30.glBindVertexArray(model.getVaoID());
+        GL20.glEnableVertexAttribArray(0);
+        GL20.glEnableVertexAttribArray(1);
+        GL20.glEnableVertexAttribArray(2);
+        GL13.glActiveTexture(GL13.GL_TEXTURE0);
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, model.getTexture().textureID());
+        GL11.glDrawElements(GL11.GL_TRIANGLES, model.getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
+        GL20.glDisableVertexAttribArray(2);
+        GL20.glDisableVertexAttribArray(1);
+        GL20.glDisableVertexAttribArray(0);
+        GL30.glBindVertexArray(0);
+        mousePickingShader.stop();
         glEnable(GL_CULL_FACE);
     }
 
@@ -392,14 +439,14 @@ public class Renderer {
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     }
 
-    public static void endScene(Framebuffer fb, Camera camera, Entity selected) {
+    public static void endScene(Framebuffer fb, Framebuffer picking, Camera camera, Entity selected) {
 
         PostProcessing.doPostProcessing(fb.getColorTexture(), fb.getDepthTexture());
 
         //ImGui.showDemoWindow();
 
         WindowMenubar.render();
-        GameViewportWindow.render(PostProcessing.finalBuffer, camera, selected);
+        GameViewportWindow.render(PostProcessing.finalBuffer, picking, camera, selected);
         ConsoleWindow.render();
         DebugWindow.render();
         ExplorerWindow.render();
