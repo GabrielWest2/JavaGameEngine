@@ -4,10 +4,9 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import editor.ConsoleWindow;
 import editor.ExplorerWindow;
-import editor.GameViewportWindow;
 import engine.audio.AudioManager;
-import engine.audio.AudioSource;
 import engine.display.DisplayManager;
+import engine.ecs.Component;
 import engine.ecs.Entity;
 import engine.ecs.Light;
 import engine.ecs.component.ObjRenderer;
@@ -19,19 +18,14 @@ import engine.model.*;
 import engine.physics.Physics;
 import engine.postprocessing.PostProcessing;
 import engine.scene.Scene;
-import engine.serialization.EntityTypeAdapter;
-import engine.serialization.TransformTypeAdapter;
+import engine.serialization.ComponentDeserializer;
 import engine.shader.Framebuffer;
 import engine.texture.Texture;
 import engine.texture.TextureLoader;
 import engine.util.Time;
-import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import org.lwjgl.opengl.GL11;
 import scripting.LuaScriptingManager;
-
-import javax.sound.sampled.UnsupportedAudioFileException;
-import java.io.IOException;
 
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
@@ -63,6 +57,7 @@ public class GameEngine {
     public static void main(String[] args) {
         GsonBuilder gsonb = new GsonBuilder();
         gsonb.setPrettyPrinting();
+        gsonb.registerTypeAdapter(Component.class, new ComponentDeserializer());
         //gsonb.registerTypeAdapter(Entity.class, new EntityTypeAdapter());
         //gsonb.registerTypeAdapter(Transform.class, new TransformTypeAdapter());
         gson = gsonb.create();

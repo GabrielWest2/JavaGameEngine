@@ -396,7 +396,7 @@ public class Renderer {
 
         PostProcessing.doPostProcessing(fb.getColorTexture(), fb.getDepthTexture());
 
-        ImGui.showDemoWindow();
+        //ImGui.showDemoWindow();
 
         WindowMenubar.render();
         GameViewportWindow.render(PostProcessing.finalBuffer, camera, selected);

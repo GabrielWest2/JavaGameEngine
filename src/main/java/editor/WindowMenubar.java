@@ -19,6 +19,10 @@ public class WindowMenubar {
                     GameEngine.getInstance().loadedScene.save();
                 }
 
+                if (ImGui.menuItem("Load")) {
+                    GameEngine.getInstance().loadedScene.load();
+                }
+
                 ImGui.endMenu();
             }
             if (ImGui.beginMenu("Themes")) {

@@ -1,12 +1,14 @@
 package engine.scene;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import editor.ExplorerWindow;
 import engine.GameEngine;
+import engine.ecs.Component;
 import engine.ecs.Entity;
-import engine.serialization.EntityTypeAdapter;
+import engine.ecs.component.Transform;
+import org.apache.commons.io.FileUtils;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -75,5 +77,27 @@ public class Scene {
             throw new RuntimeException(e);
         }
         //User user = gson.fromJson(json, User.class);
+    }
+
+    public void load() {
+        File file = new File("C:/Users/gabed/OneDrive/Documents/GitHub/JavaGameEngine/scenes/scene1.scn");
+        String str = null;
+        try {
+            str = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        Scene loaded = GameEngine.gson.fromJson(str, Scene.class);
+        System.out.println("Loaded " + loaded.getName());
+        GameEngine.getInstance().loadedScene = loaded;
+        ExplorerWindow.selectedEntity = null;
+        for(Entity e : loaded.entities){
+            e.setTransform(e.getComponent(Transform.class));
+            for(Component component : e.getComponents()){
+                component.onAdded(e);
+                component.onVariableChanged();
+            }
+        }
     }
 }

@@ -24,8 +24,6 @@ public class Component {
 
     public void onAdded(Entity parent) {
         this.entity = parent;
-        System.out.println(parent == null ? "null" : "OK");
-        System.out.println("Added component to me " + entity.getName());
         Field[] fields = this.getClass().getDeclaredFields();
         for (Field field : fields) {
             if (Modifier.isTransient(field.getModifiers()))

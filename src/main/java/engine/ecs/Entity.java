@@ -11,7 +11,7 @@ import java.util.List;
 
 public class Entity {
     private String name = "New Entity";
-    private transient final Transform transform;
+    private transient Transform transform;
     private final List<Component> components;
 
 
@@ -91,5 +91,9 @@ public class Entity {
 
     public Transform getTransform() {
         return transform;
+    }
+
+    public void setTransform(Transform component) {
+        this.transform = component;
     }
 }

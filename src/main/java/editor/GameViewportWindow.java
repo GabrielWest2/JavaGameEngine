@@ -2,7 +2,6 @@ package editor;
 
 import engine.Camera;
 import engine.Renderer;
-import engine.display.DisplayManager;
 import engine.ecs.Entity;
 import engine.ecs.component.Transform;
 import engine.input.Keyboard;
@@ -17,50 +16,22 @@ import imgui.extension.imguizmo.flag.Operation;
 import imgui.flag.ImGuiStyleVar;
 import imgui.flag.ImGuiWindowFlags;
 import org.joml.Math;
-import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
-
-import java.nio.FloatBuffer;
 
 import static org.lwjgl.glfw.GLFW.*;
 
 public class GameViewportWindow {
     public static boolean focused = false;
-    public static ImVec2 previousWindowSize = new ImVec2(-1, -1);
+    private static ImVec2 previousWindowSize = new ImVec2(-1, -1);
+    private static int currentGizmoOperation = Operation.TRANSLATE;
 
-
-
-    private static final float[][] OBJECT_MATRICES = {
-            {
-                    1.f, 0.f, 0.f, 0.f,
-                    0.f, 1.f, 0.f, 0.f,
-                    0.f, 0.f, 1.f, 0.f,
-                    0.f, 0.f, 0.f, 1.f
-            },
-            {
-                    1.f, 0.f, 0.f, 0.f,
-                    0.f, 1.f, 0.f, 0.f,
-                    0.f, 0.f, 1.f, 0.f,
-                    2.f, 0.f, 0.f, 1.f
-            },
-            {
-                    1.f, 0.f, 0.f, 0.f,
-                    0.f, 1.f, 0.f, 0.f,
-                    0.f, 0.f, 1.f, 0.f,
-                    2.f, 0.f, 2.f, 1.f
-            },
-            {
-                    1.f, 0.f, 0.f, 0.f,
-                    0.f, 1.f, 0.f, 0.f,
-                    0.f, 0.f, 1.f, 0.f,
-                    0.f, 0.f, 2.f, 1.f
-            }
-    };
-
-
-    static int currentGizmoOperation = Operation.TRANSLATE;
-
+    /**
+     * Game viewport render function
+     * @param buff the framebuffer to render
+     * @param camera the {@code Camera} to be used to render transformation gizmos
+     * @param selected the currently selected {@code Entity}
+     */
     public static void render(Framebuffer buff, Camera camera, Entity selected) {
         //Remove the border between the edge of the window and the image
         ImGui.pushStyleVar(ImGuiStyleVar.WindowPadding, 0, 0);
@@ -68,9 +39,7 @@ public class GameViewportWindow {
         ImVec2 windowSize = ImGui.getWindowSize();
         //ImVec2 windowSize = getLargestSizeForViewport(buff);
         if(!previousWindowSize.equals(windowSize)){
-            System.out.println("Resized viewport");
             Renderer.updateProjection((int) windowSize.x, (int) windowSize.y);
-            //DisplayManager.windowSizeCallback(DisplayManager.window, (int) windowSize.x, (int) windowSize.y);
             previousWindowSize = windowSize;
         }
 
@@ -79,10 +48,6 @@ public class GameViewportWindow {
         float[] proj = MatrixBuilder.createProjectionMatrix((int) windowSize.x, (int) windowSize.y).get(new float[16]);
 
         focused = ImGui.isWindowHovered() || Mouse.isMouseHidden();
-       // ImVec2 windowPos = getCenteredPositionForViewport(windowSize);
-       // ImGui.setCursorPos(windowPos.x, windowPos.y);
-     //   ImGui.image(buff.getColorTexture(), windowSize.x, windowSize.y, 0, 1, 1, 0);
-
 
         ImGui.image(buff.getColorTexture(), windowSize.x, windowSize.y, 0, 1, 1, 0);
 
@@ -102,12 +67,7 @@ public class GameViewportWindow {
         ImGuizmo.setEnabled(true);
         ImGuizmo.setDrawList();
         ImGuizmo.setRect(ImGui.getWindowPosX(), ImGui.getWindowPosY(), windowSize.x, windowSize.y);
-        /*ImGuizmo.drawGrid(view, proj, new float[] {
-                1.f, 0.f, 0.f, 0.f,
-                0.f, 1.f, 0.f, 0.f,
-                0.f, 0.f, 1.f, 0.f,
-                0.f, 0.f, 0.f, 1.f
-        }, 100);*/
+
 
         if(selected != null) {
             Transform t = selected.getTransform();
@@ -136,6 +96,11 @@ public class GameViewportWindow {
     }
 
 
+    /**
+     * Calculates the maximum size the framebuffer with the current aspect ratio can be to fit within the window
+     * @param buff the final framebuffer
+     * @return an {@code ImVec2} representing the width {@code x}, and height {@code y}
+     */
     private static ImVec2 getLargestSizeForViewport(Framebuffer buff) {
         ImVec2 windowSize = new ImVec2();
         ImGui.getContentRegionAvail(windowSize);
@@ -153,6 +118,11 @@ public class GameViewportWindow {
         return new ImVec2(aspectWidth, aspectHeight);
     }
 
+    /**
+     * Gets the offset required inorder to center the image in the window
+     * @param aspectSize the precalculated size for the image
+     * @return an {@code ImVec2} representing the horizontal offset {@code x}, and vertical offset {@code y}
+     */
     private static ImVec2 getCenteredPositionForViewport(ImVec2 aspectSize) {
         ImVec2 windowSize = new ImVec2();
         ImGui.getContentRegionAvail(windowSize);
