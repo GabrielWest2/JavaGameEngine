@@ -35,8 +35,7 @@ public class DisplayManager {
     private static final ImGuiImplGl3 imGuiGl3 = new ImGuiImplGl3();
     private static final String glslVersion = null;
     public static long window;
-    //private static int width = 856, height = 482;
-    private static int width = 1920, height = 1080;
+    private static int width = 856, height = 482;
     private static GameEngine engine;
 
     public static void initOpenGL(GameEngine engine) {
@@ -165,6 +164,5 @@ public class DisplayManager {
 
     public static int getHeight() {
         return height;
-
     }
 }

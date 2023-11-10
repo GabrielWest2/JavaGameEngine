@@ -10799,6 +10799,78 @@
           }
         }
       ]
+    },
+    {
+      "name": "Castles",
+      "components": [
+        {
+          "subc": "engine.ecs.component.Transform",
+          "data": {
+            "position": {
+              "x": 35.83942,
+              "y": 1.0,
+              "z": 4.0409684
+            },
+            "rotation": {
+              "x": 0.0,
+              "y": 0.70918137,
+              "z": 0.0,
+              "w": 0.7050261
+            },
+            "scale": {
+              "x": 0.9999629,
+              "y": 1.0000058,
+              "z": 0.9999629
+            }
+          }
+        },
+        {
+          "subc": "engine.ecs.component.ObjRenderer",
+          "data": {
+            "cullBack": true,
+            "shineDamper": 20.0,
+            "reflectivity": 0.5,
+            "texturePath": "models/ColorPaletteBLUE.png",
+            "filePath": "models/castle/castle.obj"
+          }
+        }
+      ]
+    },
+    {
+      "name": "New Entity",
+      "components": [
+        {
+          "subc": "engine.ecs.component.Transform",
+          "data": {
+            "position": {
+              "x": 32.901608,
+              "y": 6.5453806,
+              "z": 1.7249229
+            },
+            "rotation": {
+              "x": 0.0,
+              "y": 0.7107417,
+              "z": 0.0,
+              "w": 0.70345306
+            },
+            "scale": {
+              "x": 0.99995434,
+              "y": 1.0000149,
+              "z": 0.99995434
+            }
+          }
+        },
+        {
+          "subc": "engine.ecs.component.ObjRenderer",
+          "data": {
+            "cullBack": true,
+            "shineDamper": 20.0,
+            "reflectivity": 0.5,
+            "texturePath": "models/ColorPaletteBLUE.png",
+            "filePath": "models/banner/banner.obj"
+          }
+        }
+      ]
     }
   ],
   "name": "testScene"

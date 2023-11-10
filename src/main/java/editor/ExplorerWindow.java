@@ -15,11 +15,13 @@ public class ExplorerWindow {
         ImGui.begin("Explorer");
         int i = 0;
         for (Entity entity : GameEngine.getInstance().loadedScene.getEntities()) {
-            ImGui.pushID(i);
-            if (ImGui.button(entity.getName())) {
-                selectedEntity = entity;
+            if(!entity.getName().startsWith("Tile")) {
+                ImGui.pushID(i);
+                if (ImGui.button(entity.getName())) {
+                    selectedEntity = entity;
+                }
+                ImGui.popID();
             }
-            ImGui.popID();
             i++;
         }
         ImGui.end();
