@@ -97,9 +97,11 @@ public class DisplayManager {
 
         io.setIniFilename("imgui.ini");
         io.setConfigFlags(ImGuiConfigFlags.DockingEnable);
-        float baseFontSize = 18.0f; // 13.0f is the size of the default font. Change to the font size you use.
-        float iconFontSize = baseFontSize * 2.0f / 3.0f; // FontAwesome fonts need to have their sizes reduced by 2.0f/3.0f in order to align correctly
-        io.getFonts().addFontFromFileTTF("res/engine/font/Roboto-Medium.ttf", baseFontSize);
+        float baseFontSize = 18.0f;
+        float iconFontSize = baseFontSize * 2.0f / 3.0f; // for alignment
+        io.getFonts().addFontFromFileTTF(
+                "res/engine/font/Roboto-Medium.ttf",
+                baseFontSize);
 
         // merge in icons from Font Awesome
         short icons_ranges[] = {(short) 0xe005, (short) 0xf8ff, 0 };
@@ -107,7 +109,8 @@ public class DisplayManager {
         icons_config.setMergeMode(true);
         icons_config.setPixelSnapH(true);
         icons_config.setGlyphMinAdvanceX(iconFontSize);
-        io.getFonts().addFontFromFileTTF("res/engine/font/fa-solid-900.ttf", iconFontSize, icons_config, icons_ranges);
+        io.getFonts().addFontFromFileTTF("res/engine/font/fa-solid-900.ttf",
+                iconFontSize, icons_config, icons_ranges);
 
         imGuiGlfw.init(window, true);
         imGuiGl3.init(glslVersion);

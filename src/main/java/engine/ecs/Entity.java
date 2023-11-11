@@ -13,6 +13,7 @@ public class Entity {
     private String name = "New Entity";
     private transient Transform transform;
     private final List<Component> components;
+    
     private boolean isLocked = false;
 
 

@@ -9,7 +9,9 @@ import static engine.TerrainManager.noise;
 
 public class TerrainChunk {
     private TerrainModel model;
+
     private final int chunkX;
+
     private final int chunkY;
 
     public static final int terrainChunkWidth = 8;

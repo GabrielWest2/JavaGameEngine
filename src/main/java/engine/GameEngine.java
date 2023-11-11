@@ -14,10 +14,8 @@ import engine.ecs.component.Transform;
 import engine.hud.HudManager;
 import engine.input.Keyboard;
 import engine.input.Mouse;
-import engine.model.Model;
 import engine.model.ModelCreator;
 import engine.model.SkyboxModel;
-import engine.model.VegetationModel;
 import engine.physics.Physics;
 import engine.postprocessing.PostProcessing;
 import engine.scene.Scene;
@@ -30,6 +28,8 @@ import org.joml.Vector3f;
 import org.lwjgl.opengl.GL11;
 import scripting.LuaScriptingManager;
 
+import java.util.Objects;
+
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
@@ -40,7 +40,6 @@ public class GameEngine {
     public static Texture grass;
     public static Texture waterDUDV;
     public static Texture waterNormalMap;
-    public static Model cube;
     public static Framebuffer reflectionBuffer;
     public static Framebuffer refractionBuffer;
     public static Framebuffer frameBuffer;
@@ -49,7 +48,7 @@ public class GameEngine {
     public static float grassMovement = 0f;
 
     public static Gson gson;
-    public static VegetationModel grassModel;
+    //public static VegetationModel grassModel;
     public Camera camera;
     public Light light;
     public Scene loadedScene;
@@ -77,7 +76,7 @@ public class GameEngine {
         Renderer.cleanUp();
         AudioManager.cleanUp();
         glfwTerminate();
-        glfwSetErrorCallback(null).free();
+        Objects.requireNonNull(glfwSetErrorCallback(null)).free();
     }
 
 
@@ -85,7 +84,11 @@ public class GameEngine {
 
     Transform t = new Transform();
     private void loop() {
-        gson = new GsonBuilder().setPrettyPrinting().registerTypeAdapter(Component.class, new ComponentDeserializer()).create();
+        gson = new GsonBuilder()
+                .setPrettyPrinting()
+                .registerTypeAdapter(Component.class, new ComponentDeserializer())
+                .create();
+
         grass = TextureLoader.loadTexture("terrain/Texture_Grass_Diffuse.png");
         waterDUDV = TextureLoader.loadTexture("water/waterDUDV.png");
         waterNormalMap = TextureLoader.loadTexture("water/waterNormalMap.png");
@@ -117,16 +120,6 @@ public class GameEngine {
         DisplayManager.setCallbacks();
 
 
-        //String tree = "Birch";
-        //grassModel =  OBJLoader.loadVegetationTexturedOBJ("grass.obj", TextureLoader.loadTexture("Terrain/Brush_Grass_01.png"));
-       // MultiTexturedModel flowerModel = (MultiTexturedModel) OBJLoader.loadTexturedOBJ("flowers.obj", null);
-        //flowerModel.setTexture("Plants", TextureLoader.loadTexture("flowers.png"));
-
-
-        //MultiTexturedModel treeModel1 = (MultiTexturedModel) OBJLoader.loadTexturedOBJ("tree.obj", null);
-        //treeModel1.setTexture("trunk_Mat.001", TextureLoader.loadTexture("Textures/NormalTree_Bark.png"));
-        //treeModel1.setTexture("leafes_Mat.001", TextureLoader.loadTexture("leaf02.png"));
-
 
         light = new Light(new Vector3f(10, 3000, 10), new Vector3f(255 / 255f, 241  / 255f, 204 / 255f));
 
@@ -138,7 +131,11 @@ public class GameEngine {
 
         for(int x = 0; x < 16; x++){
             for(int z = 0; z < 16; z++){
-                loadedScene.addEntity(new Entity("Tile " + x+"-"+z).addComponent(new ObjRenderer().setPaths("models/grass2.obj", "models/ColorPaletteBLUE.png")).getTransform().setPosition(new Vector3f(x*2, 0, z*2)));
+                Entity e = new Entity("Tile " + x+"-"+z);
+                e.getTransform().setPosition(new Vector3f(x*2, 0, z*2));
+                ObjRenderer obj = new ObjRenderer()
+                        .setPaths("models/grass2.obj", "models/ColorPaletteBLUE.png");
+                loadedScene.addEntity(e);
             }
         }
 
@@ -155,9 +152,12 @@ public class GameEngine {
             grassMovement += 0.03f;
             waterMovement %=1;
 
+            /*
             if(Keyboard.isKeyPressedThisFrame(GLFW_KEY_F)){
                // source.play(sound);
             }
+            */
+
             if(Keyboard.isKeyPressedThisFrame(GLFW_KEY_Z)){
                 wireframe = !wireframe;
             }

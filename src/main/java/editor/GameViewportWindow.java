@@ -48,7 +48,11 @@ public class GameViewportWindow {
             int newB = java.lang.Math.round(blue * 0xff) << 16;
             int index = newR + newB + newG - 1;
             if(Mouse.isMousePressed(0)){
-                if(index < GameEngine.getInstance().loadedScene.getEntities().size() && index >= 0 && !GameEngine.getInstance().loadedScene.getEntities().get(index).isLocked()) {
+                if(
+                    index >= 0 &&
+                    index < GameEngine.getInstance().loadedScene.getEntities().size() &&
+                    !GameEngine.getInstance().loadedScene.getEntities().get(index).isLocked()
+                ) {
                     ExplorerWindow.selectedEntity = GameEngine.getInstance().loadedScene.getEntities().get(index);
                 }else {
                     ExplorerWindow.selectedEntity = null;
@@ -68,7 +72,12 @@ public class GameViewportWindow {
 
         //Remove the border between the edge of the window and the image
         ImGui.pushStyleVar(ImGuiStyleVar.WindowPadding, 0, 0);
-        ImGui.begin(FAIcons.ICON_EYE + " Game Viewport", ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse | ImGuiWindowFlags.NoTitleBar);
+        int flags =
+                ImGuiWindowFlags.NoScrollbar |
+                ImGuiWindowFlags.NoScrollWithMouse |
+                ImGuiWindowFlags.NoTitleBar;
+
+        ImGui.begin(FAIcons.ICON_EYE + " Game Viewport", flags);
         ImVec2 windowSize = ImGui.getWindowSize();
         //ImVec2 windowSize = getLargestSizeForViewport(buff);
         if(!previousWindowSize.equals(windowSize)){

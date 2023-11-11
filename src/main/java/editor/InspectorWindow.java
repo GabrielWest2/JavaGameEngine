@@ -61,12 +61,14 @@ public class InspectorWindow {
                 ExplorerWindow.selectedEntity.setName(string.get());
             }
             ImGui.sameLine();
-            if(ImGui.button((ExplorerWindow.selectedEntity.isLocked() ? FAIcons.ICON_LOCK : FAIcons.ICON_LOCK_OPEN) + "")){
+            boolean entityLocked = ExplorerWindow.selectedEntity.isLocked();
+            char icon = entityLocked ? FAIcons.ICON_LOCK : FAIcons.ICON_LOCK_OPEN;
+            if(ImGui.button(icon + "")){
                 ExplorerWindow.selectedEntity.setLocked(!ExplorerWindow.selectedEntity.isLocked());
             }
             ImGui.pushStyleColor(ImGuiCol.Button, 255, 0, 0, 255);
             ImGui.pushStyleColor(ImGuiCol.ButtonHovered, 138, 6, 6, 255);
-            if(ImGui.button("Delete", -1,  30) || Keyboard.isKeyPressedThisFrame(GLFW_KEY_DELETE)){
+            if(ImGui.button("Delete", -1,  30) || Keyboard.isKeyPressed(GLFW_KEY_DELETE)){
                 GameEngine.getInstance().loadedScene.removeEntity(ExplorerWindow.selectedEntity);
                 ExplorerWindow.selectedEntity = null;
                 ImGui.popStyleColor();
