@@ -6,6 +6,7 @@ import org.joml.Vector4f;
 public class MousePickingShader extends ShaderProgram {
 
     private static final String vertexPath = "src/main/java/engine/shader/src/mousepicking/vertex.shader";
+
     private static final String fragmentPath = "src/main/java/engine/shader/src/mousepicking/fragment.shader";
 
     public MousePickingShader() {

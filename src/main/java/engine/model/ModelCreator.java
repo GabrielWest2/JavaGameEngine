@@ -20,6 +20,10 @@ public class ModelCreator {
 
     private static final float SIZE = 825f;
 
+    private static final List<Integer> vaos = new ArrayList<>();
+
+    private static final List<Integer> vbos = new ArrayList<>();
+
     private static final float[] VERTICES = {
             -SIZE, SIZE, -SIZE,
             -SIZE, -SIZE, -SIZE,
@@ -64,8 +68,6 @@ public class ModelCreator {
             SIZE, -SIZE, SIZE
     };
 
-    private static final List<Integer> vaos = new ArrayList<>();
-    private static final List<Integer> vbos = new ArrayList<>();
 
     public static Model loadToVAO(float[] positions, int[] indices) {
         int vaoID = createVAO();

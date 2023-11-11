@@ -20,12 +20,19 @@ import static org.lwjgl.opengl.GL13.*;
 public class PostProcessing {
 
     private static final float[] POSITIONS = {-1f, 1f, -1f, -1f, 1f, 1f, 1f, -1f};
+
     private static int quad, v;
+
     public static ContrastEffect contrastEffect = new ContrastEffect();
+
     public static HorizontalBlurEffect horizontalBlurEffect = new HorizontalBlurEffect();
+
     public static VerticalBlurEffect verticalBlurEffect = new VerticalBlurEffect();
+
     public static BrightnessFilterEffect brightnessFilterEffect = new BrightnessFilterEffect();
+
     public static CombineEffect combineEffect = new CombineEffect();
+
     public static Framebuffer framebuffer;
     public static Framebuffer framebuffer1;
     public static Framebuffer framebuffer2;

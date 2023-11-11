@@ -7,5 +7,8 @@ public record Texture(int textureID, String filepath) {
     public void delete() {
         GL13.glDeleteTextures(textureID);
     }
-    public String getFilepath() {return filepath; }
+
+    public String getFilepath() {
+        return filepath;
+    }
 }

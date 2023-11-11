@@ -6,6 +6,7 @@ import org.joml.Vector3f;
 
 public class WaterShader extends ShaderProgram{
     private static final String vertexPath = "src/main/java/engine/shader/src/water/vertex.shader";
+
     private static final String fragmentPath = "src/main/java/engine/shader/src/water/fragment.shader";
 
     public WaterShader() {

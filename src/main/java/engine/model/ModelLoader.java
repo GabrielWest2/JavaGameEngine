@@ -16,7 +16,9 @@ import static org.lwjgl.assimp.Assimp.*;
 import static org.lwjgl.assimp.Assimp.aiProcess_PreTransformVertices;
 
 public class ModelLoader {
-    private static HashMap<String, TexturedModel> cachedModels = new HashMap<>();
+
+    private static final HashMap<String, TexturedModel> cachedModels = new HashMap<>();
+
     /*
     Model loading using ASSIMP
     adapted from
@@ -50,6 +52,7 @@ public class ModelLoader {
         cachedModels.put(path, m);
         return m;
     }
+
     private static int[] processIndices(AIMesh aiMesh) {
         List<Integer> indices = new ArrayList<>();
         int numFaces = aiMesh.mNumFaces();
@@ -64,7 +67,7 @@ public class ModelLoader {
         return indices.stream().mapToInt(Integer::intValue).toArray();
     }
 
-    private static float[] processTextCoords(AIMesh aiMesh) {
+    private static float[] processTexCoords(AIMesh aiMesh) {
         AIVector3D.Buffer buffer = aiMesh.mTextureCoords(0);
         if (buffer == null) {
             return new float[]{};
@@ -110,9 +113,10 @@ public class ModelLoader {
         }
         return data;
     }
+
     private static TexturedModel processMesh(AIMesh aiMesh, Texture texture) {
         float[] vertices = processVertices(aiMesh);
-        float[] textCoords = processTextCoords(aiMesh);
+        float[] textCoords = processTexCoords(aiMesh);
         int[] indices = processIndices(aiMesh);
         float[] normals = processNormals(aiMesh);
 

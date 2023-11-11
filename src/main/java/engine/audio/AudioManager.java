@@ -20,7 +20,9 @@ import java.util.List;
 import static org.lwjgl.openal.ALC10.*;
 
 public class AudioManager {
+
     private static long device;
+
     private static long context;
 
     private static List<Integer> soundBuffers = new ArrayList<>();

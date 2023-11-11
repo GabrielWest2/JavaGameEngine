@@ -15,10 +15,15 @@ import java.nio.FloatBuffer;
 import java.util.HashMap;
 
 public abstract class ShaderProgram {
+
     private static final FloatBuffer matrixBuffer = BufferUtils.createFloatBuffer(16);
+
     private final int programID;
+
     private final int vertexShaderID;
+
     private final int fragmentShaderID;
+
     private final HashMap<String, Integer> uniformCache = new HashMap<String, Integer>();
 
     public ShaderProgram(String vertexFile, String fragmentFile) {

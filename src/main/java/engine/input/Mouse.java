@@ -1,15 +1,22 @@
 package engine.input;
 
 import editor.GameViewportWindow;
-import engine.display.DisplayManager;
 import imgui.ImGui;
 import imgui.ImVec2;
 import org.joml.Vector2f;
 
-import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE;
 
 public class Mouse {
-    private static float x = 0, y = 0, dx = 0, dy = 0;
+
+    private static float x = 0;
+
+    private static float y = 0;
+
+    private static float dx = 0;
+
+    private static float dy = 0;
+
     private static boolean mouseHidden = false;
 
     public static boolean isMouseHidden() {

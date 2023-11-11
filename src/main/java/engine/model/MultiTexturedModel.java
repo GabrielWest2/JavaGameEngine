@@ -5,7 +5,9 @@ import engine.texture.Texture;
 import java.util.HashMap;
 
 public class MultiTexturedModel extends Model {
+
     private final HashMap<String, TexturedModel> materialModels;
+
     private HashMap<String, Texture> materialTextures;
 
     public MultiTexturedModel(HashMap<String, TexturedModel> models, HashMap<String, Texture> textures) {

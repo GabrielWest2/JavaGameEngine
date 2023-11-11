@@ -7,7 +7,6 @@ import com.bulletphysics.collision.dispatch.CollisionDispatcher;
 import com.bulletphysics.collision.dispatch.DefaultCollisionConfiguration;
 import com.bulletphysics.collision.shapes.BoxShape;
 import com.bulletphysics.collision.shapes.CollisionShape;
-import com.bulletphysics.collision.shapes.StaticPlaneShape;
 import com.bulletphysics.dynamics.DiscreteDynamicsWorld;
 import com.bulletphysics.dynamics.DynamicsWorld;
 import com.bulletphysics.dynamics.RigidBody;
@@ -18,7 +17,6 @@ import com.bulletphysics.linearmath.DefaultMotionState;
 import com.bulletphysics.linearmath.Transform;
 import engine.ecs.component.Rigidbody3D;
 import engine.util.Time;
-import org.joml.Quaternionf;
 
 import javax.vecmath.Quat4f;
 import javax.vecmath.Vector3f;
@@ -27,6 +25,7 @@ import java.util.HashMap;
 public class Physics {
 
     private static DynamicsWorld dynamicsWorld;
+
     private static HashMap<RigidBody, Rigidbody3D> bodies = new HashMap<>();
 
     public static void init() {

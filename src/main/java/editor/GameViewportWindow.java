@@ -29,14 +29,18 @@ import static org.lwjgl.opengles.GLES20.GL_COLOR_ATTACHMENT0;
 import static org.lwjgl.opengles.GLES20.GL_RGBA;
 
 public class GameViewportWindow {
+
     public static boolean focused = false;
+
     private static ImVec2 previousWindowSize = new ImVec2(-1, -1);
+
     private static int currentGizmoOperation = Operation.TRANSLATE;
+
     private static int currentMode = Mode.LOCAL;
 
     public static void sampleFb(Framebuffer buffer, int xCoord, int yCoord){
         buffer.bind();
-        float pixels[] = new float[4];
+        float[] pixels = new float[4];
         glReadBuffer(GL_COLOR_ATTACHMENT0);
         glReadPixels(xCoord, yCoord, 1, 1, GL_RGBA, GL_FLOAT, pixels);
         float red = pixels[0];
@@ -118,7 +122,7 @@ public class GameViewportWindow {
         ImGuizmo.setDrawList();
         ImGuizmo.setRect(ImGui.getWindowPosX(), ImGui.getWindowPosY(), windowSize.x, windowSize.y);
 
-        float model[] = null;
+        float[] model = null;
         if(selected != null) {
             Transform t = selected.getTransform();
             model = MatrixBuilder.createTransformationMatrix(t.getPosition(), t.getRotation(), t.getScale()).get(new float[16]);
@@ -137,6 +141,7 @@ public class GameViewportWindow {
             quat.rotateY(Math.toRadians(rot[1]));
             quat.rotateX(Math.toRadians(rot[0]));
 
+            assert selected != null;
             selected.getTransform().setPosition(new Vector3f(pos[0], pos[1], pos[2]));
             selected.getTransform().setRotation(quat);
             selected.getTransform().setScale(new Vector3f(sca[0], sca[1], sca[2]));

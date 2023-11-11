@@ -7,6 +7,7 @@ import org.joml.Vector4f;
 public class GrassShader extends ShaderProgram {
 
     private static final String vertexPath = "src/main/java/engine/shader/src/grass/vertex.shader";
+
     private static final String fragmentPath = "src/main/java/engine/shader/src/grass/fragment.shader";
 
     public GrassShader() {

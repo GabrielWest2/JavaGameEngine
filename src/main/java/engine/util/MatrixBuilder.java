@@ -11,8 +11,11 @@ import java.lang.Math;
 public class MatrixBuilder {
 
     private static final float FOV = 90;
+
     private static final float NEAR_PLANE = 0.1f;
+
     private static final float FAR_PLANE = 1500f;
+
     public static final Matrix4f defaultTransformation = new Matrix4f().identity();
 
     public static Matrix4f createTransformationMatrix(Vector3f offset, Vector3f rotation, Vector3f scale) {
@@ -24,6 +27,7 @@ public class MatrixBuilder {
                 scale(scale.x, scale.y, scale.z);
         return worldMatrix;
     }
+
     public static Matrix4f createTransformationMatrix(Vector3f offset, Quaternionf rotation, Vector3f scale) {
         Matrix4f worldMatrix = new Matrix4f();
         try {

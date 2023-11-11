@@ -17,7 +17,9 @@ import java.util.List;
  * @Date 7/22/2022
  */
 public class Scene {
+
     private final List<Entity> entities = new ArrayList<>();
+
     private String name;
 
     public Scene(String name) {

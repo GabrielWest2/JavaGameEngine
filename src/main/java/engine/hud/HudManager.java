@@ -1,30 +1,30 @@
 package engine.hud;
 
 import engine.display.DisplayManager;
-import org.joml.Vector4f;
-import org.joml.Vector4fc;
-import org.lwjgl.nanovg.NVGColor;
-import org.lwjgl.nanovg.NVGPaint;
 
-import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.lwjgl.nanovg.NanoSVG.nsvgParse;
-import static org.lwjgl.nanovg.NanoVG.*;
+import static org.lwjgl.nanovg.NanoVG.nvgBeginFrame;
+import static org.lwjgl.nanovg.NanoVG.nvgEndFrame;
 import static org.lwjgl.nanovg.NanoVGGL3.*;
-import static org.lwjgl.system.MemoryUtil.*;
+import static org.lwjgl.system.MemoryUtil.NULL;
 
 public class HudManager {
     static long vg;
 
     private static int red;
+
     private static int gray;
+
     private static int yellow;
+
     private static int dpad;
+
     private static int roundBombPlus;
+
     private static List<HudImage> images = new ArrayList<>();
+
     private static List<HudRectangle> rectangles = new ArrayList<>();
 
 

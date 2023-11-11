@@ -5,6 +5,7 @@ import org.joml.Matrix4f;
 public class SkyboxShader extends ShaderProgram {
 
     private static final String vertexPath = "src/main/java/engine/shader/src/skybox/vertex.shader";
+
     private static final String fragmentPath = "src/main/java/engine/shader/src/skybox/fragment.shader";
 
     public SkyboxShader() {

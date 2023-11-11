@@ -30,11 +30,18 @@ import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
 public class DisplayManager {
+
     private static final ImGuiImplGlfw imGuiGlfw = new ImGuiImplGlfw();
+
     private static final ImGuiImplGl3 imGuiGl3 = new ImGuiImplGl3();
+
     private static final String glslVersion = null;
+
     public static long window;
-    private static int width = 856, height = 482;
+
+    private static int width = 856;
+    private static int height = 482;
+
     private static GameEngine engine;
 
     public static void initOpenGL(GameEngine engine) {

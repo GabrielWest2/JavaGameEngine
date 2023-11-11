@@ -28,14 +28,20 @@ import static org.lwjgl.glfw.GLFW.GLFW_KEY_DELETE;
  * @Date 7/22/2022
  */
 public class InspectorWindow {
-
     private static boolean popup = false;
+
     //private static Texture searchIcon = null;
+
     private static boolean wasPressed = false;
+
     private static boolean innerMenuHovered = false;
+
     private static String search = "";
+
     private static List<String> items = null;
+
     private static HashMap<String, Class> possibleComponents;
+
     public static void render() {
         boolean pressedThisFrame = !wasPressed && Mouse.isMousePressed(0);
         wasPressed = Mouse.isMousePressed(0);

@@ -24,6 +24,7 @@ import static org.lwjgl.opengl.GL30.glGenerateMipmap;
 public class TextureLoader {
 
     private static final List<Integer> textureIDs = new ArrayList<>();
+
     private static int width, height;
 
     private static Texture loadImage(String path) {

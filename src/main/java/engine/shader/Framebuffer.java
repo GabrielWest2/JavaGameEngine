@@ -14,18 +14,31 @@ import static org.lwjgl.opengl.GL30.*;
 
 
 public class Framebuffer {
+
     public static final int NONE = 0;
+
     public static final int DEPTH_TEXTURE = 1;
+
     public static final int DEPTH_RENDER_BUFFER = 2;
+
     private static final List<Framebuffer> instances = new ArrayList<>();
+
     private final int depthBufferType;
+
     private int width;
+
     private int height;
+
     private int divisor;
+
     private int frameBuffer;
+
     private int colorTexture;
+
     private int depthTexture;
+
     private int depthBuffer;
+
     private int colorBuffer;
 
     /**

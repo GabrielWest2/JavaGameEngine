@@ -1,13 +1,14 @@
 package editor;
 
 import imgui.ImGui;
-
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
 
 public class ConsoleWindow {
+
     private static ByteArrayOutputStream newConsole;
+
     private static boolean autoscroll = true;
 
     public static void init() {
@@ -32,7 +33,7 @@ public class ConsoleWindow {
         ImGui.beginChildFrame(1, ImGui.getContentRegionMaxX(), ImGui.getContentRegionAvail().y);
         String msg = newConsole.toString();
         if(msg.length() > 2000){
-            String newStr = msg.substring(msg.length() - 2000, msg.length());
+            String newStr = msg.substring(msg.length() - 2000);
             ImGui.textWrapped(newStr);
         }else{
             ImGui.textWrapped(msg);

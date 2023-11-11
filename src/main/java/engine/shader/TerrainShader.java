@@ -7,6 +7,7 @@ import org.joml.Vector4f;
 public class TerrainShader extends ShaderProgram {
 
     private static final String vertexPath = "src/main/java/engine/shader/src/terrain/vertex.shader";
+
     private static final String fragmentPath = "src/main/java/engine/shader/src/terrain/fragment.shader";
 
     public TerrainShader() {
@@ -19,7 +20,6 @@ public class TerrainShader extends ShaderProgram {
         super.bindAttribute(1, "textureCoords");
         super.bindAttribute(2, "normal");
     }
-
 
     @Override
     public void loadProjectionMatrix(Matrix4f matrix) {
@@ -47,6 +47,7 @@ public class TerrainShader extends ShaderProgram {
         super.loadUniform(super.getUniformLocation("shineDamper"), shineDamper);
         super.loadUniform(super.getUniformLocation("reflectivity"), reflectivity);
     }
+
     public void setClipPlane(Vector4f plane) {
         super.loadUniform(super.getUniformLocation("plane"), plane);
     }

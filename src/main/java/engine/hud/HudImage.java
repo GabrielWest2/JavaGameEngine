@@ -7,9 +7,19 @@ import static org.lwjgl.nanovg.NanoVG.*;
 import static org.lwjgl.nanovg.NanoVG.nvgFill;
 
 public class HudImage {
+
     private NVGPaint paint;
+
     private int texture;
-    private int x, y, w, h;
+
+    private int x;
+
+    private int y;
+
+    private int w;
+
+    private int h;
+
     public HudImage(int texture, int x, int y, int w, int h){
         this.texture = texture;
         this.x = x;

@@ -36,25 +36,39 @@ import static org.lwjgl.opengl.GL11.*;
 
 
 public class GameEngine {
+
     public static GameEngine instance;
+
     public static Texture grass;
+
     public static Texture waterDUDV;
+
     public static Texture waterNormalMap;
+
     public static Framebuffer reflectionBuffer;
+
     public static Framebuffer refractionBuffer;
+
     public static Framebuffer frameBuffer;
+
     public static Framebuffer mousePickingBuffer;
+
     public static float waterMovement = 0f;
+
     public static float grassMovement = 0f;
 
     public static Gson gson;
-    //public static VegetationModel grassModel;
+
     public Camera camera;
+
     public Light light;
+
     public Scene loadedScene;
+
     public SkyboxModel skybox;
 
     public float clipHeight = 0;
+
     public float clipDirection = 1;
 
     public static void main(String[] args) {

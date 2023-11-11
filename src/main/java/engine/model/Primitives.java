@@ -1,7 +1,5 @@
 package engine.model;
 
-import engine.texture.TextureLoader;
-
 /**
  * @author gabed
  * @Date 7/21/2022
@@ -9,7 +7,9 @@ import engine.texture.TextureLoader;
 public class Primitives {
 
     public static TexturedModel cube;
+
     public static TexturedModel plane;
+
     public static TexturedModel sphere;
 
     static {

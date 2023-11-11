@@ -15,10 +15,15 @@ public class TerrainChunk {
     private final int chunkY;
 
     public static final int terrainChunkWidth = 8;
+
     public static final int totalWidth = 1000;
+
     public static final float totalHeight = 600;
+
     public static final int heightMapWidth = 513;
+
     public static int terrainWidth = heightMapWidth/terrainChunkWidth;
+
     public static float unitSize = ((float)totalWidth/(float)terrainChunkWidth)/((float)terrainWidth);
 
     //private static List<Transform> grassPositions = new ArrayList<>();

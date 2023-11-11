@@ -3,7 +3,16 @@ package engine.model;
 import engine.texture.Texture;
 
 public class TerrainModel extends Model {
-    private Texture splat, t1, t2, t3, t4;
+
+    private Texture splat;
+
+    private Texture t1;
+
+    private Texture t2;
+
+    private Texture t3;
+
+    private Texture t4;
 
     public TerrainModel(int vaoID, int vertexCount, Texture splat, Texture t1, Texture t2, Texture t3, Texture t4) {
         super(vaoID, vertexCount);
