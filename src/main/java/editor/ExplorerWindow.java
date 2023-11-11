@@ -12,7 +12,7 @@ public class ExplorerWindow {
     public static Entity selectedEntity = null;
 
     public static void render() {
-        ImGui.begin("Explorer");
+        ImGui.begin(FAIcons.ICON_SITEMAP + " Explorer");
         int i = 0;
         for (Entity entity : GameEngine.getInstance().loadedScene.getEntities()) {
             if(!entity.getName().startsWith("Tile")) {

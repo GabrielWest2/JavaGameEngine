@@ -16,14 +16,14 @@ import static org.lwjgl.assimp.Assimp.*;
 import static org.lwjgl.assimp.Assimp.aiProcess_PreTransformVertices;
 
 public class ModelLoader {
-    private static HashMap<String, Model> cachedModels = new HashMap<>();
+    private static HashMap<String, TexturedModel> cachedModels = new HashMap<>();
     /*
     Model loading using ASSIMP
     adapted from
     https://ahbejarano.gitbook.io/lwjglgamedev/chapter-09
      */
-    public static Model loadUsingAssimp(String path, Texture texture){
-        if(cachedModels.containsKey(path)){
+    public static TexturedModel loadUsingAssimp(String path, Texture texture){
+        if(cachedModels.containsKey(path) && cachedModels.get(path).getTexture().getFilepath().equals(texture.getFilepath())){
             System.out.println("Using cached model \'" + path + "\'");
             return cachedModels.get(path);
         }
@@ -46,7 +46,7 @@ public class ModelLoader {
                 aiProcess_PreTransformVertices);
 
         assert aiScene != null;
-        Model m = processMesh(AIMesh.create(Objects.requireNonNull(aiScene.mMeshes()).get(0)), texture);
+        TexturedModel m = processMesh(AIMesh.create(Objects.requireNonNull(aiScene.mMeshes()).get(0)), texture);
         cachedModels.put(path, m);
         return m;
     }
@@ -110,7 +110,7 @@ public class ModelLoader {
         }
         return data;
     }
-    private static Model processMesh(AIMesh aiMesh, Texture texture) {
+    private static TexturedModel processMesh(AIMesh aiMesh, Texture texture) {
         float[] vertices = processVertices(aiMesh);
         float[] textCoords = processTextCoords(aiMesh);
         int[] indices = processIndices(aiMesh);

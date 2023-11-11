@@ -2,16 +2,15 @@ package editor;
 
 import engine.GameEngine;
 import engine.ecs.Component;
-import engine.ecs.Entity;
 import engine.input.Keyboard;
 import engine.input.Mouse;
-import engine.texture.Texture;
-import engine.texture.TextureLoader;
 import imgui.ImGui;
-import imgui.flag.*;
+import imgui.flag.ImGuiCol;
+import imgui.flag.ImGuiSelectableFlags;
+import imgui.flag.ImGuiTreeNodeFlags;
+import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImBoolean;
 import imgui.type.ImString;
-import org.luaj.vm2.ast.Exp;
 import org.lwjgl.glfw.GLFW;
 import org.reflections.Reflections;
 
@@ -21,6 +20,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import static org.lwjgl.glfw.GLFW.GLFW_KEY_DELETE;
 
 /**
  * @author gabed
@@ -51,7 +52,7 @@ public class InspectorWindow {
         //if(searchIcon == null)
         //    searchIcon = TextureLoader.loadTexture("engine/search.png");
 
-        ImGui.begin("Inspector");
+        ImGui.begin(FAIcons.ICON_SEARCH + " Inspector");
         //Remove after iterating to prevent java.util.ConcurrentModificationException
         List<Component> componentsToRemove = new ArrayList<>();
         if (ExplorerWindow.selectedEntity != null) {
@@ -59,10 +60,13 @@ public class InspectorWindow {
             if (ImGui.inputText("Name", string)){
                 ExplorerWindow.selectedEntity.setName(string.get());
             }
-
+            ImGui.sameLine();
+            if(ImGui.button((ExplorerWindow.selectedEntity.isLocked() ? FAIcons.ICON_LOCK : FAIcons.ICON_LOCK_OPEN) + "")){
+                ExplorerWindow.selectedEntity.setLocked(!ExplorerWindow.selectedEntity.isLocked());
+            }
             ImGui.pushStyleColor(ImGuiCol.Button, 255, 0, 0, 255);
             ImGui.pushStyleColor(ImGuiCol.ButtonHovered, 138, 6, 6, 255);
-            if(ImGui.button("Delete", -1,  30)){
+            if(ImGui.button("Delete", -1,  30) || Keyboard.isKeyPressedThisFrame(GLFW_KEY_DELETE)){
                 GameEngine.getInstance().loadedScene.removeEntity(ExplorerWindow.selectedEntity);
                 ExplorerWindow.selectedEntity = null;
                 ImGui.popStyleColor();

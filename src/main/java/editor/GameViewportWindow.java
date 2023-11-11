@@ -22,7 +22,6 @@ import org.joml.Vector2f;
 import org.joml.Vector3f;
 
 import static com.jogamp.opengl.GL.GL_FLOAT;
-import static com.jogamp.opengl.GL.GL_UNSIGNED_BYTE;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.glReadBuffer;
 import static org.lwjgl.opengl.GL11.glReadPixels;
@@ -33,7 +32,7 @@ public class GameViewportWindow {
     public static boolean focused = false;
     private static ImVec2 previousWindowSize = new ImVec2(-1, -1);
     private static int currentGizmoOperation = Operation.TRANSLATE;
-
+    private static int currentMode = Mode.LOCAL;
 
     public static void sampleFb(Framebuffer buffer, int xCoord, int yCoord){
         buffer.bind();
@@ -49,13 +48,12 @@ public class GameViewportWindow {
             int newB = java.lang.Math.round(blue * 0xff) << 16;
             int index = newR + newB + newG - 1;
             if(Mouse.isMousePressed(0)){
-                if(index < GameEngine.getInstance().loadedScene.getEntities().size() && index >= 0) {
+                if(index < GameEngine.getInstance().loadedScene.getEntities().size() && index >= 0 && !GameEngine.getInstance().loadedScene.getEntities().get(index).isLocked()) {
                     ExplorerWindow.selectedEntity = GameEngine.getInstance().loadedScene.getEntities().get(index);
                 }else {
                     ExplorerWindow.selectedEntity = null;
                 }
             }
-            System.out.println(index);
         }
         buffer.unbind();
     }
@@ -70,7 +68,7 @@ public class GameViewportWindow {
 
         //Remove the border between the edge of the window and the image
         ImGui.pushStyleVar(ImGuiStyleVar.WindowPadding, 0, 0);
-        ImGui.begin("Game Viewport", ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse);
+        ImGui.begin(FAIcons.ICON_EYE + " Game Viewport", ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse | ImGuiWindowFlags.NoTitleBar);
         ImVec2 windowSize = ImGui.getWindowSize();
         //ImVec2 windowSize = getLargestSizeForViewport(buff);
         if(!previousWindowSize.equals(windowSize)){
@@ -78,16 +76,15 @@ public class GameViewportWindow {
             previousWindowSize = windowSize;
         }
 
-
         float[] view = MatrixBuilder.createViewMatrix(camera).get(new float[16]);
         float[] proj = MatrixBuilder.createProjectionMatrix((int) windowSize.x, (int) windowSize.y).get(new float[16]);
 
-        focused = ImGui.isWindowHovered() || Mouse.isMouseHidden();
+        focused = ImGui.isWindowFocused();
 
         ImGui.image(buff.getColorTexture(), windowSize.x, windowSize.y, 0, 1, 1, 0);
 
 
-        int currentMode = Mode.LOCAL;
+
 
         if(Keyboard.isKeyPressedThisFrame(GLFW_KEY_T)){
             currentGizmoOperation = Operation.TRANSLATE;
@@ -125,7 +122,6 @@ public class GameViewportWindow {
             float[] rot = new float[3];
             float[] sca = new float[3];
             ImGuizmo.decomposeMatrixToComponents(model, pos, rot, sca);
-            System.out.println(Math.toDegrees(rot[0]) + "   " + Math.toDegrees(rot[1]) + "   " + Math.toDegrees(rot[2]));
             Quaternionf quat = new Quaternionf();
 
             quat.rotateZ(Math.toRadians(rot[2]));
@@ -135,10 +131,18 @@ public class GameViewportWindow {
             selected.getTransform().setPosition(new Vector3f(pos[0], pos[1], pos[2]));
             selected.getTransform().setRotation(quat);
             selected.getTransform().setScale(new Vector3f(sca[0], sca[1], sca[2]));
-        }else if(mouseOverViewport){
+        }else if(mouseOverViewport && ImGui.isWindowFocused()){
             sampleFb(pickingBuffer, scaledCoordX, scaledCoordY);
         }
 
+        ImGui.setCursorPos(10, 10);
+        if(ImGui.button(FAIcons.ICON_ARROWS_ALT + " World")){
+            currentMode = Mode.WORLD;
+        }
+        ImGui.sameLine();
+        if(ImGui.button(FAIcons.ICON_EXPAND_ARROWS_ALT + " Local")){
+            currentMode = Mode.LOCAL;
+        }
         ImGui.end();
         ImGui.popStyleVar();
     }

@@ -19,7 +19,7 @@ public class DebugWindow {
     private static int lod = 1;
 
     public static void render() {
-        ImGui.begin("Debug Window", ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse);
+        ImGui.begin(FAIcons.ICON_BUG + " Debug Window", ImGuiWindowFlags.NoScrollbar | ImGuiWindowFlags.NoScrollWithMouse);
 
         ImInt i = new ImInt(lod);
         if(ImGui.inputInt("Terrain Lod", i) && i.get() > 0 && i.get() < 11){

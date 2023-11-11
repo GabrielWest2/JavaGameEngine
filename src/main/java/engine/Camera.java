@@ -7,7 +7,6 @@ import engine.util.MatrixBuilder;
 import engine.util.Time;
 import org.joml.Math;
 import org.joml.Matrix4f;
-import org.joml.Vector2f;
 import org.joml.Vector3f;
 
 import static org.lwjgl.glfw.GLFW.*;
@@ -28,7 +27,9 @@ public class Camera {
 
     public void update() {
         if (GameViewportWindow.focused) {
-            float vx = 0, vy = 0, vz = 0;
+            float vx = 0;
+            float vy = 0;
+            float vz = 0;
             boolean ctrl = Keyboard.isKeyPressed(GLFW_KEY_LEFT_CONTROL);
             float speed = (ctrl ? FAST_MOVEMENT_SPEED : MOVEMENT_SPEED);
             if (Keyboard.isKeyPressed(GLFW_KEY_W)) {

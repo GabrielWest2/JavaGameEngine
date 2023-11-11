@@ -13,7 +13,7 @@ public class Entity {
     private String name = "New Entity";
     private transient Transform transform;
     private final List<Component> components;
-
+    private boolean isLocked = false;
 
 
     public Entity(Transform transform, Model model) {
@@ -95,5 +95,13 @@ public class Entity {
 
     public void setTransform(Transform component) {
         this.transform = component;
+    }
+
+    public boolean isLocked() {
+        return isLocked;
+    }
+
+    public void setLocked(boolean locked) {
+        isLocked = locked;
     }
 }

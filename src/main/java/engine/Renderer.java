@@ -11,15 +11,12 @@ import engine.postprocessing.PostProcessing;
 import engine.shader.*;
 import engine.util.MatrixBuilder;
 import org.joml.Matrix4f;
-import org.joml.Random;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
-
-import java.util.List;
 
 import static org.lwjgl.glfw.GLFW.glfwPollEvents;
 import static org.lwjgl.glfw.GLFW.glfwSwapBuffers;
@@ -87,7 +84,7 @@ public class Renderer {
         mousePickingShader = new MousePickingShader();
         updateProjection(DisplayManager.getWidth(), DisplayManager.getHeight());
     }
-
+    /*
     public static void renderTerrainDetails(List<Transform> transforms, VegetationModel model){
         glDisable(GL_CULL_FACE);
         vegetationShader.start();
@@ -149,7 +146,7 @@ public class Renderer {
         glEnable(GL_CULL_FACE);
     }
 
-
+    */
     private static void renderVegetationModel(VegetationModel model, Transform transform, float damper, float reflect) {
         glDisable(GL_CULL_FACE);
         vegetationShader.start();
@@ -200,7 +197,6 @@ public class Renderer {
     }
 
     public static void renderPicking(Entity entity, int entityId) {
-        ModelRenderer mr = entity.getComponent(ModelRenderer.class);
         ObjRenderer obj = entity.getComponent(ObjRenderer.class);
 
         if(obj != null && obj.getModel() != null) {
@@ -338,9 +334,6 @@ public class Renderer {
         glEnable(GL_CULL_FACE);
     }
 
-    public static void renderTextured(TexturedModel model, Transform transform){
-        renderTextured(model, transform, true, 20, 0.5f);
-    }
 
     public static void renderTextured(TexturedModel model, Transform transform, boolean cull, float damper, float reflect) {
         if(cull)

@@ -68,7 +68,7 @@ public class TextureLoader {
                 GL_UNSIGNED_BYTE, buffer);
         glGenerateMipmap(GL_TEXTURE_2D);
         glBindTexture(GL_TEXTURE_2D, 0);
-        return new Texture(result);
+        return new Texture(result, path);
     }
 
     public static int loadCubeMap(String[] textureFiles) {

@@ -46,7 +46,7 @@ public class HudManager {
                 //images.add(new HudImage((y*15 + i) > 12 ? yellow : red, 25 + (33 * i), 17 + (29 * y), 30, 24));
             }
         }
-        images.add(new HudImage(dpad,60, 130, 50, 50));
+        //images.add(new HudImage(dpad,60, 130, 50, 50));
         //images.add(new HudImage(roundBombPlus,60, 80, 50, 50));
     }
 

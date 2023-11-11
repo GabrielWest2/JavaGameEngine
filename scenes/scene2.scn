@@ -1,27 +1,73 @@
 {
   "entities": [
     {
+      "name": "TurretBase",
+      "components": [
+        {
+          "subc": "engine.ecs.component.Transform",
+          "data": {
+            "position": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "rotation": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0,
+              "w": 1.0
+            },
+            "scale": {
+              "x": 0.02,
+              "y": 0.02,
+              "z": 0.02
+            }
+          }
+        },
+        {
+          "subc": "engine.ecs.component.ObjRenderer",
+          "data": {
+            "cullBack": true,
+            "shineDamper": 20.0,
+            "reflectivity": 0.5,
+            "texturePath": "models/turret_base/texture.png",
+            "modelPath": "models/turret_base/base.obj"
+          }
+        }
+      ]
+    },
+    {
       "name": "New Entity",
       "components": [
         {
           "subc": "engine.ecs.component.Transform",
           "data": {
             "position": {
-              "x": 18.734705,
-              "y": 7.103164,
+              "x": 0.0,
+              "y": 0.0,
               "z": 0.0
             },
             "rotation": {
-              "x": 0.21629523,
-              "y": 0.7029595,
-              "z": 0.32444283,
-              "w": 0.59481186
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0,
+              "w": 1.0
             },
             "scale": {
-              "x": 9.0,
-              "y": 11.0,
-              "z": 15.0
+              "x": 0.020001099,
+              "y": 0.020001112,
+              "z": 0.02000108
             }
+          }
+        },
+        {
+          "subc": "engine.ecs.component.ObjRenderer",
+          "data": {
+            "cullBack": true,
+            "shineDamper": 20.0,
+            "reflectivity": 0.5,
+            "texturePath": "models/turret_single/texture.png",
+            "modelPath": "models/turret_single/single.obj"
           }
         }
       ]

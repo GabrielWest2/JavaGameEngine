@@ -15,7 +15,7 @@ public class ConsoleWindow {
         System.setOut(new PrintStream(newConsole));
     }
     public static void render() {
-        ImGui.begin("Console");
+        ImGui.begin(FAIcons.ICON_TERMINAL + " Console");
         if (ImGui.smallButton("Clear")) {
             newConsole.reset();
 

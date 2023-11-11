@@ -5,6 +5,7 @@ import engine.GameEngine;
 import engine.Renderer;
 import engine.hud.HudManager;
 import engine.shader.Framebuffer;
+import imgui.ImFontConfig;
 import imgui.ImGui;
 import imgui.ImGuiIO;
 import imgui.extension.imguizmo.ImGuizmo;
@@ -24,8 +25,6 @@ import org.lwjgl.system.MemoryStack;
 import java.nio.IntBuffer;
 
 import static org.lwjgl.glfw.GLFW.*;
-import static org.lwjgl.nanovg.NanoVG.nvgBeginFrame;
-import static org.lwjgl.nanovg.NanoVGGL3.*;
 import static org.lwjgl.opengl.GL11.glViewport;
 import static org.lwjgl.system.MemoryStack.stackPush;
 import static org.lwjgl.system.MemoryUtil.NULL;
@@ -48,18 +47,16 @@ public class DisplayManager {
             throw new IllegalStateException("Unable to initialize GLFW");
 
         // Configure GLFW
-        glfwDefaultWindowHints(); // optional, the current window hints are already the default
-        glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE); // the window will stay hidden after creation
-        glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE); // the window will be resizable
-        glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE); // the window will be maximized
+        glfwDefaultWindowHints();
+        glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
+        glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
+        glfwWindowHint(GLFW_MAXIMIZED, GLFW_FALSE);
         glfwWindowHint(GLFW_SAMPLES, 8);
 
-        // Create the window
-        window = glfwCreateWindow(width, height, "Game", NULL, NULL);
+
+        window = glfwCreateWindow(width, height, "Game Engine", NULL, NULL);
         if (window == NULL)
             throw new RuntimeException("Failed to create the GLFW window");
-
-        // Set up a key callback. It will be called every time a key is pressed, repeated or released.
 
 
         // Get the thread stack and push a new frame
@@ -100,10 +97,20 @@ public class DisplayManager {
 
         io.setIniFilename("imgui.ini");
         io.setConfigFlags(ImGuiConfigFlags.DockingEnable);
-        io.getFonts().addFontFromFileTTF("res/engine/font/Roboto-Medium.ttf", 17);
+        float baseFontSize = 18.0f; // 13.0f is the size of the default font. Change to the font size you use.
+        float iconFontSize = baseFontSize * 2.0f / 3.0f; // FontAwesome fonts need to have their sizes reduced by 2.0f/3.0f in order to align correctly
+        io.getFonts().addFontFromFileTTF("res/engine/font/Roboto-Medium.ttf", baseFontSize);
+
+        // merge in icons from Font Awesome
+        short icons_ranges[] = {(short) 0xe005, (short) 0xf8ff, 0 };
+        ImFontConfig icons_config = new ImFontConfig();
+        icons_config.setMergeMode(true);
+        icons_config.setPixelSnapH(true);
+        icons_config.setGlyphMinAdvanceX(iconFontSize);
+        io.getFonts().addFontFromFileTTF("res/engine/font/fa-solid-900.ttf", iconFontSize, icons_config, icons_ranges);
+
         imGuiGlfw.init(window, true);
         imGuiGl3.init(glslVersion);
-
         ImGuiThemer.NewDarkTheme();
     }
 

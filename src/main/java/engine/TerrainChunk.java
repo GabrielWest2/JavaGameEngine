@@ -1,21 +1,16 @@
 package engine;
 
-import engine.ecs.component.Transform;
 import engine.model.ModelCreator;
 import engine.model.TerrainModel;
 import engine.util.FastNoiseLite;
-import org.joml.Math;
 import org.joml.Vector3f;
-
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.List;
 
 import static engine.TerrainManager.noise;
 
 public class TerrainChunk {
     private TerrainModel model;
-    private final int chunkX, chunkY;
+    private final int chunkX;
+    private final int chunkY;
 
     public static final int terrainChunkWidth = 8;
     public static final int totalWidth = 1000;
@@ -24,14 +19,14 @@ public class TerrainChunk {
     public static int terrainWidth = heightMapWidth/terrainChunkWidth;
     public static float unitSize = ((float)totalWidth/(float)terrainChunkWidth)/((float)terrainWidth);
 
-    private static List<Transform> grassPositions = new ArrayList<>();
-    private static List<Transform> flowerPositions = new ArrayList<>();
+    //private static List<Transform> grassPositions = new ArrayList<>();
+    //private static List<Transform> flowerPositions = new ArrayList<>();
 
     public TerrainChunk(int chunkX, int chunkY, int lod){
         this.chunkX = chunkX;
         this.chunkY = chunkY;
         createTerrain(chunkX, chunkY, lod*2);
-        generateDetails();
+        //generateDetails();
     }
 
     private void createTerrain(int chunkX, int chunkY, int LOD) {
@@ -80,25 +75,28 @@ public class TerrainChunk {
         model = ModelCreator.loadToTerrainVAO(vertices, triangles, textureCoords, normals);
     }
 
+    /*
     private void generateDetails(){
         for (int y = chunkY*terrainWidth; y <= terrainWidth + chunkY*terrainWidth; y+=1) {
             for (int x = chunkX*terrainWidth; x <= terrainWidth + chunkX*terrainWidth; x+=1) {
+
                 float newX = (float) (x + ((Math.random()-0.5f) * 0.75f));
                 float newY = (float) (y + ((Math.random()-0.5f) * 0.75f));
                 float scale = (float) (Math.random() * 0.1f) + 0.3f;
 
-                /*
+
                 Commented out as migrated from euler rotations to quaternion
                // Transform t = new Transform(
                         new Vector3f(newX * unitSize, getTextureHeight(x, y), newY * unitSize),
                         new Vector3f(0, (float) (Math.random()*360f), 0),
                         new Vector3f(scale, scale, scale));
                // grassPositions.add(t);
-               */
+
 
             }
         }
     }
+    */
     public float getTextureHeight(int x, int y){
         //return 10;
         /*
@@ -123,7 +121,7 @@ public class TerrainChunk {
         */
 
         noise.SetNoiseType(FastNoiseLite.NoiseType.Perlin);
-        return noise.GetNoise((x + 2323) * 1, (y + 43434) * 1) * 50 + 1;
+        return noise.GetNoise((x + 2323), (y + 43434)) * 50 + 1;
         //noise.SetNoiseType(FastNoiseLite.NoiseType.Perlin);
         //return noise.GetNoise((x + offsetX) * scale, (y + offsetY) * scale) * amplitude + 1;
     }
@@ -139,12 +137,13 @@ public class TerrainChunk {
         return normal;
     }
 
+    /*
     public Vector3f calculateObjectRotation(int x, int y){
         Vector3f normal = calculateNormal(x, y);
         float theta = Math.acos(normal.y);
         float phi = (float) (Math.PI-(normal.z / Math.abs(normal.z)) * Math.acos(normal.x / Math.sqrt(normal.x * normal.x + normal.z * normal.z)));
         return new Vector3f(0, (float) Math.toDegrees(phi), (float) Math.toDegrees(theta));
-    }
+    }*/
 
     public TerrainModel getModel() {
         return this.model;

@@ -14,7 +14,10 @@ import engine.ecs.component.Transform;
 import engine.hud.HudManager;
 import engine.input.Keyboard;
 import engine.input.Mouse;
-import engine.model.*;
+import engine.model.Model;
+import engine.model.ModelCreator;
+import engine.model.SkyboxModel;
+import engine.model.VegetationModel;
 import engine.physics.Physics;
 import engine.postprocessing.PostProcessing;
 import engine.scene.Scene;
@@ -56,13 +59,6 @@ public class GameEngine {
     public float clipDirection = 1;
 
     public static void main(String[] args) {
-        GsonBuilder gsonb = new GsonBuilder();
-        gsonb.setPrettyPrinting();
-        gsonb.registerTypeAdapter(Component.class, new ComponentDeserializer());
-        //gsonb.registerTypeAdapter(Entity.class, new EntityTypeAdapter());
-        //gsonb.registerTypeAdapter(Transform.class, new TransformTypeAdapter());
-        gson = gsonb.create();
-
         instance = new GameEngine();
         instance.run();
     }
@@ -89,8 +85,7 @@ public class GameEngine {
 
     Transform t = new Transform();
     private void loop() {
-        System.out.println("DIR: ");
-        System.out.println(System.getProperty("user.dir"));
+        gson = new GsonBuilder().setPrettyPrinting().registerTypeAdapter(Component.class, new ComponentDeserializer()).create();
         grass = TextureLoader.loadTexture("terrain/Texture_Grass_Diffuse.png");
         waterDUDV = TextureLoader.loadTexture("water/waterDUDV.png");
         waterNormalMap = TextureLoader.loadTexture("water/waterNormalMap.png");
@@ -140,6 +135,13 @@ public class GameEngine {
         frameBuffer = new Framebuffer(DisplayManager.getWidth(), DisplayManager.getHeight(), Framebuffer.DEPTH_TEXTURE);
         mousePickingBuffer = new Framebuffer(DisplayManager.getWidth(), DisplayManager.getHeight(), Framebuffer.DEPTH_TEXTURE);
 
+
+        for(int x = 0; x < 16; x++){
+            for(int z = 0; z < 16; z++){
+                loadedScene.addEntity(new Entity("Tile " + x+"-"+z).addComponent(new ObjRenderer().setPaths("models/grass2.obj", "models/ColorPaletteBLUE.png")).getTransform().setPosition(new Vector3f(x*2, 0, z*2)));
+            }
+        }
+
        
         while (!glfwWindowShouldClose(DisplayManager.window)) {
             Renderer.beginFrame();
@@ -166,7 +168,7 @@ public class GameEngine {
             renderToMousePickingBuffer();
             mousePickingBuffer.unbind();
 
-            /*
+
             refractionBuffer.bind();
             clipDirection = -1;
             clipHeight = WaterManger.waterHeight+0.01f;
@@ -180,12 +182,12 @@ public class GameEngine {
             renderScene();
             camera.waterInvert(clipHeight);
             reflectionBuffer.unbind();
-            */
+
             frameBuffer.bind();
             clipDirection = -1;
             clipHeight = 10000;
             renderScene();
-            //WaterManger.render();
+            WaterManger.render();
             HudManager.renderHud();
             Physics.render();
             frameBuffer.unbind();
