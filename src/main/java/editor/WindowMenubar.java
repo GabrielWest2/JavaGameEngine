@@ -3,7 +3,6 @@ package editor;
 import engine.GameEngine;
 import engine.ecs.Entity;
 import engine.ecs.component.ObjRenderer;
-import engine.WaterManger;
 import imgui.ImGui;
 
 import javax.swing.*;
@@ -55,19 +54,19 @@ public class WindowMenubar {
             }
             if (ImGui.beginMenu("Themes")) {
                 if(ImGui.menuItem("Dark Theme")){
-                    ImGuiThemer.NewDarkTheme();
+                    ImGuiThemer.newDarkTheme();
                 }
                 if (ImGui.menuItem("Default Theme")) {
-                    ImGuiThemer.DarkTheme();
+                    ImGuiThemer.darkTheme();
                 }
                 if (ImGui.menuItem("VGUI Theme")) {
-                    ImGuiThemer.VGUITheme();
+                    ImGuiThemer.vguiTheme();
                 }
                 if (ImGui.menuItem("Gold Theme")) {
-                    ImGuiThemer.GoldTheme();
+                    ImGuiThemer.goldTheme();
                 }
                 if (ImGui.menuItem("Red Theme")) {
-                    ImGuiThemer.RedTheme();
+                    ImGuiThemer.redTheme();
                 }
                 ImGui.endMenu();
             }

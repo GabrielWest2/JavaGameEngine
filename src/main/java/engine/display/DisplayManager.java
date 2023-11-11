@@ -40,6 +40,7 @@ public class DisplayManager {
     public static long window;
 
     private static int width = 856;
+
     private static int height = 482;
 
     private static GameEngine engine;
@@ -121,7 +122,7 @@ public class DisplayManager {
 
         imGuiGlfw.init(window, true);
         imGuiGl3.init(glslVersion);
-        ImGuiThemer.NewDarkTheme();
+        ImGuiThemer.newDarkTheme();
     }
 
 

@@ -157,7 +157,7 @@ public class InspectorWindow {
                                     }
                                 } catch (InstantiationException | IllegalAccessException | NoSuchMethodException |
                                          InvocationTargetException e) {
-                                    throw new RuntimeException(e);
+                                    e.printStackTrace();
                                 }
                                 popup = false;
                             }

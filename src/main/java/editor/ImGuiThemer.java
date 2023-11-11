@@ -11,7 +11,7 @@ import static imgui.flag.ImGuiCol.*;
  */
 public class ImGuiThemer {
 
-    public static void NewDarkTheme(){
+    public static void newDarkTheme(){
         ImGuiStyle style = ImGui.getStyle();
         style.setColor(Text, 1.00f, 1.00f, 1.00f, 1.00f);
         style.setColor(TextDisabled, 0.50f, 0.50f, 0.50f, 1.00f);
@@ -31,7 +31,8 @@ public class ImGuiThemer {
         style.setColor(ScrollbarGrab, 0.34f, 0.34f, 0.34f, 0.54f);
         style.setColor(ScrollbarGrabHovered, 0.40f, 0.40f, 0.40f, 0.54f);
         style.setColor(ScrollbarGrabActive, 0.56f, 0.56f, 0.56f, 0.54f);
-        style.setColor(CheckMark, 252.0f/256.0f, 26.0f / 256.0f, 26.0f / 256.0f, 1.00f);
+        style.setColor(CheckMark, 252.0f/256.0f, 26.0f / 256.0f, 26.0f / 256.0f,
+                1.00f);
         style.setColor(SliderGrab, 0.34f, 0.34f, 0.34f, 0.54f);
         style.setColor(SliderGrabActive, 0.56f, 0.56f, 0.56f, 0.54f);
         style.setColor(Button, 0.05f, 0.05f, 0.05f, 0.54f);
@@ -51,7 +52,8 @@ public class ImGuiThemer {
         style.setColor(TabActive, 0.20f, 0.20f, 0.20f, 0.36f);
         style.setColor(TabUnfocused, 0.00f, 0.00f, 0.00f, 0.52f);
         style.setColor(TabUnfocusedActive, 0.14f, 0.14f, 0.14f, 1.00f);
-        style.setColor(DockingPreview, 252.0f / 256.0f, 127.0f / 256.0f, 127.0f / 256.0f, 1.00f);
+        style.setColor(DockingPreview, 252.0f / 256.0f, 127.0f / 256.0f,
+                127.0f / 256.0f, 1.00f);
         style.setColor(DockingEmptyBg, 0.0898f, 0.0898f, 0.0898f, 1.00f);
         style.setColor(PlotLines, 1.00f, 0.00f, 0.00f, 1.00f);
         style.setColor(PlotLinesHovered, 1.00f, 0.00f, 0.00f, 1.00f);
@@ -93,7 +95,7 @@ public class ImGuiThemer {
         style.setTabRounding(4);
     }
     
-    public static void DarkTheme() {
+    public static void darkTheme() {
         ImGuiStyle style = ImGui.getStyle();
         style.setColor(Text, 0.95f, 0.96f, 0.98f, 1.00f);
         style.setColor(TextDisabled, 0.36f, 0.42f, 0.47f, 1.00f);
@@ -145,7 +147,7 @@ public class ImGuiThemer {
         style.setColor(ModalWindowDimBg, 0.80f, 0.80f, 0.80f, 0.35f);
     }
 
-    public static void VGUITheme() {
+    public static void vguiTheme() {
         ImGuiStyle style = ImGui.getStyle();
         style.setColor(Text, 1.00f, 1.00f, 1.00f, 1.00f);
         style.setColor(TextDisabled, 0.50f, 0.50f, 0.50f, 1.00f);
@@ -199,7 +201,7 @@ public class ImGuiThemer {
         style.setColor(ModalWindowDimBg, 0.80f, 0.80f, 0.80f, 0.35f);
     }
 
-    public static void GoldTheme() {
+    public static void goldTheme() {
         ImGuiStyle style = ImGui.getStyle();
         style.setColor(Text, 0.92f, 0.92f, 0.92f, 1.00f);
         style.setColor(TextDisabled, 0.44f, 0.44f, 0.44f, 1.00f);
@@ -268,7 +270,7 @@ public class ImGuiThemer {
 
     }
 
-    public static void RedTheme() {
+    public static void redTheme() {
         ImGuiStyle style = ImGui.getStyle();
         style.setColor(Text, 1.00f, 1.00f, 1.00f, 1.00f);
         style.setColor(TextDisabled, 0.73f, 0.75f, 0.74f, 1.00f);
@@ -307,7 +309,8 @@ public class ImGuiThemer {
         style.setColor(TabHovered, 0.84f, 0.66f, 0.66f, 0.66f);
         style.setColor(TabActive, 0.84f, 0.66f, 0.66f, 0.66f);
         style.setColor(TabUnfocused, 0.07f, 0.10f, 0.15f, 0.97f);
-        style.setColor(TabUnfocusedActive, 161f / 255f, 75f / 255f, 75f / 255f, 1.00f);
+        style.setColor(TabUnfocusedActive, 161f / 255f, 75f / 255f,
+                75f / 255f, 1.00f);
         style.setColor(PlotLines, 0.61f, 0.61f, 0.61f, 1.00f);
         style.setColor(PlotLinesHovered, 1.00f, 0.43f, 0.35f, 1.00f);
         style.setColor(PlotHistogram, 0.90f, 0.70f, 0.00f, 1.00f);

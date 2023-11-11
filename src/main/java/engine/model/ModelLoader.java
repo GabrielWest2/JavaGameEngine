@@ -17,7 +17,8 @@ import static org.lwjgl.assimp.Assimp.aiProcess_PreTransformVertices;
 
 public class ModelLoader {
 
-    private static final HashMap<String, TexturedModel> cachedModels = new HashMap<>();
+    private static final HashMap<String, TexturedModel> cachedModels
+            = new HashMap<>();
 
     /*
     Model loading using ASSIMP
@@ -25,12 +26,15 @@ public class ModelLoader {
     https://ahbejarano.gitbook.io/lwjglgamedev/chapter-09
      */
     public static TexturedModel loadUsingAssimp(String path, Texture texture){
-        if(cachedModels.containsKey(path) && cachedModels.get(path).getTexture().getFilepath().equals(texture.getFilepath())){
+        if(cachedModels.containsKey(path) &&
+                cachedModels.get(path).getTexture().getFilepath()
+                        .equals(texture.getFilepath())){
             System.out.println("Using cached model \'" + path + "\'");
             return cachedModels.get(path);
         }
 
-        AIScene aiScene = aiImportFile("res/" + path, aiProcess_CalcTangentSpace | // calculate tangents and bitangents if possible
+        AIScene aiScene = aiImportFile("res/" + path,
+                aiProcess_CalcTangentSpace | // calculate tangents and bitangents if possible
                 aiProcess_JoinIdenticalVertices | // join identical vertices/ optimize indexing
                 //aiProcess_ValidateDataStructure  | // perform a full validation of the loader's output
                 aiProcess_Triangulate | // Ensure all verticies are triangulated (each 3 vertices are triangle)

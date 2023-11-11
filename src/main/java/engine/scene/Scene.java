@@ -82,7 +82,7 @@ public class Scene {
                 writer.write(json);
             }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
 
@@ -96,7 +96,7 @@ public class Scene {
         try {
             str = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+           e.printStackTrace();
         }
 
         Scene loaded = GameEngine.gson.fromJson(str, Scene.class);

@@ -3,7 +3,6 @@ package engine.ecs;
 import editor.CustomHudName;
 import editor.NoHudRender;
 import editor.Range;
-import engine.ecs.Entity;
 import engine.util.Color;
 import imgui.ImGui;
 import imgui.type.ImString;
@@ -26,11 +25,10 @@ public class Component {
         this.entity = parent;
         Field[] fields = this.getClass().getDeclaredFields();
         for (Field field : fields) {
-            if (Modifier.isTransient(field.getModifiers()))
-                continue;
-
-            hasFields = true;
-            return;
+            if (!Modifier.isTransient(field.getModifiers())){
+                hasFields = true;
+                break;
+            }
         }
     }
 
@@ -165,6 +163,7 @@ public class Component {
             e.printStackTrace();
         }
     }
+
 
     public boolean canBeRemoved(){
         return true;

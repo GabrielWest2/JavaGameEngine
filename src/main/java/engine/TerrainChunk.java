@@ -1,5 +1,6 @@
 package engine;
 
+import engine.error.InvalidTerrainChunkError;
 import engine.model.ModelCreator;
 import engine.model.TerrainModel;
 import engine.util.FastNoiseLite;
@@ -32,17 +33,19 @@ public class TerrainChunk {
     public TerrainChunk(int chunkX, int chunkY, int lod){
         this.chunkX = chunkX;
         this.chunkY = chunkY;
-        createTerrain(chunkX, chunkY, lod*2);
+        try {
+            createTerrain(chunkX, chunkY, lod*2);
+        } catch (InvalidTerrainChunkError e) {
+            e.printStackTrace();
+        }
         //generateDetails();
     }
 
-    private void createTerrain(int chunkX, int chunkY, int LOD) {
-        try {
-            if(chunkX < 0 || chunkY < 0 || chunkX > terrainChunkWidth || chunkY > terrainChunkWidth)
-                throw new Exception("Invalid Chunk: " + chunkX+ ", " + chunkY);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+    private void createTerrain(int chunkX, int chunkY, int LOD) throws InvalidTerrainChunkError {
+        if(chunkX < 0 || chunkY < 0 || chunkX > terrainChunkWidth || chunkY > terrainChunkWidth){
+            throw new InvalidTerrainChunkError("Invalid Chunk: " + chunkX+ ", " + chunkY);
         }
+
         float[] vertices = new float[(((terrainWidth/LOD) + 1) * ((terrainWidth/LOD) + 1)) * 3];
         float[] textureCoords = new float[(((terrainWidth/LOD) + 1) * ((terrainWidth/LOD) + 1)) * 3];
         int[] triangles = new int[(terrainWidth/LOD) * (terrainWidth/LOD) * 6];

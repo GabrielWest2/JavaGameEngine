@@ -1,18 +1,13 @@
 package engine.model;
 
 import de.javagl.obj.*;
-import engine.GameEngine;
 import engine.texture.Texture;
-import org.lwjgl.assimp.*;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.IntBuffer;
-import java.util.*;
-
-import static org.lwjgl.assimp.Assimp.aiImportFile;
-import static org.lwjgl.assimp.Assimp.*;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class OBJLoader {
@@ -84,9 +79,9 @@ public class OBJLoader {
             VegetationModel model = ModelCreator.loadToVegetationVAO(ObjData.getVertices(obj), ObjData.getFaceVertexIndices(obj), ObjData.getTexCoords(obj, 2), ObjData.getNormals(obj), texture);
             return model;
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
-
+        return null;
     }
 
     public static Model loadOBJWithoutMTL(String path) {
@@ -98,8 +93,9 @@ public class OBJLoader {
             return model;
 
         } catch (IOException e) {
-            throw new RuntimeException(e);
+             e.printStackTrace();
         }
+        return null;
     }
 
     public static float[] getFloats(Object[] values) {

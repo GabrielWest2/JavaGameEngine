@@ -15,8 +15,9 @@ public class ComponentDeserializer implements JsonSerializer<Component>, JsonDes
         try {
             return jsonDeserializationContext.deserialize(fieldData, Class.forName(subclass));
         } catch (ClassNotFoundException e) {
-            throw new RuntimeException(e);
+           e.printStackTrace();
         }
+        return null;
     }
 
     @Override

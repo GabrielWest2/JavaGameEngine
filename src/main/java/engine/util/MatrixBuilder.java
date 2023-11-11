@@ -36,7 +36,7 @@ public class MatrixBuilder {
                     .rotate(((Quaternionf)rotation.clone()).normalize())
                     .scale(scale.x, scale.y, scale.z);
         } catch (CloneNotSupportedException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
         return worldMatrix;
     }
