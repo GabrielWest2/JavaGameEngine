@@ -2,27 +2,49 @@ package editor;
 
 public class FAIcons {
     public static final char ICON_MIN = '\ue005';
+
     public static final char ICON_MAX_16 = '\uf8ff';
+
     public static final char ICON_MAX = '\uf8ff';
+
     public static final char ICON_AD = '\uf641';
+
     public static final char ICON_ADDRESS_BOOK = '\uf2b9';
+
     public static final char ICON_ADDRESS_CARD = '\uf2bb';
+
     public static final char ICON_ADJUST = '\uf042';
+
     public static final char ICON_AIR_FRESHENER = '\uf5d0';
+
     public static final char ICON_ALIGN_CENTER = '\uf037';
+
     public static final char ICON_ALIGN_JUSTIFY = '\uf039';
+
     public static final char ICON_ALIGN_LEFT = '\uf036';
+
     public static final char ICON_ALIGN_RIGHT = '\uf038';
+
     public static final char ICON_ALLERGIES = '\uf461';
+
     public static final char ICON_AMBULANCE = '\uf0f9';
+
     public static final char ICON_AMERICAN_SIGN_LANGUAGE_INTERPRETING = '\uf2a3';
+
     public static final char ICON_ANCHOR = '\uf13d';
+
     public static final char ICON_ANGLE_DOUBLE_DOWN = '\uf103';
+
     public static final char ICON_ANGLE_DOUBLE_LEFT = '\uf100';
+
     public static final char ICON_ANGLE_DOUBLE_RIGHT = '\uf101';
+
     public static final char ICON_ANGLE_DOUBLE_UP = '\uf102';
+
     public static final char ICON_ANGLE_DOWN = '\uf107';
+
     public static final char ICON_ANGLE_LEFT = '\uf104';
+
     public static final char ICON_ANGLE_RIGHT = '\uf105';
     public static final char ICON_ANGLE_UP = '\uf106';
     public static final char ICON_ANGRY = '\uf556';

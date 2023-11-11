@@ -19,8 +19,11 @@ import javax.vecmath.Quat4f;
 import javax.vecmath.Vector3f;
 
 public class Rigidbody3D extends Component {
+
     public float mass = 2.5f;
+
     public float restitution = 0.5f;
+
     @Range(min = 0, max = 1)
     public float angularDamping = 0.95f;
 

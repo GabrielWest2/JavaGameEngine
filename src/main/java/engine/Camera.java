@@ -12,10 +12,15 @@ import org.joml.Vector3f;
 import static org.lwjgl.glfw.GLFW.*;
 
 public class Camera {
+
     private static final float MOVEMENT_SPEED = 10f;
+
     private static final float FAST_MOVEMENT_SPEED = 90f;
+
     private Vector3f position;
+
     private Vector3f rotation;
+
     private Matrix4f viewMatrix;
 
     public Camera(Vector3f position, Vector3f rotation) {

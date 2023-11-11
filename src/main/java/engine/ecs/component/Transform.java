@@ -1,6 +1,5 @@
 package engine.ecs.component;
 
-import com.google.gson.TypeAdapter;
 import editor.CustomHudName;
 import engine.ecs.Component;
 import engine.ecs.Entity;
@@ -10,10 +9,13 @@ import org.joml.Vector3f;
 import javax.vecmath.Quat4f;
 
 public class Transform extends Component {
+
     @CustomHudName(displayName = "Position")
     private Vector3f position = new Vector3f(0, 0, 0);
+
     @CustomHudName(displayName = "Rotation")
     private Quaternionf rotation = new Quaternionf();
+
     @CustomHudName(displayName = "Scale")
     private Vector3f scale = new Vector3f(1, 1, 1);
 

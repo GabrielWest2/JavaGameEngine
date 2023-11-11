@@ -24,12 +24,19 @@ import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL13.GL_MULTISAMPLE;
 
 public class Renderer {
+
     private static WaterShader waterShader;
+
     private static StandardShader defaultShader;
+
     private static SkyboxShader skyboxShader;
+
     private static TerrainShader terrainShader;
+
     private static GridShader gridShader;
+
     private static GrassShader vegetationShader;
+
     private static MousePickingShader mousePickingShader;
 
 

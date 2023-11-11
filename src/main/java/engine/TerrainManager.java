@@ -5,10 +5,6 @@ import engine.texture.TextureLoader;
 import engine.util.FastNoiseLite;
 import org.joml.Vector2i;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.util.HashMap;
 
 /**
@@ -16,21 +12,37 @@ import java.util.HashMap;
  * @Date 7/23/2022
  */
 public class TerrainManager {
+
     public static float textureScale1 = 120f;
+
     public static float textureScale2 = 500f;
+
     public static float textureScale3 = 120f;
+
     public static float textureScale4 = 0.75f;
 
 
     public static float offsetX = 0;
+
     public static float offsetY = 0;
+
     public static float scale = 2;
+
     public static float amplitude = 10;
 
     static final FastNoiseLite noise = new FastNoiseLite();
+
     private static HashMap<Vector2i, TerrainChunk> terrainChunks = new HashMap();
+
     //public static BufferedImage heightMap;
-    public static Texture t1, t2, t3, t4;
+
+    public static Texture t1;
+
+    public static Texture t2;
+
+    public static Texture t3;
+
+    public static Texture t4;
 
     public static void init(){
         //splatmap = TextureLoader.loadTexture("Terrain_splatmap_0.png");

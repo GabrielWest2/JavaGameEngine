@@ -9,15 +9,16 @@ import engine.model.Model;
  * @Date 7/23/2022
  */
 public class ModelRenderer extends Component {
+
     public Model model;
+
     public boolean cullBack = true;
+
     public float shineDamper = 20;
+
     @Range(max = 2)
     public float reflectivity = 0.5f;
 
-    public ModelRenderer() {
-
-    }
 
     public ModelRenderer(Model model) {
         this.model = model;

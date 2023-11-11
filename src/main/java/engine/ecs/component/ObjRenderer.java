@@ -19,13 +19,19 @@ import java.net.URI;
  * @Date 7/23/2022
  */
 public class ObjRenderer extends Component {
+
     public boolean cullBack = true;
+
     public float shineDamper = 20;
+
     public float reflectivity = 0.5f;
+
     @NoHudRender
     public String texturePath = "";
+
     @NoHudRender
     public String modelPath = "";
+
     public transient Model model;
 
     public ObjRenderer() {

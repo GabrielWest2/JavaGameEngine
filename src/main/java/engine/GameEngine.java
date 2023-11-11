@@ -135,6 +135,7 @@ public class GameEngine {
                 e.getTransform().setPosition(new Vector3f(x*2, 0, z*2));
                 ObjRenderer obj = new ObjRenderer()
                         .setPaths("models/grass2.obj", "models/ColorPaletteBLUE.png");
+                e.addComponent(obj);
                 loadedScene.addEntity(e);
             }
         }

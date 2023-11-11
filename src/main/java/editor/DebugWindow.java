@@ -1,11 +1,9 @@
 package editor;
+
 import engine.GameEngine;
-import engine.Renderer;
 import engine.TerrainManager;
-import engine.postprocessing.PostProcessing;
 import imgui.ImGui;
 import imgui.flag.ImGuiWindowFlags;
-import imgui.type.ImFloat;
 import imgui.type.ImInt;
 import scripting.LuaScriptingManager;
 

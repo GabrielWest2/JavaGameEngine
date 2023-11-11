@@ -5,8 +5,11 @@ import engine.model.WaterModel;
 import org.joml.Vector3f;
 
 public class WaterManger {
+
     public static int width = 1500;
+
     public static final int waterHeight = 0;
+
     private static WaterModel waterModel;
 
     public static void init() {

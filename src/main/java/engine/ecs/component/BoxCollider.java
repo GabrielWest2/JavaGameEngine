@@ -13,18 +13,23 @@ import org.joml.Vector3f;
 import static com.bulletphysics.collision.dispatch.CollisionObject.*;
 
 public class BoxCollider extends Component {
+
     private Vector3f halfExtents = new Vector3f(0.5f);
+
     @CustomHudName(displayName = "Inertia")
     private Vector3f inertia = new Vector3f(0.5f);
 
     private boolean canDeactivate = false;
+
     @NoHudRender
-    private boolean rotX, rotY, rotZ;
+    private boolean rotX;
 
+    @NoHudRender
+    private boolean rotY;
 
-    public BoxCollider(){
+    @NoHudRender
+    private boolean rotZ;
 
-    }
 
     private void updateCollider(){
         Rigidbody3D rb = entity.getComponent(Rigidbody3D.class);
