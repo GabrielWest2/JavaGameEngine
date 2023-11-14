@@ -1,5 +1,6 @@
 package editor;
 
+import editor.util.ImGuiThemer;
 import engine.GameEngine;
 import engine.ecs.Entity;
 import engine.ecs.component.ObjRenderer;
@@ -76,7 +77,7 @@ public class WindowMenubar {
                     GameEngine.getInstance().loadedScene.addEntity(new Entity());
                 }
                 if (ImGui.menuItem("Add Grass Block")) {
-                    GameEngine.getInstance().loadedScene.addEntity(new Entity().addComponent(new ObjRenderer().setPaths("models/grass.obj", "models/ColorPaletteBLUE.png")));
+                    GameEngine.getInstance().loadedScene.addEntity(new Entity().addComponent(new ObjRenderer().setPaths("models/grass.obj")));
                 }
 
                 ImGui.endMenu();

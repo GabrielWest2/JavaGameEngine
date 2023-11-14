@@ -1,8 +1,9 @@
 package engine;
 
 import engine.error.InvalidTerrainChunkError;
-import engine.model.ModelCreator;
-import engine.model.TerrainModel;
+import engine.rendering.Renderer;
+import engine.rendering.model.ModelCreator;
+import engine.rendering.model.TerrainModel;
 import engine.util.FastNoiseLite;
 import org.joml.Vector3f;
 

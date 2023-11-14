@@ -1,8 +1,8 @@
 package engine.ecs.component;
 
-import editor.Range;
+import editor.util.Range;
 import engine.ecs.Component;
-import engine.model.Model;
+import engine.rendering.model.Model;
 
 /**
  * @author gabed

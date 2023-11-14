@@ -1,0 +1,117 @@
+{
+  "entities": [
+    {
+      "name": "Cube",
+      "components": [
+        {
+          "subc": "engine.ecs.component.Transform",
+          "data": {
+            "position": {
+              "x": 0.40367687,
+              "y": 0.03539431,
+              "z": -0.5248404
+            },
+            "rotation": {
+              "x": -0.012076957,
+              "y": 0.98127437,
+              "z": -0.06556782,
+              "w": 0.18070826
+            },
+            "scale": {
+              "x": 5.0000734,
+              "y": 5.0000606,
+              "z": 5.0000954
+            }
+          }
+        },
+        {
+          "subc": "engine.ecs.component.ObjRenderer",
+          "data": {
+            "cullBack": true,
+            "modelPath": "engine/primitive/cube.obj"
+          }
+        }
+      ],
+      "isLocked": false
+    },
+    {
+      "name": "New Entity",
+      "components": [
+        {
+          "subc": "engine.ecs.component.Transform",
+          "data": {
+            "position": {
+              "x": 0.0,
+              "y": 3.619916,
+              "z": 2.2108507
+            },
+            "rotation": {
+              "x": -0.6742611,
+              "y": 0.0,
+              "z": 0.0,
+              "w": 0.7384931
+            },
+            "scale": {
+              "x": 37.00063,
+              "y": 22.000338,
+              "z": 23.000433
+            }
+          }
+        },
+        {
+          "subc": "engine.ecs.component.ObjRenderer",
+          "data": {
+            "cullBack": false,
+            "modelPath": "engine/primitive/plane.obj"
+          }
+        }
+      ],
+      "isLocked": false
+    }
+  ],
+  "name": "testScene",
+  "lights": {
+    "ambientLight": {
+      "color": {
+        "x": 0.1787234,
+        "y": 1.0,
+        "z": 0.77982783
+      },
+      "intensity": 0.056
+    },
+    "dirLight": {
+      "color": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      },
+      "direction": {
+        "x": 0.0,
+        "y": 1.0,
+        "z": 0.0
+      },
+      "intensity": 0.328
+    },
+    "pointLights": [
+      {
+        "position": {
+          "x": 0.0,
+          "y": 6.0,
+          "z": 0.0
+        },
+        "color": {
+          "x": 1.0,
+          "y": 0.893617,
+          "z": 0.0
+        },
+        "intensity": 1.0,
+        "attenuation": {
+          "constant": 0.0,
+          "exponent": 0.0,
+          "linear": 0.771
+        }
+      }
+    ],
+    "spotLights": []
+  }
+}

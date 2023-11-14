@@ -1,10 +1,10 @@
 package engine.ecs.component;
 
-import editor.NoHudRender;
+import editor.util.NoHudRender;
 import engine.ecs.Component;
-import engine.model.Model;
-import engine.model.ModelLoader;
-import engine.texture.TextureLoader;
+import engine.rendering.model.Model;
+import engine.rendering.yaycoolnewmodels.ComplexModel;
+import engine.rendering.yaycoolnewmodels.Material;
 import imgui.ImGui;
 import imgui.type.ImString;
 
@@ -22,17 +22,10 @@ public class ObjRenderer extends Component {
 
     public boolean cullBack = true;
 
-    public float shineDamper = 20;
-
-    public float reflectivity = 0.5f;
-
-    @NoHudRender
-    public String texturePath = "";
-
     @NoHudRender
     public String modelPath = "";
 
-    public transient Model model;
+    public transient ComplexModel model;
 
     public ObjRenderer() {
 
@@ -41,21 +34,21 @@ public class ObjRenderer extends Component {
     @Override
     public void onVariableChanged() {
         try {
-            if (new File("res/" + modelPath).exists() && !new File("res/" + modelPath).isDirectory() && new File("res/" + texturePath).exists() && !new File("res/" + texturePath).isDirectory())
-                this.model = ModelLoader.loadUsingAssimp(modelPath, TextureLoader.loadTexture(texturePath));
+            if (new File("res/" + modelPath).exists() && !new File("res/" + modelPath).isDirectory()) {
+                this.model = new ComplexModel(modelPath);
+            }
 
         }catch (Exception e){
             e.printStackTrace();
         }
     }
 
-    public Model getModel() {
+    public ComplexModel getModel() {
         return model;
     }
 
-    public ObjRenderer setPaths(String modelPath, String texturePath){
+    public ObjRenderer setPaths(String modelPath){
         this.modelPath = modelPath;
-        this.texturePath = texturePath;
         onVariableChanged();
         return this;
     }
@@ -65,43 +58,13 @@ public class ObjRenderer extends Component {
         super.GUI();
 
         char c = '\uf07c';
-        if(ImGui.button(c + "")){
-            JFrame parentFrame = new JFrame();
-            FileFilter filter = new FileNameExtensionFilter("Image file", new String[] {"jpg", "jpeg", "png", "tiff", "tif"});
 
-            JFileChooser fileChooser = new JFileChooser("res/models/");
-            fileChooser.addChoosableFileFilter(filter);
-            fileChooser.setAcceptAllFileFilterUsed(false);
-            fileChooser.setDialogTitle("Select Texture");
-
-            int userSelection = fileChooser.showOpenDialog(parentFrame);
-
-            if (userSelection == JFileChooser.APPROVE_OPTION) {
-                File fileToSave = fileChooser.getSelectedFile();
-                URI ogPath = fileToSave.toURI();
-                URI resDirectory = new File("res/").toURI();
-                URI relative = resDirectory.relativize(ogPath);
-                this.texturePath = relative.getPath();
-                onVariableChanged();
-            }
-        }
-        ImGui.sameLine();
-
-        ImString string = new ImString(100);
-        string.set(texturePath);
-        if (ImGui.inputText("Texture Path", string)) {
-            this.texturePath = string.get();
-            onVariableChanged();
-        }
-
-
-       // ImGui.pushID(ImGui.getID("secondButton"));
         ImGui.pushID("yaybuttoncool");
         boolean a = ImGui.button(c + "");
         ImGui.popID();
         if(a){
             JFrame parentFrame = new JFrame();
-            FileFilter filter = new FileNameExtensionFilter("Model file", new String[] {"obj", "fbx"});
+            FileFilter filter = new FileNameExtensionFilter("Model file", new String[] {"obj", "fbx", "dae", "gltf"});
 
             JFileChooser fileChooser = new JFileChooser("res/models/");
             fileChooser.addChoosableFileFilter(filter);
@@ -122,11 +85,56 @@ public class ObjRenderer extends Component {
         //ImGui.popID();
         ImGui.sameLine();
 
-        string = new ImString(100);
+        ImString string = new ImString(100);
         string.set(modelPath);
         if (ImGui.inputText("Model Path", string)) {
             this.modelPath = string.get();
             onVariableChanged();
+        }
+
+        if(model == null)
+            return;
+        int i =0;
+        for(Model m : model.getMeshes()){
+            if(ImGui.collapsingHeader("Mesh " + i)){
+                Material mat = m.getMaterial();
+                ImGui.text("Texture Path: " + mat.getTexturePath());
+                ImGui.text("Texture ID: " + (mat.getLoadedTexture() == null ? "unloaded" : Integer.toString(mat.getLoadedTexture().textureID())));
+
+                float[] cols  = new float[] {
+                    mat.getDiffuseColor().x,
+                    mat.getDiffuseColor().y,
+                    mat.getDiffuseColor().z
+                };
+                if(ImGui.colorEdit3("Diffuse Color", cols)){
+                    mat.getDiffuseColor().x = cols[0];
+                    mat.getDiffuseColor().y = cols[1];
+                    mat.getDiffuseColor().z = cols[2];
+                }
+
+                cols  = new float[] {
+                    mat.getAmbientColor().x,
+                    mat.getAmbientColor().y,
+                    mat.getAmbientColor().z
+                };
+                if(ImGui.colorEdit3("Ambient Color", cols)){
+                    mat.getAmbientColor().x = cols[0];
+                    mat.getAmbientColor().y = cols[1];
+                    mat.getAmbientColor().z = cols[2];
+                }
+
+                cols  = new float[] {
+                    mat.getSpecularColor().x,
+                    mat.getSpecularColor().y,
+                    mat.getSpecularColor().z
+                };
+                if(ImGui.colorEdit3("Specular Color", cols)){
+                    mat.getSpecularColor().x = cols[0];
+                    mat.getSpecularColor().y = cols[1];
+                    mat.getSpecularColor().z = cols[2];
+                }
+            }
+            i++;
         }
     }
 }

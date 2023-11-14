@@ -3,7 +3,7 @@ package engine.ecs;
 import engine.GameEngine;
 import engine.ecs.component.ModelRenderer;
 import engine.ecs.component.Transform;
-import engine.model.Model;
+import engine.rendering.model.Model;
 import org.joml.Vector3f;
 
 import java.util.ArrayList;

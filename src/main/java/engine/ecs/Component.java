@@ -1,8 +1,8 @@
 package engine.ecs;
 
-import editor.CustomHudName;
-import editor.NoHudRender;
-import editor.Range;
+import editor.util.CustomHudName;
+import editor.util.NoHudRender;
+import editor.util.Range;
 import engine.util.Color;
 import imgui.ImGui;
 import imgui.type.ImString;

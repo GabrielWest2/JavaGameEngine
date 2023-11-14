@@ -1,7 +1,7 @@
 local engine = luajava.bindClass("engine.GameEngine"):getInstance()
 local time = luajava.bindClass("engine.util.Time")
-local textureLoader = luajava.bindClass("engine.texture.TextureLoader")
-local objLoader = luajava.bindClass("engine.model.OBJLoader")
+local textureLoader = luajava.bindClass("engine.rendering.texture.TextureLoader")
+local objLoader = luajava.bindClass("engine.rendering.model.OBJLoader")
 local modelRenderer = luajava.bindClass("engine.ecs.component.ModelRenderer")
 
 function Update()

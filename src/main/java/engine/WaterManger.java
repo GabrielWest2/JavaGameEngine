@@ -1,7 +1,8 @@
 package engine;
 
-import engine.model.ModelCreator;
-import engine.model.WaterModel;
+import engine.rendering.Renderer;
+import engine.rendering.model.ModelCreator;
+import engine.rendering.model.WaterModel;
 import org.joml.Vector3f;
 
 public class WaterManger {

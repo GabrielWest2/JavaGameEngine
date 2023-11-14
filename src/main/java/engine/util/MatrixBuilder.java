@@ -1,8 +1,8 @@
 package engine.util;
 
-import engine.Camera;
+import engine.rendering.Camera;
 import engine.GameEngine;
-import engine.display.DisplayManager;
+import engine.rendering.DisplayManager;
 import engine.input.Mouse;
 import org.joml.*;
 

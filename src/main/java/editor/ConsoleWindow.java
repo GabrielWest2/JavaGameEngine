@@ -1,5 +1,6 @@
 package editor;
 
+import editor.util.FAIcons;
 import imgui.ImGui;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
@@ -15,6 +16,7 @@ public class ConsoleWindow {
         newConsole = new ByteArrayOutputStream();
         System.setOut(new PrintStream(newConsole));
     }
+
     public static void render() {
         ImGui.begin(FAIcons.ICON_TERMINAL + " Console");
         if (ImGui.smallButton("Clear")) {
@@ -30,7 +32,11 @@ public class ConsoleWindow {
         }
 
         ImGui.separator();
-        ImGui.beginChildFrame(1, ImGui.getContentRegionMaxX(), ImGui.getContentRegionAvail().y);
+        ImGui.beginChildFrame(1,
+                ImGui.getContentRegionMaxX(),
+                ImGui.getContentRegionAvail().y
+        );
+
         String msg = newConsole.toString();
         if(msg.length() > 2000){
             String newStr = msg.substring(msg.length() - 2000);

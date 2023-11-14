@@ -1,6 +1,6 @@
 package engine.shader;
 
-import engine.ecs.Light;
+import engine.Light;
 import org.joml.Matrix4f;
 import org.joml.Vector4f;
 

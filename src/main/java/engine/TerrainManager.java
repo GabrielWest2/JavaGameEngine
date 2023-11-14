@@ -1,7 +1,7 @@
 package engine;
 
-import engine.texture.Texture;
-import engine.texture.TextureLoader;
+import engine.rendering.texture.Texture;
+import engine.rendering.texture.TextureLoader;
 import engine.util.FastNoiseLite;
 import org.joml.Vector2i;
 

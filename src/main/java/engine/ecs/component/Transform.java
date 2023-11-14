@@ -1,8 +1,9 @@
 package engine.ecs.component;
 
-import editor.CustomHudName;
+import editor.util.CustomHudName;
 import engine.ecs.Component;
 import engine.ecs.Entity;
+import engine.physics.components.Rigidbody3D;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 

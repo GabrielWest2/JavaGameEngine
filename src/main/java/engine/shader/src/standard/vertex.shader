@@ -4,26 +4,21 @@ in vec3 position;
 in vec2 textureCoords;
 in vec3 normal;
 
-out vec2 pass_textureCoords;
-out vec3 pass_normal;
-out vec3 pass_toLight;
-out vec3 pass_toCamera;
+out vec3 outPosition;
+out vec3 outNormal;
+out vec2 outTextCoord;
 
 uniform mat4 transformationMatrix;
 uniform mat4 viewMatrix;
 uniform mat4 projectionMatrix;
-uniform vec3 lightPosition;
 
 uniform vec4 plane;
-
-void main(void){
-    vec4 worldPosition = transformationMatrix * vec4(position, 1.0);
-    gl_ClipDistance[0] = dot(worldPosition, plane);
-    gl_Position = projectionMatrix * viewMatrix * worldPosition;
-    pass_textureCoords = textureCoords;
-
-    pass_normal = (transformationMatrix * vec4(normal, 0.0)).xyz;
-    pass_toLight = lightPosition - worldPosition.xyz;
-
-    pass_toCamera = (inverse(viewMatrix) * vec4(0.0, 0.0, 0.0, 1.0)).xyz - worldPosition.xyz;
+void main()
+{
+    mat4 modelViewMatrix = viewMatrix * transformationMatrix;
+    vec4 mvPosition =  modelViewMatrix * vec4(position, 1.0);
+    gl_Position = projectionMatrix * mvPosition;
+    outPosition = mvPosition.xyz;
+    outNormal = normalize(modelViewMatrix * vec4(normal, 0.0)).xyz;
+    outTextCoord = textureCoords;
 }

@@ -5,24 +5,24 @@ import com.google.gson.GsonBuilder;
 import editor.ConsoleWindow;
 import editor.ExplorerWindow;
 import engine.audio.AudioManager;
-import engine.display.DisplayManager;
 import engine.ecs.Component;
 import engine.ecs.Entity;
-import engine.ecs.Light;
 import engine.ecs.component.ObjRenderer;
 import engine.ecs.component.Transform;
-import engine.hud.HudManager;
 import engine.input.Keyboard;
 import engine.input.Mouse;
-import engine.model.ModelCreator;
-import engine.model.SkyboxModel;
 import engine.physics.Physics;
 import engine.postprocessing.PostProcessing;
+import engine.rendering.Camera;
+import engine.rendering.DisplayManager;
+import engine.rendering.Renderer;
+import engine.rendering.model.ModelCreator;
+import engine.rendering.model.SkyboxModel;
+import engine.rendering.texture.Texture;
+import engine.rendering.texture.TextureLoader;
 import engine.scene.Scene;
 import engine.serialization.ComponentDeserializer;
 import engine.shader.Framebuffer;
-import engine.texture.Texture;
-import engine.texture.TextureLoader;
 import engine.util.Time;
 import org.joml.Vector3f;
 import org.lwjgl.opengl.GL11;
@@ -99,9 +99,9 @@ public class GameEngine {
     Transform t = new Transform();
     private void loop() {
         gson = new GsonBuilder()
-                .setPrettyPrinting()
-                .registerTypeAdapter(Component.class, new ComponentDeserializer())
-                .create();
+            .setPrettyPrinting()
+            .registerTypeAdapter(Component.class, new ComponentDeserializer())
+            .create();
 
         grass = TextureLoader.loadTexture("terrain/Texture_Grass_Diffuse.png");
         waterDUDV = TextureLoader.loadTexture("water/waterDUDV.png");
@@ -118,17 +118,6 @@ public class GameEngine {
         WaterManger.init();
         AudioManager.init();
 
-        /*
-        int sound = -1;
-        try{
-            sound = AudioManager.loadSound("res/audio/rito.wav");
-        } catch (UnsupportedAudioFileException | IOException e) {
-            throw new RuntimeException(e);
-        }
-
-        AudioSource source = new AudioSource();
-
-         */
         camera = new Camera(new Vector3f(30, 10, 30), new Vector3f(0, 25, 0));
 
         DisplayManager.setCallbacks();
@@ -142,7 +131,7 @@ public class GameEngine {
         frameBuffer = new Framebuffer(DisplayManager.getWidth(), DisplayManager.getHeight(), Framebuffer.DEPTH_TEXTURE);
         mousePickingBuffer = new Framebuffer(DisplayManager.getWidth(), DisplayManager.getHeight(), Framebuffer.DEPTH_TEXTURE);
 
-
+        /*
         for(int x = 0; x < 16; x++){
             for(int z = 0; z < 16; z++){
                 Entity e = new Entity("Tile " + x+"-"+z);
@@ -153,8 +142,10 @@ public class GameEngine {
                 loadedScene.addEntity(e);
             }
         }
+        */
 
-       
+        //ComplexModel model = new ComplexModel("models/Lynel.dae");
+        Transform tr = new Transform();
         while (!glfwWindowShouldClose(DisplayManager.window)) {
             Renderer.beginFrame();
             Time.updateTime();
@@ -167,11 +158,10 @@ public class GameEngine {
             grassMovement += 0.03f;
             waterMovement %=1;
 
-            /*
             if(Keyboard.isKeyPressedThisFrame(GLFW_KEY_F)){
                // source.play(sound);
             }
-            */
+
 
             if(Keyboard.isKeyPressedThisFrame(GLFW_KEY_Z)){
                 wireframe = !wireframe;
@@ -202,8 +192,9 @@ public class GameEngine {
             clipDirection = -1;
             clipHeight = 10000;
             renderScene();
+            //Renderer.renderModel(model, tr);
             WaterManger.render();
-            HudManager.renderHud();
+           // HudManager.renderHud();
             Physics.render();
             frameBuffer.unbind();
 
@@ -222,7 +213,12 @@ public class GameEngine {
         //TerrainManager.renderChunks();
         GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL_FILL);
         for (Entity entity : loadedScene.getEntities()) {
-            Renderer.render(entity);
+            var obj = entity.getComponent(ObjRenderer.class);
+
+            if(obj == null || obj.getModel() == null) return;
+
+            Renderer.renderModel(obj.getModel(), entity.getTransform(), obj.cullBack);
+            //Renderer.render(entity);
         }
         //Renderer.renderTextured(Primitives.plane, t);
     }
@@ -235,7 +231,11 @@ public class GameEngine {
         GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL_FILL);
         int i = 0;
         for (Entity entity : loadedScene.getEntities()) {
-            Renderer.renderPicking(entity, i+1);
+            var obj = entity.getComponent(ObjRenderer.class);
+
+            if(obj == null || obj.getModel() == null) return;
+
+            Renderer.renderPicking(obj.getModel(), entity.getTransform(), false, i + 1);
             i++;
         }
         glEnable(GL_CLIP_PLANE0);

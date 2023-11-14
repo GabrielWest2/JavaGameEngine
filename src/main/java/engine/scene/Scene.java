@@ -5,6 +5,7 @@ import engine.GameEngine;
 import engine.ecs.Component;
 import engine.ecs.Entity;
 import engine.ecs.component.Transform;
+import engine.rendering.lighting.SceneLights;
 import org.apache.commons.io.FileUtils;
 
 import java.io.*;
@@ -22,8 +23,11 @@ public class Scene {
 
     private String name;
 
+    private SceneLights lights;
+
     public Scene(String name) {
         this.name = name;
+        lights = new SceneLights();
     }
 
     public String getName() {
@@ -61,6 +65,14 @@ public class Scene {
                 return entity;
         }
         return null;
+    }
+
+    public SceneLights getLights() {
+        return lights;
+    }
+
+    public void setLights(SceneLights lights) {
+        this.lights = lights;
     }
 
     /**

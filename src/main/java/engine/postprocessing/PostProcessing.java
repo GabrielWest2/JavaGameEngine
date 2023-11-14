@@ -1,6 +1,6 @@
 package engine.postprocessing;
 
-import engine.display.DisplayManager;
+import engine.rendering.DisplayManager;
 import engine.postprocessing.brightnessfilter.BrightnessFilterEffect;
 import engine.postprocessing.combine.CombineEffect;
 import engine.postprocessing.contrast.ContrastEffect;

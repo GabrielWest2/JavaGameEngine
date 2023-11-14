@@ -1,5 +1,6 @@
 package editor;
 
+import editor.util.FAIcons;
 import engine.GameEngine;
 import engine.ecs.Component;
 import engine.input.Keyboard;
@@ -30,8 +31,6 @@ import static org.lwjgl.glfw.GLFW.GLFW_KEY_DELETE;
 public class InspectorWindow {
     private static boolean popup = false;
 
-    //private static Texture searchIcon = null;
-
     private static boolean wasPressed = false;
 
     private static boolean innerMenuHovered = false;
@@ -55,8 +54,6 @@ public class InspectorWindow {
                 i++;
             }
         }
-        //if(searchIcon == null)
-        //    searchIcon = TextureLoader.loadTexture("engine/search.png");
 
         ImGui.begin(FAIcons.ICON_SEARCH + " Inspector");
         //Remove after iterating to prevent java.util.ConcurrentModificationException
@@ -127,12 +124,11 @@ public class InspectorWindow {
                 {
                     if(pressedThisFrame && !ImGui.isWindowHovered() && !innerMenuHovered)
                         popup = false;
-                    //ImGui.image(searchIcon.textureID(), 20, 20, 0, 0);
                     ImGui.sameLine();
 
                     ImGui.pushItemWidth(-1);
                     ImString str = new ImString(search, 50);
-                    if (ImGui.inputTextWithHint("Hi", "Search...", str)){
+                    if (ImGui.inputTextWithHint("Hi", FAIcons.ICON_SEARCH + " Search...", str)){
                         search = str.get();
                     }
 

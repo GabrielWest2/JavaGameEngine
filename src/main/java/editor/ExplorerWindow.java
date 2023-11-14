@@ -1,5 +1,6 @@
 package editor;
 
+import editor.util.FAIcons;
 import engine.GameEngine;
 import engine.ecs.Entity;
 import imgui.ImGui;
@@ -19,6 +20,8 @@ public class ExplorerWindow {
                 ImGui.pushID(i);
                 if (ImGui.button(entity.getName())) {
                     selectedEntity = entity;
+                    LightingWindow.selectedPointLight = null;
+                    LightingWindow.selectedSpotLight = null;
                 }
                 ImGui.popID();
             }

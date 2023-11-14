@@ -1,8 +1,9 @@
 package editor;
 
-import engine.Camera;
+import editor.util.FAIcons;
+import engine.rendering.Camera;
 import engine.GameEngine;
-import engine.Renderer;
+import engine.rendering.Renderer;
 import engine.ecs.Entity;
 import engine.ecs.component.Transform;
 import engine.input.Keyboard;
@@ -21,6 +22,8 @@ import org.joml.Quaternionf;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
 
+import java.util.List;
+
 import static com.jogamp.opengl.GL.GL_FLOAT;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.glReadBuffer;
@@ -38,6 +41,14 @@ public class GameViewportWindow {
 
     private static int currentMode = Mode.LOCAL;
 
+    /**
+     * Samples a framebuffer at a coordinate and
+     * decodes the color inorder to select the correct
+     * entity
+     * @param buffer the mousepicking frame buffer
+     * @param xCoord the {@code x} coordinate (0 is left)
+     * @param yCoord the {@code y} coordinate (0 is bottom)
+     */
     public static void sampleFb(Framebuffer buffer, int xCoord, int yCoord){
         buffer.bind();
         float[] pixels = new float[4];
@@ -51,15 +62,22 @@ public class GameViewportWindow {
             int newG = java.lang.Math.round(green * 0xff) << 8;
             int newB = java.lang.Math.round(blue * 0xff) << 16;
             int index = newR + newB + newG - 1;
-            if(Mouse.isMousePressed(0)){
+            List<Entity> entities = GameEngine.getInstance()
+                    .loadedScene.getEntities();
+
+            if(Mouse.isMouseClicked(0)){
                 if(
                     index >= 0 &&
-                    index < GameEngine.getInstance().loadedScene.getEntities().size() &&
-                    !GameEngine.getInstance().loadedScene.getEntities().get(index).isLocked()
+                    index < entities.size() &&
+                    !entities.get(index).isLocked()
                 ) {
-                    ExplorerWindow.selectedEntity = GameEngine.getInstance().loadedScene.getEntities().get(index);
+                    LightingWindow.selectedPointLight = null;
+                    LightingWindow.selectedSpotLight = null;
+                    ExplorerWindow.selectedEntity = entities.get(index);
                 }else {
                     ExplorerWindow.selectedEntity = null;
+                    LightingWindow.selectedPointLight = null;
+                    LightingWindow.selectedSpotLight = null;
                 }
             }
         }
@@ -69,12 +87,15 @@ public class GameViewportWindow {
     /**
      * Game viewport render function
      * @param buff the framebuffer to render
-     * @param camera the {@code Camera} to be used to render transformation gizmos
+     * @param camera the {@code Camera} to be used to render gizmos
      * @param selected the currently selected {@code Entity}
      */
-    public static void render(Framebuffer buff, Framebuffer pickingBuffer, Camera camera, Entity selected) {
-
-        //Remove the border between the edge of the window and the image
+    public static void render(
+            Framebuffer buff,
+            Framebuffer pickingBuffer,
+            Camera camera,
+            Entity selected
+    ) {
         ImGui.pushStyleVar(ImGuiStyleVar.WindowPadding, 0, 0);
         int flags =
                 ImGuiWindowFlags.NoScrollbar |
@@ -83,7 +104,6 @@ public class GameViewportWindow {
 
         ImGui.begin(FAIcons.ICON_EYE + " Game Viewport", flags);
         ImVec2 windowSize = ImGui.getWindowSize();
-        //ImVec2 windowSize = getLargestSizeForViewport(buff);
         if(!previousWindowSize.equals(windowSize)){
             Renderer.updateProjection((int) windowSize.x, (int) windowSize.y);
             previousWindowSize = windowSize;
@@ -91,43 +111,32 @@ public class GameViewportWindow {
 
         float[] view = MatrixBuilder.createViewMatrix(camera).get(new float[16]);
         float[] proj = MatrixBuilder.createProjectionMatrix((int) windowSize.x, (int) windowSize.y).get(new float[16]);
-
         focused = ImGui.isWindowFocused();
-
         ImGui.image(buff.getColorTexture(), windowSize.x, windowSize.y, 0, 1, 1, 0);
-
-
-
-
-        if(Keyboard.isKeyPressedThisFrame(GLFW_KEY_T)){
-            currentGizmoOperation = Operation.TRANSLATE;
-        }else if(Keyboard.isKeyPressedThisFrame(GLFW_KEY_G)){
-            currentGizmoOperation = Operation.ROTATE;
-        }else if(Keyboard.isKeyPressedThisFrame(GLFW_KEY_H)){
-            currentGizmoOperation = Operation.SCALE;
-        }
-
-
+        boolean shouldIgnoreClick = updateModes();
         Vector2f mousePos = Mouse.getPos();
         boolean mouseOverViewport = false;
+        //Scale the window cursor position into framebuffer space
         int scaledCoordX = (int) ((int) (mousePos.x - ImGui.getWindowPosX()) / windowSize.x * pickingBuffer.getWidth());
         int scaledCoordY = pickingBuffer.getHeight() - (int) ((int) (mousePos.y - ImGui.getWindowPosY()) / windowSize.y * pickingBuffer.getHeight());
         if(mousePos.x > ImGui.getWindowPosX() && mousePos.x < ImGui.getWindowPosX() + windowSize.x && mousePos.y > ImGui.getWindowPosY() && mousePos.y < ImGui.getWindowPosY() + windowSize.y){
             mouseOverViewport = true;
         }
-
-
         ImGuizmo.setOrthographic(false);
         ImGuizmo.setEnabled(true);
         ImGuizmo.setDrawList();
         ImGuizmo.setRect(ImGui.getWindowPosX(), ImGui.getWindowPosY(), windowSize.x, windowSize.y);
 
+        boolean displaylight = LightingWindow.selectedPointLight != null;
+
         float[] model = null;
-        if(selected != null) {
+        if(displaylight){
+            model = MatrixBuilder.createTransformationMatrix(LightingWindow.selectedPointLight.getPosition(), new Quaternionf(), new Vector3f(1)).get(new float[16]);
+            ImGuizmo.manipulate(view, proj, model, Operation.TRANSLATE, Mode.WORLD);
+        } else if(selected != null) {
             Transform t = selected.getTransform();
             model = MatrixBuilder.createTransformationMatrix(t.getPosition(), t.getRotation(), t.getScale()).get(new float[16]);
             ImGuizmo.manipulate(view, proj, model, currentGizmoOperation, currentMode);
-
         }
 
         if(ImGuizmo.isUsing()){
@@ -141,24 +150,53 @@ public class GameViewportWindow {
             quat.rotateY(Math.toRadians(rot[1]));
             quat.rotateX(Math.toRadians(rot[0]));
 
-            assert selected != null;
-            selected.getTransform().setPosition(new Vector3f(pos[0], pos[1], pos[2]));
-            selected.getTransform().setRotation(quat);
-            selected.getTransform().setScale(new Vector3f(sca[0], sca[1], sca[2]));
-        }else if(mouseOverViewport && ImGui.isWindowFocused()){
+            if(displaylight){
+                LightingWindow.selectedPointLight.setPosition(new Vector3f(pos[0], pos[1], pos[2]));
+            }else if(selected != null) {
+                selected.getTransform().setPosition(new Vector3f(pos[0], pos[1], pos[2]));
+                selected.getTransform().setRotation(quat);
+                selected.getTransform().setScale(new Vector3f(sca[0], sca[1], sca[2]));
+            }
+        }else if(mouseOverViewport && ImGui.isWindowFocused() && !shouldIgnoreClick){
             sampleFb(pickingBuffer, scaledCoordX, scaledCoordY);
         }
 
+
+        ImGui.end();
+        ImGui.popStyleVar();
+    }
+
+    /**
+     * Changes the current gizmo {@code Operation}
+     * and the current space {@code Mode} based
+     * on the keybindings
+     * @see Operation
+     * @see Mode
+     * @return true if one of the mode buttons was pressed
+     */
+    private static boolean updateModes() {
+        //Consolidate random keybindings in a configurable file
+
+        if(Keyboard.isKeyPressedThisFrame(GLFW_KEY_T)){
+            currentGizmoOperation = Operation.TRANSLATE;
+        }else if(Keyboard.isKeyPressedThisFrame(GLFW_KEY_G)){
+            currentGizmoOperation = Operation.ROTATE;
+        }else if(Keyboard.isKeyPressedThisFrame(GLFW_KEY_H)){
+            currentGizmoOperation = Operation.SCALE;
+        }
+
+        boolean f = false;
         ImGui.setCursorPos(10, 10);
         if(ImGui.button(FAIcons.ICON_ARROWS_ALT + " World")){
             currentMode = Mode.WORLD;
+            f = true;
         }
         ImGui.sameLine();
         if(ImGui.button(FAIcons.ICON_EXPAND_ARROWS_ALT + " Local")){
             currentMode = Mode.LOCAL;
+            f = true;
         }
-        ImGui.end();
-        ImGui.popStyleVar();
+        return f;
     }
 
 
@@ -200,6 +238,4 @@ public class GameViewportWindow {
 
         return new ImVec2(viewPortX + ImGui.getCursorPosX(), viewPortY + ImGui.getCursorPosY());
     }
-
-
 }

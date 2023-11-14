@@ -51,6 +51,10 @@ public class Mouse {
         return ImGui.isMouseDown(i);
     }
 
+    public static boolean isMouseClicked(int i) {
+        return ImGui.isMouseClicked(i);
+    }
+
     private static ImVec2 getMousePos() {
         return ImGui.getMousePos();
     }
