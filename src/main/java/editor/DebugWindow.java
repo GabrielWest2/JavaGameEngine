@@ -37,14 +37,14 @@ public class DebugWindow {
                 1920/10f, 1080/10f, 0, 1, 1, 0);
 
         float[] cols  = new float[] {
-                GameEngine.getInstance().loadedScene.getLights().getAmbientLight().getColor().x,
-                GameEngine.getInstance().loadedScene.getLights().getAmbientLight().getColor().y,
-                GameEngine.getInstance().loadedScene.getLights().getAmbientLight().getColor().z
+                GameEngine.loadedScene.getLights().getAmbientLight().getColor().x,
+                GameEngine.loadedScene.getLights().getAmbientLight().getColor().y,
+                GameEngine.loadedScene.getLights().getAmbientLight().getColor().z
         };
         if(ImGui.sliderFloat3("col", cols, 0.0f, 1.0f)){
-            GameEngine.getInstance().loadedScene.getLights().getAmbientLight().getColor().x = cols[0];
-            GameEngine.getInstance().loadedScene.getLights().getAmbientLight().getColor().y = cols[1];
-            GameEngine.getInstance().loadedScene.getLights().getAmbientLight().getColor().z = cols[2];
+            GameEngine.loadedScene.getLights().getAmbientLight().getColor().x = cols[0];
+            GameEngine.loadedScene.getLights().getAmbientLight().getColor().y = cols[1];
+            GameEngine.loadedScene.getLights().getAmbientLight().getColor().z = cols[2];
         }
 
 

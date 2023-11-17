@@ -16,6 +16,7 @@ import engine.postprocessing.PostProcessing;
 import engine.rendering.Camera;
 import engine.rendering.DisplayManager;
 import engine.rendering.Renderer;
+import engine.rendering.hud.HudManager;
 import engine.rendering.model.ModelCreator;
 import engine.rendering.model.SkyboxModel;
 import engine.rendering.texture.Texture;
@@ -37,8 +38,6 @@ import static org.lwjgl.opengl.GL11.*;
 
 public class GameEngine {
 
-    public static GameEngine instance;
-
     public static Texture grass;
 
     public static Texture waterDUDV;
@@ -59,29 +58,26 @@ public class GameEngine {
 
     public static Gson gson;
 
-    public Camera camera;
+    public static Camera camera;
 
-    public Light light;
+    public static Light light;
 
-    public Scene loadedScene;
+    public static Scene loadedScene;
 
-    public SkyboxModel skybox;
+    public static SkyboxModel skybox;
 
-    public float clipHeight = 0;
+    public static float clipHeight = 0;
 
-    public float clipDirection = 1;
+    public static float clipDirection = 1;
+
+    private static boolean wireframe = false;
 
     public static void main(String[] args) {
-        instance = new GameEngine();
-        instance.run();
+        run();
     }
 
-    public static GameEngine getInstance() {
-        return instance;
-    }
-
-    public void run() {
-        DisplayManager.initOpenGL(this);
+    public static void run() {
+        DisplayManager.initOpenGL();
         loop();
         glfwFreeCallbacks(DisplayManager.window);
         glfwDestroyWindow(DisplayManager.window);
@@ -94,10 +90,9 @@ public class GameEngine {
     }
 
 
-    private boolean wireframe = false;
 
     Transform t = new Transform();
-    private void loop() {
+    private static void loop() {
         gson = new GsonBuilder()
             .setPrettyPrinting()
             .registerTypeAdapter(Component.class, new ComponentDeserializer())
@@ -108,13 +103,12 @@ public class GameEngine {
         waterNormalMap = TextureLoader.loadTexture("water/waterNormalMap.png");
         loadedScene = new Scene("testScene");
         skybox = ModelCreator.createSkyboxModel(new String[]{"right", "left", "top", "bottom", "back", "front"});
+
         Renderer.init();
-
-
         PostProcessing.init();
         ConsoleWindow.init();
         Physics.init();
-        TerrainManager.init();
+       // TerrainManager.init();
         WaterManger.init();
         AudioManager.init();
 
@@ -131,21 +125,7 @@ public class GameEngine {
         frameBuffer = new Framebuffer(DisplayManager.getWidth(), DisplayManager.getHeight(), Framebuffer.DEPTH_TEXTURE);
         mousePickingBuffer = new Framebuffer(DisplayManager.getWidth(), DisplayManager.getHeight(), Framebuffer.DEPTH_TEXTURE);
 
-        /*
-        for(int x = 0; x < 16; x++){
-            for(int z = 0; z < 16; z++){
-                Entity e = new Entity("Tile " + x+"-"+z);
-                e.getTransform().setPosition(new Vector3f(x*2, 0, z*2));
-                ObjRenderer obj = new ObjRenderer()
-                        .setPaths("models/grass2.obj", "models/ColorPaletteBLUE.png");
-                e.addComponent(obj);
-                loadedScene.addEntity(e);
-            }
-        }
-        */
 
-        //ComplexModel model = new ComplexModel("models/Lynel.dae");
-        Transform tr = new Transform();
         while (!glfwWindowShouldClose(DisplayManager.window)) {
             Renderer.beginFrame();
             Time.updateTime();
@@ -192,9 +172,9 @@ public class GameEngine {
             clipDirection = -1;
             clipHeight = 10000;
             renderScene();
-            //Renderer.renderModel(model, tr);
+
             WaterManger.render();
-           // HudManager.renderHud();
+            HudManager.renderHud();
             Physics.render();
             frameBuffer.unbind();
 
@@ -202,7 +182,7 @@ public class GameEngine {
         }
     }
 
-    private void renderScene(){
+    private static void renderScene(){
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
         glDisable(GL_CLIP_PLANE0);
         glDisable(GL_DEPTH_TEST);
@@ -218,12 +198,10 @@ public class GameEngine {
             if(obj == null || obj.getModel() == null) return;
 
             Renderer.renderModel(obj.getModel(), entity.getTransform(), obj.cullBack);
-            //Renderer.render(entity);
         }
-        //Renderer.renderTextured(Primitives.plane, t);
     }
 
-    private void renderToMousePickingBuffer(){
+    private static void renderToMousePickingBuffer(){
         glClearColor(0, 0, 0, 1);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
         glDisable(GL_CLIP_PLANE0);

@@ -73,32 +73,28 @@ public class PostProcessing {
         finalBuffer.unbind();
 
         /*
-        finalBuffer.bind();
-        contrastEffect.render(colorBuffer);
-        finalBuffer.unbind();
-        */
-		/*
+
 		framebuffer.bind();
-		contrastEffect.render(colorBuffer);
+		contrastEffect.render(colorBuffer, depthBuffer);
 		framebuffer.unbind();
 
 
 		framebuffer1.bind();
-		brightnessFilterEffect.render(framebuffer.getColorTexture());
+		brightnessFilterEffect.render(framebuffer.getColorTexture(), framebuffer.getDepthTexture());
 		framebuffer1.unbind();
 
 		framebuffer2.bind();
-		horizontalBlurEffect.render(framebuffer1.getColorTexture());
+		horizontalBlurEffect.render(framebuffer1.getColorTexture(), framebuffer1.getDepthTexture());
 		framebuffer2.unbind();
 
 		framebuffer3.bind();
-		verticalBlurEffect.render(framebuffer2.getColorTexture());
+		verticalBlurEffect.render(framebuffer2.getColorTexture(), framebuffer2.getDepthTexture());
 		framebuffer3.unbind();
 
 		finalBuffer.bind();
 		combineEffect.render(colorBuffer, framebuffer3.getColorTexture());
-		finalBuffer.unbind();*/
-
+		finalBuffer.unbind();
+        */
         end();
     }
 

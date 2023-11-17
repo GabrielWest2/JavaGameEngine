@@ -1,7 +1,6 @@
 package engine.rendering;
 
 import editor.util.ImGuiThemer;
-import engine.GameEngine;
 import engine.rendering.hud.HudManager;
 import engine.shader.Framebuffer;
 import imgui.ImFontConfig;
@@ -42,11 +41,7 @@ public class DisplayManager {
 
     private static int height = 482;
 
-    private static GameEngine engine;
-
-    public static void initOpenGL(GameEngine engine) {
-
-        DisplayManager.engine = engine;
+    public static void initOpenGL() {
         GLFWErrorCallback.createPrint(System.err).set();
 
         // Initialize GLFW. Most GLFW functions will not work before doing this.
@@ -94,6 +89,7 @@ public class DisplayManager {
         glfwShowWindow(window);
         GL.createCapabilities();
         HudManager.init();
+
         initImGui();
     }
 

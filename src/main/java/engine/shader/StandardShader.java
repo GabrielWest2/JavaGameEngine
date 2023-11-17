@@ -134,10 +134,6 @@ public class StandardShader extends ShaderProgram {
         updatePointLight(pointLight, prefix + ".pl", viewMatrix);
     }
 
-    public void setMaterial(float shineDamper, float reflectivity) {
-        super.loadUniform(super.getUniformLocation("shineDamper"), shineDamper);
-        super.loadUniform(super.getUniformLocation("reflectivity"), reflectivity);
-    }
 
     public void setClipPlane(Vector4f plane) {
         super.loadUniform(super.getUniformLocation("plane"), plane);

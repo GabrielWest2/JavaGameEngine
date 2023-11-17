@@ -1,13 +1,13 @@
 package editor;
 
 import editor.util.FAIcons;
-import engine.rendering.Camera;
 import engine.GameEngine;
-import engine.rendering.Renderer;
 import engine.ecs.Entity;
 import engine.ecs.component.Transform;
 import engine.input.Keyboard;
 import engine.input.Mouse;
+import engine.rendering.Camera;
+import engine.rendering.Renderer;
 import engine.shader.Framebuffer;
 import engine.util.MatrixBuilder;
 import imgui.ImGui;
@@ -62,8 +62,7 @@ public class GameViewportWindow {
             int newG = java.lang.Math.round(green * 0xff) << 8;
             int newB = java.lang.Math.round(blue * 0xff) << 16;
             int index = newR + newB + newG - 1;
-            List<Entity> entities = GameEngine.getInstance()
-                    .loadedScene.getEntities();
+            List<Entity> entities = GameEngine.loadedScene.getEntities();
 
             if(Mouse.isMouseClicked(0)){
                 if(
@@ -196,6 +195,8 @@ public class GameViewportWindow {
             currentMode = Mode.LOCAL;
             f = true;
         }
+        ImGui.setCursorPos(10, 35);
+        ImGui.textColored(0xff247019, "FPS: " + ImGui.getIO().getFramerate());
         return f;
     }
 

@@ -15,7 +15,7 @@ import com.bulletphysics.dynamics.constraintsolver.ConstraintSolver;
 import com.bulletphysics.dynamics.constraintsolver.SequentialImpulseConstraintSolver;
 import com.bulletphysics.linearmath.DefaultMotionState;
 import com.bulletphysics.linearmath.Transform;
-import engine.physics.components.Rigidbody3D;
+import engine.ecs.component.Rigidbody3D;
 import engine.util.Time;
 
 import javax.vecmath.Quat4f;

@@ -72,7 +72,7 @@ public class InspectorWindow {
             ImGui.pushStyleColor(ImGuiCol.Button, 255, 0, 0, 255);
             ImGui.pushStyleColor(ImGuiCol.ButtonHovered, 138, 6, 6, 255);
             if(ImGui.button("Delete", -1,  30) || Keyboard.isKeyPressed(GLFW_KEY_DELETE)){
-                GameEngine.getInstance().loadedScene.removeEntity(ExplorerWindow.selectedEntity);
+                GameEngine.loadedScene.removeEntity(ExplorerWindow.selectedEntity);
                 ExplorerWindow.selectedEntity = null;
                 ImGui.popStyleColor();
                 ImGui.popStyleColor();

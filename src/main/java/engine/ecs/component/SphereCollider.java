@@ -1,7 +1,8 @@
-package engine.physics.components;
+package engine.ecs.component;
 
-import com.bulletphysics.collision.shapes.BoxShape;
+
 import com.bulletphysics.collision.shapes.CollisionShape;
+import com.bulletphysics.collision.shapes.SphereShape;
 import editor.util.CustomHudName;
 import editor.util.NoHudRender;
 import engine.ecs.Component;
@@ -10,11 +11,12 @@ import imgui.ImGui;
 import imgui.type.ImBoolean;
 import org.joml.Vector3f;
 
-import static com.bulletphysics.collision.dispatch.CollisionObject.*;
+import static com.bulletphysics.collision.dispatch.CollisionObject.DISABLE_DEACTIVATION;
+import static com.bulletphysics.collision.dispatch.CollisionObject.WANTS_DEACTIVATION;
 
-public class BoxCollider extends Component {
+public class SphereCollider extends Component {
 
-    private Vector3f halfExtents = new Vector3f(0.5f);
+    private float radius = 1.0f;
 
     @CustomHudName(displayName = "Inertia")
     private Vector3f inertia = new Vector3f(0.5f);
@@ -22,13 +24,13 @@ public class BoxCollider extends Component {
     private boolean canDeactivate = false;
 
     @NoHudRender
-    private boolean rotX;
+    private boolean rotX = true;
 
     @NoHudRender
-    private boolean rotY;
+    private boolean rotY = true;
 
     @NoHudRender
-    private boolean rotZ;
+    private boolean rotZ = true;
 
 
     private void updateCollider(){
@@ -37,7 +39,7 @@ public class BoxCollider extends Component {
             rb = new Rigidbody3D();
             entity.addComponent(rb);
         }
-        CollisionShape shape = new BoxShape(new javax.vecmath.Vector3f(halfExtents.x, halfExtents.y, halfExtents.z));
+        CollisionShape shape = new SphereShape(radius);
         shape.calculateLocalInertia(rb.mass, new javax.vecmath.Vector3f(rotX ? inertia.x : 0, rotY ? inertia.y : 0, rotZ ? inertia.z : 0));
         rb.rb.setMassProps(rb.mass, new javax.vecmath.Vector3f(rotX ? inertia.x : 0, rotY ? inertia.y : 0, rotZ ? inertia.z : 0));
         rb.rb.updateInertiaTensor();

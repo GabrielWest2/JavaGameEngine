@@ -15,7 +15,7 @@ public class ExplorerWindow {
     public static void render() {
         ImGui.begin(FAIcons.ICON_SITEMAP + " Explorer");
         int i = 0;
-        for (Entity entity : GameEngine.getInstance().loadedScene.getEntities()) {
+        for (Entity entity : GameEngine.loadedScene.getEntities()) {
             if(!entity.getName().startsWith("Tile")) {
                 ImGui.pushID(i);
                 if (ImGui.button(entity.getName())) {

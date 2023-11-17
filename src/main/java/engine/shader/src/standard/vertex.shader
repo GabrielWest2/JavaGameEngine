@@ -18,6 +18,7 @@ void main()
     mat4 modelViewMatrix = viewMatrix * transformationMatrix;
     vec4 mvPosition =  modelViewMatrix * vec4(position, 1.0);
     gl_Position = projectionMatrix * mvPosition;
+    gl_ClipDistance[0] = dot(transformationMatrix * vec4(position, 1.0), plane);
     outPosition = mvPosition.xyz;
     outNormal = normalize(modelViewMatrix * vec4(normal, 0.0)).xyz;
     outTextCoord = textureCoords;

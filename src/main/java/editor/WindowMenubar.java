@@ -30,7 +30,7 @@ public class WindowMenubar {
                     if (userSelection == JFileChooser.APPROVE_OPTION) {
                         File fileToSave = fileChooser.getSelectedFile();
                         System.out.println("Save as file: " + fileToSave.getAbsolutePath());
-                        GameEngine.getInstance().loadedScene.save(fileToSave.getAbsolutePath());
+                        GameEngine.loadedScene.save(fileToSave.getAbsolutePath());
                     }
 
                 }
@@ -46,7 +46,7 @@ public class WindowMenubar {
 
                     if (userSelection == JFileChooser.APPROVE_OPTION) {
                         File fileToSave = fileChooser.getSelectedFile();
-                        GameEngine.getInstance().loadedScene.load(fileToSave.getAbsolutePath());
+                        GameEngine.loadedScene.load(fileToSave.getAbsolutePath());
                     }
 
                 }
@@ -74,10 +74,10 @@ public class WindowMenubar {
 
             if (ImGui.beginMenu("Game Object")) {
                 if (ImGui.menuItem("Add Empty Component")) {
-                    GameEngine.getInstance().loadedScene.addEntity(new Entity());
+                    GameEngine.loadedScene.addEntity(new Entity());
                 }
                 if (ImGui.menuItem("Add Grass Block")) {
-                    GameEngine.getInstance().loadedScene.addEntity(new Entity().addComponent(new ObjRenderer().setPaths("models/grass.obj")));
+                    GameEngine.loadedScene.addEntity(new Entity().addComponent(new ObjRenderer().setPaths("models/grass.obj")));
                 }
 
                 ImGui.endMenu();
