@@ -42,7 +42,7 @@ public class AudioManager {
     }
 
     public static void setListenerData(){
-        Vector3f pos = GameEngine.camera.getPosition();
+        Vector3f pos = GameEngine.getInstance().camera.getPosition();
         AL10.alListener3f(AL10.AL_POSITION, pos.x, pos.y, pos.z);
         AL10.alListener3f(AL10.AL_VELOCITY, 0, 0, 0);
     }

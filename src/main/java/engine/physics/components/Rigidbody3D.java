@@ -1,4 +1,4 @@
-package engine.ecs.component;
+package engine.physics.components;
 
 import com.bulletphysics.collision.shapes.BoxShape;
 import com.bulletphysics.collision.shapes.CollisionShape;

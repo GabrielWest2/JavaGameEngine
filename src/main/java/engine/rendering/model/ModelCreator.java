@@ -3,7 +3,6 @@ package engine.rendering.model;
 import engine.TerrainManager;
 import engine.rendering.texture.Texture;
 import engine.rendering.texture.TextureLoader;
-import org.joml.Matrix4f;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL15;
@@ -127,15 +126,15 @@ public class ModelCreator {
         return new WaterModel(vaoID, positions.length);
     }
 
-    public static TerrainModel loadToTerrainVAO(float[] positions, int[] indices, float[] textureCoords, float[] normals, Matrix4f transformation) {
+    public static TerrainModel loadToTerrainVAO(float[] positions, int[] indices, float[] textureCoords, float[] normals) {
         int vaoID = createVAO();
         bindIndicesBuffer(indices);
         storeDataInAttributeList(0, 3, positions);
         storeDataInAttributeList(1, 2, textureCoords);
         storeDataInAttributeList(2, 3, normals);
         unbindVAO();
-
-        return new TerrainModel(vaoID, positions.length * 3, TerrainManager.splatmap, TerrainManager.t1, TerrainManager.t2, TerrainManager.t3, TerrainManager.t4, transformation);
+        //TODO replaced splat map with t1 to get it to shutup
+        return new TerrainModel(vaoID, positions.length * 3, TerrainManager.t1, TerrainManager.t1, TerrainManager.t2, TerrainManager.t3, TerrainManager.t4);
     }
 
 

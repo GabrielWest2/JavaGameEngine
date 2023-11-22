@@ -2,8 +2,8 @@ package editor;
 
 import editor.util.FAIcons;
 import imgui.ImGui;
-
 import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 
 
 public class ConsoleWindow {
@@ -14,7 +14,7 @@ public class ConsoleWindow {
 
     public static void init() {
         newConsole = new ByteArrayOutputStream();
-       // System.setOut(new PrintStream(newConsole));
+        System.setOut(new PrintStream(newConsole));
     }
 
     public static void render() {

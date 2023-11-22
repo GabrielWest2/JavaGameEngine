@@ -74,7 +74,7 @@ public class MatrixBuilder {
     }
 
     public static Vector3f toWorldCoords(Vector4f eyeCoords){
-        Matrix4f invertedView = createViewMatrix(GameEngine.camera).invert();
+        Matrix4f invertedView = createViewMatrix(GameEngine.getInstance().camera).invert();
         Vector4f rayWorld = invertedView.transform(eyeCoords);
         Vector3f mouseRay = new Vector3f(rayWorld.x, rayWorld.y, rayWorld.z);
         mouseRay.normalize();

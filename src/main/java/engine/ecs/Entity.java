@@ -82,7 +82,7 @@ public class Entity {
     }
 
     public void destroy() {
-        GameEngine.loadedScene.removeEntity(this);
+        GameEngine.getInstance().loadedScene.removeEntity(this);
     }
 
     public String getName() {

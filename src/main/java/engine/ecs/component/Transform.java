@@ -3,6 +3,7 @@ package engine.ecs.component;
 import editor.util.CustomHudName;
 import engine.ecs.Component;
 import engine.ecs.Entity;
+import engine.physics.components.Rigidbody3D;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
@@ -53,7 +54,6 @@ public class Transform extends Component {
 
     public Entity setPosition(Vector3f position) {
         this.position = position;
-        onVariableChanged();
         return this.entity;
     }
 
@@ -63,7 +63,6 @@ public class Transform extends Component {
 
     public void setRotation(Quaternionf rotation) {
         this.rotation = rotation;
-        onVariableChanged();
     }
 
     public Vector3f getScale() {

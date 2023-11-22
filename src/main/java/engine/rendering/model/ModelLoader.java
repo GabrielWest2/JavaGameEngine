@@ -35,7 +35,8 @@ public class ModelLoader {
 
         List<Model> meshes = new ArrayList<>();
 
-        int flags = aiProcess_CalcTangentSpace | // calculate tangents and bitangents if possible
+        AIScene aiScene = aiImportFile("res/" + path,
+                aiProcess_CalcTangentSpace | // calculate tangents and bitangents if possible
                 aiProcess_JoinIdenticalVertices | // join identical vertices/ optimize indexing
                 //aiProcess_ValidateDataStructure  | // perform a full validation of the loader's output
                 aiProcess_Triangulate | // Ensure all verticies are triangulated (each 3 vertices are triangle)
@@ -49,11 +50,8 @@ public class ModelLoader {
                 aiProcess_TransformUVCoords | // preprocess UV transformations (scaling, translation ...)
                 aiProcess_FindInstances | // search for instanced meshes and remove them by references to one master
                 aiProcess_LimitBoneWeights | // limit bone weights to 4 per vertex
-                aiProcess_OptimizeMeshes  // join small meshes, if possible
-                 ;
-
-
-        AIScene aiScene = aiImportFile("res/" + path, flags);
+                aiProcess_OptimizeMeshes | // join small meshes, if possible;
+                aiProcess_PreTransformVertices);
 
         assert aiScene != null;
 
@@ -63,7 +61,6 @@ public class ModelLoader {
             AIMaterial aiMaterial = AIMaterial.create(aiScene.mMaterials().get(i));
             materialList.add(processMaterial(aiMaterial, "models"));
         }
-
 
         int numMeshes = aiScene.mNumMeshes();
         PointerBuffer aiMeshes = aiScene.mMeshes();

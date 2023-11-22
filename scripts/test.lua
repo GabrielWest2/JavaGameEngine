@@ -1,4 +1,4 @@
-local engine = luajava.bindClass("engine.GameEngine")
+local engine = luajava.bindClass("engine.GameEngine"):getInstance()
 local time = luajava.bindClass("engine.util.Time")
 local textureLoader = luajava.bindClass("engine.rendering.texture.TextureLoader")
 local objLoader = luajava.bindClass("engine.rendering.model.OBJLoader")

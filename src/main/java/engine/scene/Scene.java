@@ -113,7 +113,7 @@ public class Scene {
 
         Scene loaded = GameEngine.gson.fromJson(str, Scene.class);
         System.out.println("Loaded " + loaded.getName());
-        GameEngine.loadedScene = loaded;
+        GameEngine.getInstance().loadedScene = loaded;
         ExplorerWindow.selectedEntity = null;
         for(Entity e : loaded.entities){
             e.setTransform(e.getComponent(Transform.class));

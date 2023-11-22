@@ -1,30 +1,26 @@
 package engine.rendering.model;
 
 import engine.rendering.texture.Texture;
-import org.joml.Matrix4f;
 
 public class TerrainModel extends Model {
 
-    private final Texture splat;
+    private Texture splat;
 
-    private final Texture t1;
+    private Texture t1;
 
-    private final Texture t2;
+    private Texture t2;
 
-    private final Texture t3;
+    private Texture t3;
 
-    private final Texture t4;
+    private Texture t4;
 
-    private final Matrix4f transformationMatrix;
-
-    public TerrainModel(int vaoID, int vertexCount, Texture splat, Texture t1, Texture t2, Texture t3, Texture t4, Matrix4f transformation) {
+    public TerrainModel(int vaoID, int vertexCount, Texture splat, Texture t1, Texture t2, Texture t3, Texture t4) {
         super(vaoID, vertexCount);
         this.splat = splat;
         this.t1 = t1;
         this.t2 = t2;
         this.t3 = t3;
         this.t4 = t4;
-        this.transformationMatrix = transformation;
     }
 
     public Texture getSplat() {
@@ -45,9 +41,5 @@ public class TerrainModel extends Model {
 
     public Texture getT4() {
         return t4;
-    }
-
-    public Matrix4f getTransformationMatrix() {
-        return transformationMatrix;
     }
 }

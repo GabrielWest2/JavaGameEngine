@@ -4,13 +4,10 @@ import engine.error.InvalidTerrainChunkError;
 import engine.rendering.Renderer;
 import engine.rendering.model.ModelCreator;
 import engine.rendering.model.TerrainModel;
-import engine.util.MatrixBuilder;
-import org.joml.Matrix4f;
+import engine.util.FastNoiseLite;
 import org.joml.Vector3f;
 
-import java.awt.*;
-
-import static engine.TerrainManager.heightmap;
+import static engine.TerrainManager.noise;
 
 public class TerrainChunk {
     private TerrainModel model;
@@ -22,19 +19,27 @@ public class TerrainChunk {
     public static final int terrainChunkWidth = 8;
 
     public static final int totalWidth = 1000;
-    public static final int totalHeight = 6000;
 
-    public final Matrix4f transformationMatrix;
+    public static final float totalHeight = 600;
+
+    public static final int heightMapWidth = 513;
+
+    public static int terrainWidth = heightMapWidth/terrainChunkWidth;
+
+    public static float unitSize = ((float)totalWidth/(float)terrainChunkWidth)/((float)terrainWidth);
+
+    //private static List<Transform> grassPositions = new ArrayList<>();
+    //private static List<Transform> flowerPositions = new ArrayList<>();
 
     public TerrainChunk(int chunkX, int chunkY, int lod){
-        transformationMatrix = MatrixBuilder.createTransformationMatrix(new Vector3f(chunkX * totalWidth, 0, chunkY * totalWidth), new Vector3f(0.0f), new Vector3f(1.0f));
         this.chunkX = chunkX;
         this.chunkY = chunkY;
         try {
-            createTerrain(chunkX, chunkY, lod);
+            createTerrain(chunkX, chunkY, lod*2);
         } catch (InvalidTerrainChunkError e) {
             e.printStackTrace();
         }
+        //generateDetails();
     }
 
     private void createTerrain(int chunkX, int chunkY, int LOD) throws InvalidTerrainChunkError {
@@ -42,91 +47,114 @@ public class TerrainChunk {
             throw new InvalidTerrainChunkError("Invalid Chunk: " + chunkX+ ", " + chunkY);
         }
 
-        int divisions = (int) (1024f/(float)LOD);
+        float[] vertices = new float[(((terrainWidth/LOD) + 1) * ((terrainWidth/LOD) + 1)) * 3];
+        float[] textureCoords = new float[(((terrainWidth/LOD) + 1) * ((terrainWidth/LOD) + 1)) * 3];
+        int[] triangles = new int[(terrainWidth/LOD) * (terrainWidth/LOD) * 6];
+        float[] normals = new float[(terrainWidth/LOD) * (terrainWidth/LOD) * 6];
 
-        float unitLength = (float)totalWidth/(float)divisions;
 
-        int vertexWidth = divisions + 1;
-
-        System.out.println(divisions);
-        System.out.println(unitLength);
-        System.out.println(vertexWidth);
-
-        float[] vertices = new float[vertexWidth * vertexWidth * 3];
-        float[] normals = new float[vertexWidth * vertexWidth * 3];
-        float[] textureCoords = new float[vertexWidth * vertexWidth * 2];
-        int[] triangles = new int[divisions * divisions * 6];
-
+        int f = 0;
+        int t = 0;
         int i = 0;
-        int j = 0;
-        for (int y = 0; y < vertexWidth; y++) {
-            for (int x = 0; x < vertexWidth; x++, i += 3, j += 2) {
-                vertices[i] = x * unitLength;
-                vertices[i+ 1] = getTextureHeight((float) x / vertexWidth, (float) y / vertexWidth);
-                vertices[i + 2] = y * unitLength;
+        for (int y = chunkY*(terrainWidth/LOD); y <= (terrainWidth/LOD) + chunkY*(terrainWidth/LOD); y++) {
+            for (int x = chunkX*(terrainWidth/LOD); x <= (terrainWidth/LOD) + chunkX*(terrainWidth/LOD); x++, i++) {
+                float height = getTextureHeight(x*LOD, y*LOD);
+                vertices[f] = x * unitSize*LOD;
+                vertices[f + 1] = height;
+                vertices[f + 2] = y * unitSize*LOD;
 
-                Vector3f normal = calculateNormal((float) x / vertexWidth, (float) y / vertexWidth, 1f / vertexWidth * heightmap.getWidth());
-                normals[i] = normal.x;
-                normals[i+ 1] = normal.y;
-                normals[i + 2] = normal.z;
+                Vector3f normal = calculateNormal((int) x*LOD, (int)y*LOD);
+                normals[f] = normal.x;
+                normals[f + 1] = normal.y;
+                normals[f + 2] = normal.z;
 
-                textureCoords[j] = (float)x / (float) divisions;
-                textureCoords[j + 1] = (float)y / (float) divisions;
+                textureCoords[t] = 1-(y * (unitSize*LOD) / totalWidth);
+                textureCoords[t+1] = (x * (unitSize*LOD) / totalWidth);
+                f += 3;
+                t += 2;
+            }
+        }
+        for (int ti = 0, vi = 0, y = 0; y < (terrainWidth/LOD); y++, vi++) {
+            for (int x = 0; x < (terrainWidth/LOD); x++, ti += 6, vi++) {
+                triangles[ti] = vi;
+                triangles[ti + 3] = triangles[ti + 2] = vi + 1;
+                triangles[ti + 4] = triangles[ti + 1] = vi + (terrainWidth/LOD) + 1;
+                triangles[ti + 5] = vi + (terrainWidth/LOD) + 2;
             }
         }
 
-        i = 0;
-        for (int y = 0; y < vertexWidth - 1; y++) {
-            for (int x = 0; x < vertexWidth - 1; x++, i += 6) {
-                int coord1 = y * vertexWidth + x;
-                triangles[i] = coord1 + vertexWidth;
-                triangles[i + 1] = coord1 + 1;
-                triangles[i + 2] = coord1;
+        model = ModelCreator.loadToTerrainVAO(vertices, triangles, textureCoords, normals);
+    }
 
-                triangles[i + 3] = coord1 + vertexWidth;
-                triangles[i + 4] = coord1 + vertexWidth + 1;
-                triangles[i + 5] = coord1 + 1;
+    /*
+    private void generateDetails(){
+        for (int y = chunkY*terrainWidth; y <= terrainWidth + chunkY*terrainWidth; y+=1) {
+            for (int x = chunkX*terrainWidth; x <= terrainWidth + chunkX*terrainWidth; x+=1) {
+
+                float newX = (float) (x + ((Math.random()-0.5f) * 0.75f));
+                float newY = (float) (y + ((Math.random()-0.5f) * 0.75f));
+                float scale = (float) (Math.random() * 0.1f) + 0.3f;
+
+
+                Commented out as migrated from euler rotations to quaternion
+               // Transform t = new Transform(
+                        new Vector3f(newX * unitSize, getTextureHeight(x, y), newY * unitSize),
+                        new Vector3f(0, (float) (Math.random()*360f), 0),
+                        new Vector3f(scale, scale, scale));
+               // grassPositions.add(t);
+
+
             }
         }
-
-        model = ModelCreator.loadToTerrainVAO(vertices, triangles, textureCoords, normals, transformationMatrix);
     }
-
-
-    public float getTextureHeight(float x, float y){
-        int pixel = heightmap.getRGB((int) Math.round((0 + x) * heightmap.getWidth()), Math.round((y * heightmap.getHeight())));
-        Color color = new Color(pixel, true);
-        int red = color.getRed();
-        int green = color.getGreen();
-        int blue = color.getBlue();
-        int alpha = color.getAlpha();
-
-        int height = red + (green << 8) + (blue << 16) + (alpha << 24);
-
-        return ((height)/4294967296f)*totalHeight;
-
-        //noise.SetNoiseType(FastNoiseLite.NoiseType.Perlin);
-        //return noise.GetNoise((x + 2323), (y + 43434)) * 50 + 1;
-    }
-
-    public Vector3f calculateNormal(float x, float y, float offset){
-        offset = 4f / heightmap.getWidth();
+    */
+    public float getTextureHeight(int x, int y){
+        //return 10;
+        /*
+        x = Math.clamp(x, 1, TerrainManager.heightMap.getWidth()-2);
+        y = TerrainManager.heightMap.getHeight()-Math.clamp(y, 1, TerrainManager.heightMap.getHeight()-1);
         try {
-            float heightL = getTextureHeight(x - offset, y);
-            float heightR = getTextureHeight(x + offset, y);
-            float heightD = getTextureHeight(x, y - offset);
-            float heightU = getTextureHeight(x, y + offset);
+            int pixel = TerrainManager.heightMap.getRGB(x, y);
+            Color color = new Color(pixel, true);
+            int red = color.getRed();
+            int green = color.getGreen();
+            int blue = color.getBlue();
+            int alpha = color.getAlpha();
 
-            Vector3f normal = new Vector3f(heightL-heightR, 2f, heightD-heightU);
-            normal = normal.normalize();
-            return normal;
+            int height = red + (green << 8) + (blue << 16) + (alpha << 24);
+
+            return ((height)/4294967296f)*totalHeight-24;
         }catch(Exception e){
-            return new Vector3f(0, -1, 0);
+           // e.printStackTrace();
         }
 
+        return 0;
+        */
 
+        noise.SetNoiseType(FastNoiseLite.NoiseType.Perlin);
+        return noise.GetNoise((x + 2323), (y + 43434)) * 50 + 1;
+        //noise.SetNoiseType(FastNoiseLite.NoiseType.Perlin);
+        //return noise.GetNoise((x + offsetX) * scale, (y + offsetY) * scale) * amplitude + 1;
     }
 
+    public Vector3f calculateNormal(int x, int y){
+        float heightL = getTextureHeight(x - 1, y);
+        float heightR = getTextureHeight(x + 1, y);
+        float heightD = getTextureHeight(x, y - 1);
+        float heightU = getTextureHeight(x, y + 1);
+
+        Vector3f normal = new Vector3f(heightL-heightR, 2f, heightD-heightU);
+        normal = normal.normalize();
+        return normal;
+    }
+
+    /*
+    public Vector3f calculateObjectRotation(int x, int y){
+        Vector3f normal = calculateNormal(x, y);
+        float theta = Math.acos(normal.y);
+        float phi = (float) (Math.PI-(normal.z / Math.abs(normal.z)) * Math.acos(normal.x / Math.sqrt(normal.x * normal.x + normal.z * normal.z)));
+        return new Vector3f(0, (float) Math.toDegrees(phi), (float) Math.toDegrees(theta));
+    }*/
 
     public TerrainModel getModel() {
         return this.model;
@@ -134,5 +162,6 @@ public class TerrainChunk {
 
     public void render() {
         Renderer.renderTerrain(model, 20f, 0.05f);
+        //Renderer.renderTerrainDetails(grassPositions, GameEngine.grassModel);
     }
 }
