@@ -5,8 +5,8 @@ import com.bulletphysics.collision.broadphase.DbvtBroadphase;
 import com.bulletphysics.collision.dispatch.CollisionConfiguration;
 import com.bulletphysics.collision.dispatch.CollisionDispatcher;
 import com.bulletphysics.collision.dispatch.DefaultCollisionConfiguration;
-import com.bulletphysics.collision.shapes.BoxShape;
 import com.bulletphysics.collision.shapes.CollisionShape;
+import com.bulletphysics.collision.shapes.StaticPlaneShape;
 import com.bulletphysics.dynamics.DiscreteDynamicsWorld;
 import com.bulletphysics.dynamics.DynamicsWorld;
 import com.bulletphysics.dynamics.RigidBody;
@@ -15,7 +15,7 @@ import com.bulletphysics.dynamics.constraintsolver.ConstraintSolver;
 import com.bulletphysics.dynamics.constraintsolver.SequentialImpulseConstraintSolver;
 import com.bulletphysics.linearmath.DefaultMotionState;
 import com.bulletphysics.linearmath.Transform;
-import engine.physics.components.Rigidbody3D;
+import engine.ecs.component.Rigidbody3D;
 import engine.util.Time;
 
 import javax.vecmath.Quat4f;
@@ -41,8 +41,7 @@ public class Physics {
         groundTransform.setIdentity();
         CollisionShape groundShape;
 
-        // x / z plane at y = -1.
-        groundShape = new BoxShape(new Vector3f(110, 0.1f, 110));
+        groundShape = new StaticPlaneShape(new Vector3f(0, 1, 0), 0.01f);
         DefaultMotionState myMotionState = new DefaultMotionState(groundTransform);
         RigidBodyConstructionInfo rbInfo = new RigidBodyConstructionInfo(0, myMotionState, groundShape, new Vector3f(0, 0, 0));
         RigidBody body = new RigidBody(rbInfo);

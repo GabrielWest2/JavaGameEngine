@@ -218,9 +218,7 @@ public class GameEngine {
             if(obj == null || obj.getModel() == null) return;
 
             Renderer.renderModel(obj.getModel(), entity.getTransform(), obj.cullBack);
-            //Renderer.render(entity);
         }
-        //Renderer.renderTextured(Primitives.plane, t);
     }
 
     private void renderToMousePickingBuffer(){

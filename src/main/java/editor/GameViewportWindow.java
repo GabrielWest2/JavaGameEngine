@@ -153,9 +153,9 @@ public class GameViewportWindow {
             if(displaylight){
                 LightingWindow.selectedPointLight.setPosition(new Vector3f(pos[0], pos[1], pos[2]));
             }else if(selected != null) {
-                selected.getTransform().setPosition(new Vector3f(pos[0], pos[1], pos[2]));
-                selected.getTransform().setRotation(quat);
-                selected.getTransform().setScale(new Vector3f(sca[0], sca[1], sca[2]));
+                selected.getTransform().setPositionUpdate(new Vector3f(pos[0], pos[1], pos[2]));
+                selected.getTransform().setRotationUpdate(quat);
+                //selected.getTransform().setScale(new Vector3f(sca[0], sca[1], sca[2]));
             }
         }else if(mouseOverViewport && ImGui.isWindowFocused() && !shouldIgnoreClick){
             sampleFb(pickingBuffer, scaledCoordX, scaledCoordY);
@@ -175,7 +175,7 @@ public class GameViewportWindow {
      * @return true if one of the mode buttons was pressed
      */
     private static boolean updateModes() {
-        //Consolidate random keybindings in a configurable file
+        //TODO Consolidate random keybindings in a configurable file
 
         if(Keyboard.isKeyPressedThisFrame(GLFW_KEY_T)){
             currentGizmoOperation = Operation.TRANSLATE;
@@ -196,6 +196,10 @@ public class GameViewportWindow {
             currentMode = Mode.LOCAL;
             f = true;
         }
+
+        ImGui.setCursorPos(10, 35);
+        ImGui.textColored(0xff247019, "FPS: " + ImGui.getIO().getFramerate());
+
         return f;
     }
 

@@ -4,8 +4,6 @@ import editor.*;
 import engine.GameEngine;
 import engine.TerrainManager;
 import engine.ecs.Entity;
-import engine.ecs.component.ModelRenderer;
-import engine.ecs.component.ObjRenderer;
 import engine.ecs.component.Transform;
 import engine.postprocessing.PostProcessing;
 import engine.rendering.model.*;
@@ -96,43 +94,7 @@ public class Renderer {
         updateProjection(DisplayManager.getWidth(), DisplayManager.getHeight());
     }
 
-    private static void renderVegetationModel(VegetationModel model, Transform transform, float damper, float reflect) {
-        glDisable(GL_CULL_FACE);
-        vegetationShader.start();
-        vegetationShader.loadLight(GameEngine.getInstance().light);
-        vegetationShader.setMaterial(damper, reflect);
-        vegetationShader.loadMovement(GameEngine.grassMovement);
-        vegetationShader.loadTransformationMatrix(MatrixBuilder.createTransformationMatrix(transform.getPosition(), transform.getRotation(), transform.getScale()));
-        vegetationShader.loadViewMatrix(GameEngine.getInstance().camera.getViewMatrix());
-        vegetationShader.setClipPlane(new Vector4f(0, GameEngine.getInstance().clipDirection, 0, GameEngine.getInstance().clipHeight));
-        GL30.glBindVertexArray(model.getVaoID());
-        GL20.glEnableVertexAttribArray(0);
-        GL20.glEnableVertexAttribArray(1);
-        GL20.glEnableVertexAttribArray(2);
-        GL13.glActiveTexture(GL13.GL_TEXTURE0);
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, model.getTexture().textureID());
-        GL11.glDrawElements(GL11.GL_TRIANGLES, model.getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
-        GL20.glDisableVertexAttribArray(2);
-        GL20.glDisableVertexAttribArray(1);
-        GL20.glDisableVertexAttribArray(0);
-        GL30.glBindVertexArray(0);
-        vegetationShader.stop();
-        glEnable(GL_CULL_FACE);
-    }
 
-    public static void render(Entity entity) {
-        ModelRenderer mr = entity.getComponent(ModelRenderer.class);
-        ObjRenderer obj = entity.getComponent(ObjRenderer.class);
-
-        if(mr != null && mr.getModel() != null) {
-            Model m = mr.getModel();
-            if (VegetationModel.class.isAssignableFrom(m.getClass()))
-                renderVegetationModel((VegetationModel) m, entity.getTransform(), mr.shineDamper, mr.reflectivity);
-            else if (SkyboxModel.class.isAssignableFrom(m.getClass()))
-                renderSkybox((SkyboxModel) m);
-
-        }
-    }
 
     public static void renderModel(ComplexModel m, Transform transform, boolean cullBacks) {
         for(Model mesh : m.getMeshes()){
@@ -198,7 +160,7 @@ public class Renderer {
         float red = (float) (entityId & 0xff) / 0xff;
         float green = (float) ((entityId >> 8) & 0xff) / 0xff;
         float blue = (float) ((entityId >> 16) & 0xff) / 0xff;
-       // float alpha = (float) ((entityId >> 24) & 0xff) / 0xff;
+        // float alpha = (float) ((entityId >> 24) & 0xff) / 0xff;
 
         mousePickingShader.loadColor(new Vector4f(red, green, blue, 1.0f));
         mousePickingShader.loadTransformationMatrix(MatrixBuilder.createTransformationMatrix(transform.getPosition(), transform.getRotation(), transform.getScale()));
@@ -227,7 +189,6 @@ public class Renderer {
         Matrix4f view = GameEngine.getInstance().camera.getViewMatrix();
         defaultShader.loadMaterial(model.getMaterial());
         defaultShader.loadLights(GameEngine.getInstance().loadedScene.getLights(), view);
-        defaultShader.setMaterial(20, 0.5f);
         defaultShader.loadTransformationMatrix(MatrixBuilder.createTransformationMatrix(transform.getPosition(), transform.getRotation(), transform.getScale()));
         defaultShader.loadViewMatrix(view);
         defaultShader.setClipPlane(new Vector4f(0, GameEngine.getInstance().clipDirection, 0, GameEngine.getInstance().clipHeight));
@@ -250,16 +211,14 @@ public class Renderer {
         glEnable(GL_CULL_FACE);
     }
 
-
-
     public static void renderTerrain(TerrainModel model, float damper, float reflect) {
         terrainShader.start();
-        terrainShader.loadLight(GameEngine.getInstance().light);
-        terrainShader.setMaterial(damper, reflect);
+        Matrix4f view = GameEngine.getInstance().camera.getViewMatrix();
+        terrainShader.loadViewMatrix(view);
+        terrainShader.loadLights(GameEngine.getInstance().loadedScene.getLights(), view);
         terrainShader.setTextureScales(TerrainManager.textureScale1,TerrainManager.textureScale2, TerrainManager.textureScale3, TerrainManager.textureScale4);
         terrainShader.connectTextures();
-        //terrainShader.loadTransformationMatrix(MatrixBuilder.defaultTransformation);
-        terrainShader.loadViewMatrix(GameEngine.getInstance().camera.getViewMatrix());
+        terrainShader.loadTransformationMatrix(model.getTransformationMatrix());
         terrainShader.setClipPlane(new Vector4f(0, GameEngine.getInstance().clipDirection, 0, GameEngine.getInstance().clipHeight));
         GL30.glBindVertexArray(model.getVaoID());
         GL20.glEnableVertexAttribArray(0);
@@ -307,7 +266,6 @@ public class Renderer {
 
     public static void beginFrame() {
         DisplayManager.newImguiFrame();
-
         DisplayManager.createDockspace();
         glEnable(GL_CULL_FACE);
         glEnable(GL_CLIP_PLANE0);
@@ -325,8 +283,6 @@ public class Renderer {
 
         PostProcessing.doPostProcessing(fb.getColorTexture(), fb.getDepthTexture());
 
-        //ImGui.showDemoWindow();
-
         WindowMenubar.render();
         GameViewportWindow.render(PostProcessing.finalBuffer, picking, camera, selected);
         ConsoleWindow.render();
@@ -334,6 +290,7 @@ public class Renderer {
         ExplorerWindow.render();
         InspectorWindow.render();
         LightingWindow.render(GameEngine.getInstance().loadedScene.getLights());
+
         DisplayManager.endImguiFrame();
         glfwSwapBuffers(DisplayManager.window); // swap the color buffers
         glfwPollEvents();
