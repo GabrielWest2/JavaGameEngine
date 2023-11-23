@@ -1,7 +1,6 @@
 package engine.shader;
 
 import engine.rendering.lighting.*;
-import engine.rendering.yaycoolnewmodels.Material;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
@@ -13,8 +12,10 @@ import static engine.rendering.Renderer.MAX_SPOT_LIGHTS;
 
 public class TerrainShader extends ShaderProgram {
 
-    private static final String vertexPath = "src/main/java/engine/shader/src/terrain/vertex.shader";
-    private static final String fragmentPath = "src/main/java/engine/shader/src/terrain/fragment.shader";
+    private static final String vertexPath =
+            "src/main/java/engine/shader/src/terrain/vertex.shader";
+    private static final String fragmentPath =
+            "src/main/java/engine/shader/src/terrain/fragment.shader";
 
     public TerrainShader() {
         super(vertexPath, fragmentPath);
@@ -28,7 +29,8 @@ public class TerrainShader extends ShaderProgram {
     }
 
     public void loadTransformationMatrix(Matrix4f matrix) {
-        super.loadUniform(super.getUniformLocation("transformationMatrix"), matrix);
+        super.loadUniform(super.getUniformLocation("transformationMatrix"),
+                matrix);
     }
 
     @Override
@@ -40,26 +42,40 @@ public class TerrainShader extends ShaderProgram {
         super.loadUniform(super.getUniformLocation("viewMatrix"), matrix);
     }
 
+    /*
     public void loadMaterial(Material material) {
-        super.loadUniform(super.getUniformLocation("material.ambient"), material.getAmbientColor());
-        super.loadUniform(super.getUniformLocation("material.diffuse"), material.getDiffuseColor());
-        super.loadUniform(super.getUniformLocation("material.specular"), material.getSpecularColor());
-        super.loadUniform(super.getUniformLocation("material.reflectance"), material.getReflectance());
-        super.loadUniform(super.getUniformLocation("textureSampler"), 0);
-    }
+        super.loadUniform(super.getUniformLocation("material.ambient"),
+                material.getAmbientColor());
+        super.loadUniform(super.getUniformLocation("material.diffuse"),
+                material.getDiffuseColor());
+        super.loadUniform(super.getUniformLocation("material.specular"),
+                material.getSpecularColor());
+        super.loadUniform(super.getUniformLocation("material.reflectance"),
+                material.getReflectance());
+        super.loadUniform(super.getUniformLocation("textureSampler"),
+                0);
+    }*/
 
-    public void loadLights(SceneLights sceneLights, Matrix4f viewMatrix) {
+    public void loadLights(
+            SceneLights sceneLights,
+            Matrix4f viewMatrix
+    ) {
         AmbientLight ambientLight = sceneLights.getAmbientLight();
-        super.loadUniform(super.getUniformLocation("ambientLight.factor"), ambientLight.getIntensity());
-        super.loadUniform(super.getUniformLocation("ambientLight.color"), ambientLight.getColor());
+        super.loadUniform(super.getUniformLocation("ambientLight.factor"),
+                ambientLight.getIntensity());
+        super.loadUniform(super.getUniformLocation("ambientLight.color"),
+                ambientLight.getColor());
 
         DirectionalLight dirLight = sceneLights.getDirLight();
         Vector4f auxDir = new Vector4f(dirLight.getDirection(), 0);
         auxDir.mul(viewMatrix);
         Vector3f dir = new Vector3f(auxDir.x, auxDir.y, auxDir.z);
-        super.loadUniform(super.getUniformLocation("dirLight.color"), dirLight.getColor());
-        super.loadUniform(super.getUniformLocation("dirLight.direction"), dir);
-        super.loadUniform(super.getUniformLocation("dirLight.intensity"), dirLight.getIntensity());
+        super.loadUniform(super.getUniformLocation("dirLight.color"),
+                dirLight.getColor());
+        super.loadUniform(super.getUniformLocation("dirLight.direction"),
+                dir);
+        super.loadUniform(super.getUniformLocation("dirLight.intensity"),
+                dirLight.getIntensity());
 
 
 
@@ -91,7 +107,11 @@ public class TerrainShader extends ShaderProgram {
         }
     }
 
-    private void updatePointLight(PointLight pointLight, String prefix, Matrix4f viewMatrix) {
+    private void updatePointLight(
+            PointLight pointLight,
+            String prefix,
+            Matrix4f viewMatrix
+    ) {
         Vector4f aux = new Vector4f();
         Vector3f lightPosition = new Vector3f();
         Vector3f color = new Vector3f();
@@ -110,15 +130,25 @@ public class TerrainShader extends ShaderProgram {
             linear = attenuation.getLinear();
             exponent = attenuation.getExponent();
         }
-        super.loadUniform(super.getUniformLocation(prefix + ".position"), lightPosition);
-        super.loadUniform(super.getUniformLocation(prefix + ".color"), color);
-        super.loadUniform(super.getUniformLocation(prefix + ".intensity"), intensity);
-        super.loadUniform(super.getUniformLocation(prefix + ".att.constant"), constant);
-        super.loadUniform(super.getUniformLocation(prefix + ".att.linear"), linear);
-        super.loadUniform(super.getUniformLocation(prefix + ".att.exponent"), exponent);
+        super.loadUniform(super.getUniformLocation(prefix + ".position"),
+                lightPosition);
+        super.loadUniform(super.getUniformLocation(prefix + ".color"),
+                color);
+        super.loadUniform(super.getUniformLocation(prefix + ".intensity"),
+                intensity);
+        super.loadUniform(super.getUniformLocation(prefix + ".att.constant"),
+                constant);
+        super.loadUniform(super.getUniformLocation(prefix + ".att.linear"),
+                linear);
+        super.loadUniform(super.getUniformLocation(prefix + ".att.exponent"),
+                exponent);
     }
 
-    private void updateSpotLight(SpotLight spotLight, String prefix, Matrix4f viewMatrix) {
+    private void updateSpotLight(
+            SpotLight spotLight,
+            String prefix,
+            Matrix4f viewMatrix
+    ) {
         PointLight pointLight = null;
         Vector3f coneDirection = new Vector3f();
         float cutoff = 0.0f;
@@ -128,8 +158,10 @@ public class TerrainShader extends ShaderProgram {
             pointLight = spotLight.getPointLight();
         }
 
-        super.loadUniform(super.getUniformLocation(prefix + ".conedir"), coneDirection);
-        super.loadUniform(super.getUniformLocation(prefix + ".conedir"), cutoff);
+        super.loadUniform(super.getUniformLocation(prefix + ".conedir"),
+                coneDirection);
+        super.loadUniform(super.getUniformLocation(prefix + ".conedir"),
+                cutoff);
         updatePointLight(pointLight, prefix + ".pl", viewMatrix);
     }
 
@@ -146,7 +178,11 @@ public class TerrainShader extends ShaderProgram {
         super.loadUniform(super.getUniformLocation("tex4"), 4);
     }
 
-    public void setTextureScales(float scale1, float scale2, float scale3, float scale4){
+    public void setTextureScales(
+            float scale1,
+            float scale2,
+            float scale3,
+            float scale4){
         super.loadUniform(super.getUniformLocation("textureScale1"), scale1);
         super.loadUniform(super.getUniformLocation("textureScale2"), scale2);
         super.loadUniform(super.getUniformLocation("textureScale3"), scale3);
