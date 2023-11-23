@@ -155,7 +155,7 @@ public class GameViewportWindow {
             }else if(selected != null) {
                 selected.getTransform().setPositionUpdate(new Vector3f(pos[0], pos[1], pos[2]));
                 selected.getTransform().setRotationUpdate(quat);
-                //selected.getTransform().setScale(new Vector3f(sca[0], sca[1], sca[2]));
+                selected.getTransform().setScale(new Vector3f(sca[0], sca[1], sca[2]));
             }
         }else if(mouseOverViewport && ImGui.isWindowFocused() && !shouldIgnoreClick){
             sampleFb(pickingBuffer, scaledCoordX, scaledCoordY);
@@ -202,7 +202,6 @@ public class GameViewportWindow {
 
         return f;
     }
-
 
     /**
      * Calculates the maximum size the framebuffer with the current aspect ratio can be to fit within the window

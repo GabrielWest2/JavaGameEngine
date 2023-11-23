@@ -1,6 +1,5 @@
 package engine.shader;
 
-import engine.Light;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 
@@ -31,10 +30,6 @@ public class WaterShader extends ShaderProgram{
         super.loadUniform(super.getUniformLocation("refractionDepthTexture"), 4);
     }
 
-    public void loadLight(Light light){
-        super.loadUniform(super.getUniformLocation("lightPosition"), light.getPosition());
-        super.loadUniform(super.getUniformLocation("lightColor"), light.getColor());
-    }
 
     public void setMaterial(float shineDamper, float reflectivity) {
         super.loadUniform(super.getUniformLocation("shineDamper"), shineDamper);

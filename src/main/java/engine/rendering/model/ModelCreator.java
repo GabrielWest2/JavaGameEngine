@@ -148,15 +148,6 @@ public class ModelCreator {
         unbindVAO();
         return new TexturedModel(vaoID, positions.capacity(), texture);
     }
-    public static VegetationModel loadToVegetationVAO(FloatBuffer positions, IntBuffer indices, FloatBuffer textureCoords, FloatBuffer normals, Texture texture) {
-        int vaoID = createVAO();
-        bindIndicesBuffer(indices);
-        storeDataInAttributeList(0, 3, positions);
-        storeDataInAttributeList(1, 2, textureCoords);
-        storeDataInAttributeList(2, 3, normals);
-        unbindVAO();
-        return new VegetationModel(vaoID, positions.capacity(), texture);
-    }
 
 
     public static Model loadToVAO(FloatBuffer positions, IntBuffer indices, FloatBuffer textureCoords, FloatBuffer normals) {

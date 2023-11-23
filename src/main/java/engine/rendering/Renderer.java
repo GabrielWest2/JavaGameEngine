@@ -7,6 +7,8 @@ import engine.ecs.Entity;
 import engine.ecs.component.Transform;
 import engine.postprocessing.PostProcessing;
 import engine.rendering.model.*;
+import engine.rendering.texture.Texture;
+import engine.rendering.texture.TextureLoader;
 import engine.rendering.yaycoolnewmodels.ComplexModel;
 import engine.shader.*;
 import engine.util.MatrixBuilder;
@@ -35,9 +37,19 @@ public class Renderer {
 
     private static GridShader gridShader;
 
-    private static GrassShader vegetationShader;
-
     private static MousePickingShader mousePickingShader;
+
+    public static Framebuffer reflectionBuffer;
+
+    public static Framebuffer refractionBuffer;
+
+    public static Framebuffer frameBuffer;
+
+    public static Framebuffer mousePickingBuffer;
+
+    public static Texture waterDUDV;
+
+    public static Texture waterNormalMap;
 
     public static final int MAX_POINT_LIGHTS = 5;
 
@@ -65,10 +77,6 @@ public class Renderer {
         gridShader.loadProjectionMatrix(mat);
         gridShader.stop();
 
-        vegetationShader.start();
-        vegetationShader.loadProjectionMatrix(mat);
-        vegetationShader.stop();
-
         mousePickingShader.start();
         mousePickingShader.loadProjectionMatrix(mat);
         mousePickingShader.stop();
@@ -89,7 +97,6 @@ public class Renderer {
         terrainShader = new TerrainShader();
         gridShader = new GridShader();
         waterShader = new WaterShader();
-        vegetationShader = new GrassShader();
         mousePickingShader = new MousePickingShader();
         updateProjection(DisplayManager.getWidth(), DisplayManager.getHeight());
     }
@@ -118,7 +125,6 @@ public class Renderer {
         waterShader.connectTextures();
         waterShader.setMaterial(damper, reflect);
         waterShader.loadWaterMovement(GameEngine.waterMovement);
-        waterShader.loadLight(GameEngine.getInstance().light);
         waterShader.loadCameraPosition(GameEngine.getInstance().camera.getPosition());
         waterShader.loadTransformationMatrix(MatrixBuilder.createTransformationMatrix(position, new Vector3f(0, 0, 0), new Vector3f(1, 1, 1)));
         waterShader.loadViewMatrix(GameEngine.getInstance().camera.getViewMatrix());
@@ -128,15 +134,15 @@ public class Renderer {
         GL20.glEnableVertexAttribArray(2);
 
         GL13.glActiveTexture(GL13.GL_TEXTURE0);
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, GameEngine.reflectionBuffer.getColorTexture());
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, reflectionBuffer.getColorTexture());
         GL13.glActiveTexture(GL13.GL_TEXTURE1);
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, GameEngine.refractionBuffer.getColorTexture());
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, refractionBuffer.getColorTexture());
         GL13.glActiveTexture(GL13.GL_TEXTURE2);
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, GameEngine.waterDUDV.textureID());
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, waterDUDV.textureID());
         GL13.glActiveTexture(GL13.GL_TEXTURE3);
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, GameEngine.waterNormalMap.textureID());
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, waterNormalMap.textureID());
         GL13.glActiveTexture(GL13.GL_TEXTURE4);
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, GameEngine.refractionBuffer.getDepthTexture());
+        GL11.glBindTexture(GL11.GL_TEXTURE_2D, refractionBuffer.getDepthTexture());
 
         GL11.glDrawElements(GL11.GL_TRIANGLES, model.getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
         GL20.glDisableVertexAttribArray(2);
@@ -279,17 +285,16 @@ public class Renderer {
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     }
 
-    public static void endScene(Framebuffer fb, Framebuffer picking, Camera camera, Entity selected) {
+    public static void endScene(Camera camera, Entity selected) {
 
-        PostProcessing.doPostProcessing(fb.getColorTexture(), fb.getDepthTexture());
+        PostProcessing.doPostProcessing(frameBuffer.getColorTexture(), frameBuffer.getDepthTexture());
 
+        GameViewportWindow.render(PostProcessing.finalBuffer, mousePickingBuffer, camera, selected);
+        LightingWindow.render(GameEngine.getInstance().loadedScene.getLights());
         WindowMenubar.render();
-        GameViewportWindow.render(PostProcessing.finalBuffer, picking, camera, selected);
         ConsoleWindow.render();
-        DebugWindow.render();
         ExplorerWindow.render();
         InspectorWindow.render();
-        LightingWindow.render(GameEngine.getInstance().loadedScene.getLights());
 
         DisplayManager.endImguiFrame();
         glfwSwapBuffers(DisplayManager.window); // swap the color buffers
@@ -301,5 +306,17 @@ public class Renderer {
         skyboxShader.cleanUp();
         terrainShader.cleanUp();
         gridShader.cleanUp();
+    }
+
+    public static void initFramebuffers() {
+        reflectionBuffer = new Framebuffer(DisplayManager.getWidth(), DisplayManager.getHeight(), Framebuffer.DEPTH_TEXTURE);
+        refractionBuffer = new Framebuffer(DisplayManager.getWidth(), DisplayManager.getHeight(), Framebuffer.DEPTH_TEXTURE);
+        frameBuffer = new Framebuffer(DisplayManager.getWidth(), DisplayManager.getHeight(), Framebuffer.DEPTH_TEXTURE);
+        mousePickingBuffer = new Framebuffer(DisplayManager.getWidth(), DisplayManager.getHeight(), Framebuffer.DEPTH_TEXTURE);
+    }
+
+    public static void initWater() {
+        waterDUDV = TextureLoader.loadTexture("water/waterDUDV.png");
+        waterNormalMap = TextureLoader.loadTexture("water/waterNormalMap.png");
     }
 }

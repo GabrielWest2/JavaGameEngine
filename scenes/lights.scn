@@ -35,7 +35,7 @@
       "isLocked": false
     },
     {
-      "name": "New Entity",
+      "name": "BIG FLAT WALL",
       "components": [
         {
           "subc": "engine.ecs.component.Transform",
@@ -95,20 +95,20 @@
     "pointLights": [
       {
         "position": {
-          "x": 0.0,
-          "y": 6.0,
-          "z": 0.0
+          "x": -2.5211172,
+          "y": 5.468239,
+          "z": -2.7492738
         },
         "color": {
           "x": 1.0,
-          "y": 0.893617,
+          "y": 0.0,
           "z": 0.0
         },
         "intensity": 1.0,
         "attenuation": {
           "constant": 0.0,
-          "exponent": 0.0,
-          "linear": 0.771
+          "exponent": 0.022,
+          "linear": 0.437
         }
       }
     ],

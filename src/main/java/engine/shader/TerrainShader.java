@@ -29,7 +29,6 @@ public class TerrainShader extends ShaderProgram {
 
     public void loadTransformationMatrix(Matrix4f matrix) {
         super.loadUniform(super.getUniformLocation("transformationMatrix"), matrix);
-
     }
 
     @Override
