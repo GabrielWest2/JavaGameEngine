@@ -1,9 +1,9 @@
 package engine.util;
 
-import engine.rendering.Camera;
-import engine.GameEngine;
-import engine.rendering.DisplayManager;
 import engine.input.Mouse;
+import engine.rendering.Camera;
+import engine.rendering.DisplayManager;
+import engine.scene.SceneManager;
 import org.joml.*;
 
 import java.lang.Math;
@@ -74,7 +74,7 @@ public class MatrixBuilder {
     }
 
     public static Vector3f toWorldCoords(Vector4f eyeCoords){
-        Matrix4f invertedView = createViewMatrix(GameEngine.getInstance().camera).invert();
+        Matrix4f invertedView = createViewMatrix(SceneManager.loadedScene.camera).invert();
         Vector4f rayWorld = invertedView.transform(eyeCoords);
         Vector3f mouseRay = new Vector3f(rayWorld.x, rayWorld.y, rayWorld.z);
         mouseRay.normalize();

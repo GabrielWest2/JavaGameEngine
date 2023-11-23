@@ -1,6 +1,6 @@
 package engine.audio;
 
-import engine.GameEngine;
+import engine.scene.SceneManager;
 import org.apache.commons.io.IOUtils;
 import org.joml.Vector3f;
 import org.lwjgl.BufferUtils;
@@ -9,7 +9,10 @@ import org.lwjgl.openal.AL10;
 import org.lwjgl.openal.ALC;
 import org.lwjgl.openal.ALCCapabilities;
 
-import javax.sound.sampled.*;
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import java.io.File;
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -42,7 +45,7 @@ public class AudioManager {
     }
 
     public static void setListenerData(){
-        Vector3f pos = GameEngine.getInstance().camera.getPosition();
+        Vector3f pos = SceneManager.loadedScene.camera.getPosition();
         AL10.alListener3f(AL10.AL_POSITION, pos.x, pos.y, pos.z);
         AL10.alListener3f(AL10.AL_VELOCITY, 0, 0, 0);
     }

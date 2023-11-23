@@ -4,7 +4,7 @@ package engine.rendering.model;
  * @author gabed
  * @Date 7/20/2022
  */
-public class SkyboxModel extends Model {
+public class SkyboxModel extends Mesh {
     private final int cubemapTexture;
 
     public SkyboxModel(int vaoID, int vertexCount, int cubemapTexture) {

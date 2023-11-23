@@ -1,20 +1,25 @@
 package engine.rendering;
 
 import editor.*;
-import engine.GameEngine;
 import engine.TerrainManager;
+import engine.WaterManger;
 import engine.ecs.Entity;
+import engine.ecs.component.ObjRenderer;
 import engine.ecs.component.Transform;
+import engine.physics.Physics;
 import engine.postprocessing.PostProcessing;
 import engine.rendering.model.*;
 import engine.rendering.texture.Texture;
 import engine.rendering.texture.TextureLoader;
-import engine.rendering.yaycoolnewmodels.ComplexModel;
+import engine.scene.Scene;
+import engine.scene.SceneManager;
 import engine.shader.*;
 import engine.util.MatrixBuilder;
+import engine.util.Time;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
+import org.lwjgl.opengl.GL11;
 
 import static org.lwjgl.glfw.GLFW.glfwPollEvents;
 import static org.lwjgl.glfw.GLFW.glfwSwapBuffers;
@@ -50,9 +55,23 @@ public class Renderer {
 
     public static Texture waterNormalMap;
 
+    private static SkyboxModel skybox;
+
     public static final int MAX_POINT_LIGHTS = 5;
 
     public static final int MAX_SPOT_LIGHTS = 5;
+
+    public static float clipHeight = 0;
+
+    public static float clipDirection = 1;
+
+    public static float waterMovement = 0f;
+
+
+    public static void initSkybox(){
+        skybox = ModelCreator.createSkyboxModel(new String[]{"right", "left", "top", "bottom", "back", "front"});
+    }
+
 
     public static void updateProjection(int width, int height) {
         Matrix4f mat = MatrixBuilder.createProjectionMatrix(width, height);
@@ -98,19 +117,87 @@ public class Renderer {
         waterShader = new WaterShader();
         mousePickingShader = new MousePickingShader();
         updateProjection(DisplayManager.getWidth(), DisplayManager.getHeight());
+        Renderer.initSkybox();
+        Renderer.initFramebuffers();
+        Renderer.initWater();
+        DisplayManager.setCallbacks();
     }
 
 
+    public static void renderGame(){
+        Renderer.mousePickingBuffer.bind();
+        renderToMousePickingBuffer(SceneManager.loadedScene);
+        Renderer.mousePickingBuffer.unbind();
 
-    public static void renderModel(ComplexModel m, Transform transform, boolean cullBacks) {
-        for(Model mesh : m.getMeshes()){
+
+        Renderer.refractionBuffer.bind();
+        clipDirection = -1;
+        clipHeight = WaterManger.waterHeight+0.01f;
+        renderScene(SceneManager.loadedScene, skybox);
+        Renderer.refractionBuffer.unbind();
+
+        Renderer.reflectionBuffer.bind();
+        clipDirection = 1;
+        clipHeight = -WaterManger.waterHeight;
+        SceneManager.loadedScene.camera.waterInvert(clipHeight);
+        renderScene(SceneManager.loadedScene, skybox);
+        SceneManager.loadedScene.camera.waterInvert(clipHeight);
+        Renderer.reflectionBuffer.unbind();
+
+        Renderer.frameBuffer.bind();
+        clipDirection = -1;
+        clipHeight = 10000;
+        renderScene(SceneManager.loadedScene, skybox);
+        WaterManger.render();
+        Physics.render();
+        Renderer.frameBuffer.unbind();
+    }
+
+    public static void renderScene(Scene scene, SkyboxModel skybox){
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
+        glDisable(GL_CLIP_PLANE0);
+        glDisable(GL_DEPTH_TEST);
+        Renderer.renderSkybox(skybox);
+        glEnable(GL_DEPTH_TEST);
+        glEnable(GL_CLIP_PLANE0);
+        TerrainManager.renderChunks();
+        for (Entity entity : scene.getEntities()) {
+            var obj = entity.getComponent(ObjRenderer.class);
+
+            if(obj == null || obj.getModel() == null) return;
+
+            Renderer.renderModel(obj.getModel(), entity.getTransform(), obj.cullBack);
+        }
+    }
+
+    public static void renderToMousePickingBuffer(Scene scene){
+        glClearColor(0, 0, 0, 1);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
+        glDisable(GL_CLIP_PLANE0);
+        glEnable(GL_DEPTH_TEST);
+        GL11.glPolygonMode(GL11.GL_FRONT_AND_BACK, GL_FILL);
+        int i = 0;
+        for (Entity entity : scene.getEntities()) {
+            var obj = entity.getComponent(ObjRenderer.class);
+
+            if(obj == null || obj.getModel() == null) return;
+
+            Renderer.renderPicking(obj.getModel(), entity.getTransform(), false, i + 1);
+            i++;
+        }
+        glEnable(GL_CLIP_PLANE0);
+    }
+
+
+    private static void renderModel(Model m, Transform transform, boolean cullBacks) {
+        for(Mesh mesh : m.getMeshes()){
             renderTextured(mesh, transform, cullBacks);
         }
     }
 
 
-    public static void renderPicking(ComplexModel m, Transform transform, boolean cullBacks, int entityId) {
-        for(Model mesh : m.getMeshes()){
+    private static void renderPicking(Model m, Transform transform, boolean cullBacks, int entityId) {
+        for(Mesh mesh : m.getMeshes()){
             renderMousePicking(mesh, transform, cullBacks, entityId);
         }
     }
@@ -123,9 +210,9 @@ public class Renderer {
         waterShader.start();
         waterShader.connectTextures();
         waterShader.setMaterial(damper, reflect);
-        waterShader.loadWaterMovement(GameEngine.waterMovement);
+        waterShader.loadWaterMovement(waterMovement);
         waterShader.loadCameraPosition(
-                GameEngine.getInstance().camera.getPosition());
+                SceneManager.loadedScene.camera.getPosition());
         waterShader.loadTransformationMatrix(
                 MatrixBuilder.createTransformationMatrix(
                         position,
@@ -133,7 +220,7 @@ public class Renderer {
                         new Vector3f(1, 1, 1))
         );
         waterShader.loadViewMatrix(
-                GameEngine.getInstance().camera.getViewMatrix());
+                SceneManager.loadedScene.camera.getViewMatrix());
         glBindVertexArray(model.getVaoID());
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
@@ -173,7 +260,7 @@ public class Renderer {
 
 
 
-    private static void renderMousePicking(Model model, Transform transform, boolean cull, int entityId) {
+    private static void renderMousePicking(Mesh model, Transform transform, boolean cull, int entityId) {
         if(cull)
             glEnable(GL_CULL_FACE);
         else
@@ -194,7 +281,7 @@ public class Renderer {
                 )
         );
         mousePickingShader.loadViewMatrix(
-                GameEngine.getInstance().camera.getViewMatrix());
+                SceneManager.loadedScene.camera.getViewMatrix());
         glBindVertexArray(model.getVaoID());
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
@@ -210,15 +297,15 @@ public class Renderer {
     }
 
 
-    public static void renderTextured(Model model, Transform transform, boolean cullBack) {
+    public static void renderTextured(Mesh model, Transform transform, boolean cullBack) {
         if(cullBack)
             glEnable(GL_CULL_FACE);
         else
             glDisable(GL_CULL_FACE);
         defaultShader.start();
-        Matrix4f view = GameEngine.getInstance().camera.getViewMatrix();
+        Matrix4f view = SceneManager.loadedScene.camera.getViewMatrix();
         defaultShader.loadMaterial(model.getMaterial());
-        defaultShader.loadLights(GameEngine.getInstance().loadedScene.getLights(), view);
+        defaultShader.loadLights(SceneManager.loadedScene.getLights(), view);
         defaultShader.loadTransformationMatrix(
                 MatrixBuilder.createTransformationMatrix(
                         transform.getPosition(),
@@ -230,9 +317,9 @@ public class Renderer {
         defaultShader.setClipPlane(
                 new Vector4f(
                         0,
-                        GameEngine.getInstance().clipDirection,
+                        Renderer.clipDirection,
                         0,
-                        GameEngine.getInstance().clipHeight
+                        Renderer.clipHeight
                 )
         );
 
@@ -257,9 +344,9 @@ public class Renderer {
 
     public static void renderTerrain(TerrainModel model) {
         terrainShader.start();
-        Matrix4f view = GameEngine.getInstance().camera.getViewMatrix();
+        Matrix4f view = SceneManager.loadedScene.camera.getViewMatrix();
         terrainShader.loadViewMatrix(view);
-        terrainShader.loadLights(GameEngine.getInstance().loadedScene.getLights(), view);
+        terrainShader.loadLights(SceneManager.loadedScene.getLights(), view);
 
         terrainShader.setTextureScales(
                 TerrainManager.textureScale1,
@@ -271,8 +358,8 @@ public class Renderer {
         terrainShader.loadTransformationMatrix(model.getTransformationMatrix());
 
         terrainShader.setClipPlane(new Vector4f(0,
-                GameEngine.getInstance().clipDirection,
-                0, GameEngine.getInstance().clipHeight));
+                Renderer.clipDirection,
+                0, Renderer.clipHeight));
 
         glBindVertexArray(model.getVaoID());
         glEnableVertexAttribArray(0);
@@ -305,7 +392,7 @@ public class Renderer {
         skyboxShader.start();
         skyboxShader.loadViewMatrix(
                 MatrixBuilder.createStationaryViewMatrix(
-                        GameEngine.getInstance().camera
+                        SceneManager.loadedScene.camera
                 )
         );
         glBindVertexArray(model.getVaoID());
@@ -336,6 +423,8 @@ public class Renderer {
         glEnable(GL_CULL_FACE);
         glCullFace(GL_BACK);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+        waterMovement += Time.getDeltaTime() / 30f;
+        waterMovement %=1;
     }
 
     public static void endScene(Camera camera, Entity selected) {
@@ -352,7 +441,7 @@ public class Renderer {
                 selected
         );
 
-        LightingWindow.render(GameEngine.getInstance().loadedScene.getLights());
+        LightingWindow.render(SceneManager.loadedScene.getLights());
         WindowMenubar.render();
         ConsoleWindow.render();
         ExplorerWindow.render();

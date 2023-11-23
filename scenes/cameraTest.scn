@@ -1,0 +1,95 @@
+{
+  "entities": [
+    {
+      "name": "New Entity",
+      "components": [
+        {
+          "subc": "engine.ecs.component.Transform",
+          "data": {
+            "position": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0
+            },
+            "rotation": {
+              "x": 0.0,
+              "y": 0.0,
+              "z": 0.0,
+              "w": 1.0
+            },
+            "scale": {
+              "x": 1.8599999,
+              "y": 1.8599999,
+              "z": 4.0500865
+            }
+          }
+        },
+        {
+          "subc": "engine.ecs.component.ObjRenderer",
+          "data": {
+            "cullBack": true,
+            "modelPath": "engine/primitive/cube.obj"
+          }
+        }
+      ],
+      "isLocked": false
+    }
+  ],
+  "name": "testScene",
+  "lights": {
+    "ambientLight": {
+      "color": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+      },
+      "intensity": 0.153
+    },
+    "dirLight": {
+      "color": {
+        "x": 1.0,
+        "y": 0.98823,
+        "z": 0.8893617
+      },
+      "direction": {
+        "x": 0.619,
+        "y": 1.0,
+        "z": -0.524
+      },
+      "intensity": 0.6
+    },
+    "pointLights": [
+      {
+        "position": {
+          "x": 0.0,
+          "y": 5.0,
+          "z": 0.0
+        },
+        "color": {
+          "x": 1.0,
+          "y": 0.5,
+          "z": 0.5
+        },
+        "intensity": 0.5,
+        "attenuation": {
+          "constant": 0.0,
+          "exponent": 1.0,
+          "linear": 0.0
+        }
+      }
+    ],
+    "spotLights": []
+  },
+  "camera": {
+    "position": {
+      "x": -3.74129,
+      "y": 2.4700015,
+      "z": -5.24414
+    },
+    "rotation": {
+      "x": -2.2999997,
+      "y": 210.79996,
+      "z": 0.0
+    }
+  }
+}

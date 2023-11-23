@@ -2,9 +2,9 @@ package engine.ecs.component;
 
 import editor.util.NoHudRender;
 import engine.ecs.Component;
+import engine.rendering.model.Mesh;
 import engine.rendering.model.Model;
-import engine.rendering.yaycoolnewmodels.ComplexModel;
-import engine.rendering.yaycoolnewmodels.Material;
+import engine.rendering.Material;
 import imgui.ImGui;
 import imgui.type.ImString;
 
@@ -25,7 +25,7 @@ public class ObjRenderer extends Component {
     @NoHudRender
     public String modelPath = "";
 
-    public transient ComplexModel model;
+    public transient Model model;
 
     public ObjRenderer() {
 
@@ -35,7 +35,7 @@ public class ObjRenderer extends Component {
     public void onVariableChanged() {
         try {
             if (new File("res/" + modelPath).exists() && !new File("res/" + modelPath).isDirectory()) {
-                this.model = new ComplexModel(modelPath);
+                this.model = new Model(modelPath);
             }
 
         }catch (Exception e){
@@ -43,7 +43,7 @@ public class ObjRenderer extends Component {
         }
     }
 
-    public ComplexModel getModel() {
+    public Model getModel() {
         return model;
     }
 
@@ -95,7 +95,7 @@ public class ObjRenderer extends Component {
         if(model == null)
             return;
         int i =0;
-        for(Model m : model.getMeshes()){
+        for(Mesh m : model.getMeshes()){
             if(ImGui.collapsingHeader("Mesh " + i)){
                 Material mat = m.getMaterial();
                 ImGui.text("Texture Path: " + mat.getTexturePath());

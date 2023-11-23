@@ -70,31 +70,31 @@ public class ModelCreator {
     };
 
 
-    public static Model loadToVAO(float[] positions, int[] indices) {
+    public static Mesh loadToVAO(float[] positions, int[] indices) {
         int vaoID = createVAO();
         bindIndicesBuffer(indices);
         storeDataInAttributeList(0, 3, positions);
         unbindVAO();
-        return new Model(vaoID, positions.length);
+        return new Mesh(vaoID, positions.length);
     }
 
-    public static Model loadToVAO(float[] positions, int dimensions) {
+    public static Mesh loadToVAO(float[] positions, int dimensions) {
         int vaoID = createVAO();
         storeDataInAttributeList(0, dimensions, positions);
         unbindVAO();
-        return new Model(vaoID, positions.length / dimensions);
+        return new Mesh(vaoID, positions.length / dimensions);
     }
 
-    public static Model loadToVAO(FloatBuffer positions, IntBuffer indices) {
+    public static Mesh loadToVAO(FloatBuffer positions, IntBuffer indices) {
         int vaoID = createVAO();
         bindIndicesBuffer(indices);
         storeDataInAttributeList(0, 3, positions);
         unbindVAO();
-        return new Model(vaoID, positions.capacity());
+        return new Mesh(vaoID, positions.capacity());
     }
 
     public static SkyboxModel createSkyboxModel(String[] TEXTURE_FILES) {
-        Model m = loadToVAO(VERTICES, 3);
+        Mesh m = loadToVAO(VERTICES, 3);
         return new SkyboxModel(
                 m.getVaoID(),
                 m.getVertexCount(),
@@ -118,7 +118,7 @@ public class ModelCreator {
         return new TexturedModel(vaoID, positions.length, texture);
     }
 
-    public static Model loadToTexturedVAO(
+    public static Mesh loadToTexturedVAO(
               float[] positions,
               int[] indices,
               float[] textureCoords,
@@ -130,7 +130,7 @@ public class ModelCreator {
         storeDataInAttributeList(1, 2, textureCoords);
         storeDataInAttributeList(2, 3, normals);
         unbindVAO();
-        return new Model(vaoID, positions.length);
+        return new Mesh(vaoID, positions.length);
     }
 
     public static WaterModel loadToWaterVAO(
@@ -190,7 +190,7 @@ public class ModelCreator {
     }
 
 
-    public static Model loadToVAO(
+    public static Mesh loadToVAO(
             FloatBuffer positions,
             IntBuffer indices,
             FloatBuffer textureCoords,
@@ -202,7 +202,7 @@ public class ModelCreator {
         storeDataInAttributeList(1, 2, textureCoords);
         storeDataInAttributeList(2, 3, normals);
         unbindVAO();
-        return new Model(vaoID, positions.capacity());
+        return new Mesh(vaoID, positions.capacity());
     }
 
     private static int createVAO() {

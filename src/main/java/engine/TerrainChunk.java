@@ -53,7 +53,7 @@ public class TerrainChunk {
                     ("Invalid Chunk: " + chunkX+ ", " + chunkY);
         }
 
-        int divisions = (int) (1024f/(float)LOD);
+        int divisions = (int) (100/(float)LOD);
 
         float unitLength = (float)totalWidth/(float)divisions;
 

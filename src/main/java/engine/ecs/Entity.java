@@ -1,9 +1,7 @@
 package engine.ecs;
 
-import engine.GameEngine;
-import engine.ecs.component.ModelRenderer;
 import engine.ecs.component.Transform;
-import engine.rendering.model.Model;
+import engine.scene.SceneManager;
 import org.joml.Vector3f;
 
 import java.util.ArrayList;
@@ -18,14 +16,6 @@ public class Entity {
     private final List<Component> components;
 
     private boolean isLocked = false;
-
-
-    public Entity(Transform transform, Model model) {
-        this.transform = transform;
-        components = new ArrayList<>();
-        addComponent(transform);
-        addComponent(new ModelRenderer(model));
-    }
 
     public Entity(String name, Transform transform) {
         this.name = name;
@@ -82,7 +72,7 @@ public class Entity {
     }
 
     public void destroy() {
-        GameEngine.getInstance().loadedScene.removeEntity(this);
+        SceneManager.loadedScene.removeEntity(this);
     }
 
     public String getName() {

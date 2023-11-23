@@ -21,7 +21,7 @@ public class Camera {
 
     private Vector3f rotation;
 
-    private Matrix4f viewMatrix;
+    private transient Matrix4f viewMatrix;
 
     public Camera(Vector3f position, Vector3f rotation) {
         this.position = position;

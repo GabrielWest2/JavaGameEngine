@@ -1,7 +1,7 @@
 package engine.shader;
 
 import engine.rendering.lighting.*;
-import engine.rendering.yaycoolnewmodels.Material;
+import engine.rendering.Material;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;

@@ -1,7 +1,6 @@
 package engine.rendering.model;
 
-import engine.rendering.yaycoolnewmodels.ComplexModel;
-import engine.rendering.yaycoolnewmodels.Material;
+import engine.rendering.Material;
 import org.joml.Vector4f;
 import org.lwjgl.PointerBuffer;
 import org.lwjgl.assimp.*;
@@ -17,7 +16,7 @@ import static org.lwjgl.assimp.Assimp.*;
 
 public class ModelLoader {
 
-    private static final HashMap<String, ComplexModel> cachedModels
+    private static final HashMap<String, Model> cachedModels
             = new HashMap<>();
 
     /*
@@ -25,7 +24,7 @@ public class ModelLoader {
     adapted from
     https://ahbejarano.gitbook.io/lwjglgamedev/chapter-09
      */
-    public static List<Model> loadUsingAssimp(String path){
+    public static List<Mesh> loadUsingAssimp(String path){
        // if(cachedModels.containsKey(path) &&
        //         cachedModels.get(path).getTexture().getFilepath()
        //                 .equals(texture.getFilepath())){
@@ -33,7 +32,7 @@ public class ModelLoader {
       //      return cachedModels.get(path);
       // }
 
-        List<Model> meshes = new ArrayList<>();
+        List<Mesh> meshes = new ArrayList<>();
 
         AIScene aiScene = aiImportFile("res/" + path,
                 aiProcess_CalcTangentSpace | // calculate tangents and
@@ -82,7 +81,7 @@ public class ModelLoader {
         Material defaultMaterial = new Material();
         for (int i = 0; i < numMeshes; i++) {
             AIMesh aiMesh = AIMesh.create(aiMeshes.get(i));
-            Model mesh = processMesh(aiMesh);
+            Mesh mesh = processMesh(aiMesh);
             int materialIdx = aiMesh.mMaterialIndex();
             Material material;
             if (materialIdx >= 0 && materialIdx < materialList.size()) {
@@ -94,7 +93,7 @@ public class ModelLoader {
             meshes.add(mesh);
         }
         System.out.println("Loaded " + meshes.size() + "meshes");
-        for(Model m : meshes){
+        for(Mesh m : meshes){
             System.out.println(m.getMaterial().getTexturePath());
         }
         return meshes;
@@ -251,7 +250,7 @@ public class ModelLoader {
         }
     }
 
-    private static Model processMesh(AIMesh aiMesh) {
+    private static Mesh processMesh(AIMesh aiMesh) {
         float[] vertices = processVertices(aiMesh);
         float[] textCoords = processTexCoords(aiMesh);
         int[] indices = processIndices(aiMesh);

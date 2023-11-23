@@ -1,4 +1,4 @@
-package engine.rendering.yaycoolnewmodels;
+package engine.rendering;
 
 import engine.rendering.texture.Texture;
 import engine.rendering.texture.TextureLoader;

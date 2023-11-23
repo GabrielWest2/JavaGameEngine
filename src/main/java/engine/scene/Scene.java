@@ -1,15 +1,10 @@
 package engine.scene;
 
-import editor.ExplorerWindow;
-import engine.GameEngine;
-import engine.ecs.Component;
 import engine.ecs.Entity;
-import engine.ecs.component.Transform;
+import engine.rendering.Camera;
 import engine.rendering.lighting.SceneLights;
-import org.apache.commons.io.FileUtils;
+import org.joml.Vector3f;
 
-import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,9 +20,12 @@ public class Scene {
 
     private SceneLights lights;
 
+    public Camera camera;
+
     public Scene(String name) {
         this.name = name;
         lights = new SceneLights();
+        camera = new Camera(new Vector3f(30, 10, 30), new Vector3f(0, 25, 0));
     }
 
     public String getName() {
@@ -82,45 +80,5 @@ public class Scene {
         return entities;
     }
 
-    /**
-     * Saves the currently loaded {@code Scene} to a file
-     * @param path the path to save the loaded {@code Scene} to
-     */
-    public void save(String path) {
-        String json = GameEngine.gson.toJson(this);
-        try {
-            try (Writer writer = new BufferedWriter(new OutputStreamWriter(
-                    new FileOutputStream(path), "utf-8"))) {
-                writer.write(json);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
-    /**
-     * Deserializes and loads a {@code Scene} from a file
-     * @param path the path of the {@code Scene} file
-     */
-    public void load(String path) {
-        File file = new File(path);
-        String str = null;
-        try {
-            str = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
-        } catch (IOException e) {
-           e.printStackTrace();
-        }
-
-        Scene loaded = GameEngine.gson.fromJson(str, Scene.class);
-        System.out.println("Loaded " + loaded.getName());
-        GameEngine.getInstance().loadedScene = loaded;
-        ExplorerWindow.selectedEntity = null;
-        for(Entity e : loaded.entities){
-            e.setTransform(e.getComponent(Transform.class));
-            for(Component component : e.getComponents()){
-                component.onAdded(e);
-                component.onVariableChanged();
-            }
-        }
-    }
 }

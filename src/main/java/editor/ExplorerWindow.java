@@ -1,8 +1,8 @@
 package editor;
 
 import editor.util.FAIcons;
-import engine.GameEngine;
 import engine.ecs.Entity;
+import engine.scene.SceneManager;
 import imgui.ImGui;
 
 /**
@@ -15,7 +15,7 @@ public class ExplorerWindow {
     public static void render() {
         ImGui.begin(FAIcons.ICON_SITEMAP + " Explorer");
         int i = 0;
-        for (Entity entity : GameEngine.getInstance().loadedScene.getEntities()) {
+        for (Entity entity : SceneManager.loadedScene.getEntities()) {
             if(!entity.getName().startsWith("Tile")) {
                 ImGui.pushID(i);
                 if (ImGui.button(entity.getName())) {

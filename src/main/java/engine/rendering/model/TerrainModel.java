@@ -3,7 +3,7 @@ package engine.rendering.model;
 import engine.rendering.texture.Texture;
 import org.joml.Matrix4f;
 
-public class TerrainModel extends Model {
+public class TerrainModel extends Mesh {
 
     private final Texture splat;
 

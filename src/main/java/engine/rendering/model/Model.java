@@ -1,33 +1,20 @@
 package engine.rendering.model;
 
-import engine.rendering.yaycoolnewmodels.Material;
+import java.util.List;
 
 public class Model {
+    private List<Mesh> meshes;
 
-    private final int vaoID;
-    
-    private final int vertexCount;
 
-    private Material material;
-
-    public Model(int vaoID, int vertexCount) {
-        this.vaoID = vaoID;
-        this.vertexCount = vertexCount;
+    public Model(String path) {
+        this.meshes = ModelLoader.loadUsingAssimp(path);
     }
 
-    public int getVaoID() {
-        return vaoID;
+    public List<Mesh> getMeshes() {
+        return meshes;
     }
 
-    public int getVertexCount() {
-        return vertexCount;
-    }
-
-    public Material getMaterial() {
-        return material;
-    }
-
-    public void setMaterial(Material material) {
-        this.material = material;
+    public void setMeshes(List<Mesh> meshes) {
+        this.meshes = meshes;
     }
 }
