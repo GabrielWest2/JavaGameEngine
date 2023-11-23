@@ -37,7 +37,14 @@ public class TextureLoader {
             width = image.getWidth();
             height = image.getHeight();
             pixels = new int[width * height];
-            image.getRGB(0, 0, width, height, pixels, 0, width);
+            image.getRGB(
+                    0,
+                    0,
+                    width,
+                    height,
+                    pixels,
+                    0,
+                    width);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -54,19 +61,36 @@ public class TextureLoader {
 
         int result = glGenTextures();
         glBindTexture(GL_TEXTURE_2D, result);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_LOD_BIAS, 0);
+        glTexParameteri(GL_TEXTURE_2D,
+                GL_TEXTURE_MIN_FILTER,
+                GL_LINEAR_MIPMAP_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D,
+                GL_TEXTURE_MAG_FILTER,
+                GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D,
+                GL_TEXTURE_LOD_BIAS,
+                0);
 
-        float amount = Math.min(4f, GL11.glGetFloat(EXTTextureFilterAnisotropic.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT));
-        glTexParameterf(GL_TEXTURE_2D, EXTTextureFilterAnisotropic.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, amount);
+        float amount = Math.min(4f, GL11.glGetFloat(
+                EXTTextureFilterAnisotropic.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT));
+        glTexParameterf(GL_TEXTURE_2D,
+                EXTTextureFilterAnisotropic.GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT,
+                amount);
 
         IntBuffer buffer = ByteBuffer.allocateDirect(data.length << 2)
                 .order(ByteOrder.nativeOrder()).asIntBuffer();
         buffer.put(data).flip();
 
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA,
+        glTexImage2D(
+                GL_TEXTURE_2D,
+                0,
+                GL_RGBA,
+                width,
+                height,
+                0,
+                GL_RGBA,
                 GL_UNSIGNED_BYTE, buffer);
+
         glGenerateMipmap(GL_TEXTURE_2D);
         glBindTexture(GL_TEXTURE_2D, 0);
         return new Texture(result, path);
@@ -80,11 +104,22 @@ public class TextureLoader {
         for (int t = 0; t < textureFiles.length; t++) {
             int[] pixels = null;
             try {
-                BufferedImage image = ImageIO.read(new FileInputStream("res/skybox/" + textureFiles[t] + ".png"));
+                BufferedImage image = ImageIO.read(
+                        new FileInputStream("res/skybox/" +
+                                textureFiles[t] + ".png"));
+
                 width = image.getWidth();
                 height = image.getHeight();
                 pixels = new int[width * height];
-                image.getRGB(0, 0, width, height, pixels, 0, width);
+                image.getRGB(
+                        0,
+                        0,
+                        width,
+                        height,
+                        pixels,
+                        0,
+                        width);
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -101,17 +136,39 @@ public class TextureLoader {
 
             int result = glGenTextures();
             glBindTexture(GL_TEXTURE_2D, result);
-            glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-            glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-            //glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-            glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-            glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-            IntBuffer buffer = ByteBuffer.allocateDirect(data.length << 2)
+            glTexParameteri(
+                    GL_TEXTURE_CUBE_MAP,
+                    GL_TEXTURE_MAG_FILTER,
+                    GL_LINEAR);
+            glTexParameteri(
+                    GL_TEXTURE_CUBE_MAP,
+                    GL_TEXTURE_MIN_FILTER,
+                    GL_LINEAR);
+            glTexParameteri(
+                    GL_TEXTURE_CUBE_MAP,
+                    GL_TEXTURE_WRAP_S,
+                    GL_CLAMP_TO_EDGE);
+            glTexParameteri(
+                    GL_TEXTURE_CUBE_MAP,
+                    GL_TEXTURE_WRAP_T,
+                    GL_CLAMP_TO_EDGE);
+            IntBuffer buffer =
+                    ByteBuffer.allocateDirect(data.length << 2)
                     .order(ByteOrder.nativeOrder()).asIntBuffer();
             buffer.put(data).flip();
 
-            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + t, 0, GL_RGBA, width, height, 0, GL_RGBA,
-                    GL_UNSIGNED_BYTE, buffer);
+            glTexImage2D(
+                    GL_TEXTURE_CUBE_MAP_POSITIVE_X + t,
+                    0,
+                    GL_RGBA,
+                    width,
+                    height,
+                    0,
+                    GL_RGBA,
+                    GL_UNSIGNED_BYTE,
+                    buffer
+            );
+
             textureIDs.add(texId);
         }
         return texId;

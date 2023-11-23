@@ -5,9 +5,11 @@ import org.joml.Vector4f;
 
 public class MousePickingShader extends ShaderProgram {
 
-    private static final String vertexPath = "src/main/java/engine/shader/src/mousepicking/vertex.shader";
+    private static final String vertexPath =
+            "src/main/java/engine/shader/src/mousepicking/vertex.shader";
 
-    private static final String fragmentPath = "src/main/java/engine/shader/src/mousepicking/fragment.shader";
+    private static final String fragmentPath =
+            "src/main/java/engine/shader/src/mousepicking/fragment.shader";
 
     public MousePickingShader() {
         super(vertexPath, fragmentPath);
@@ -21,7 +23,8 @@ public class MousePickingShader extends ShaderProgram {
     }
 
     public void loadTransformationMatrix(Matrix4f matrix) {
-        super.loadUniform(super.getUniformLocation("transformationMatrix"), matrix);
+        super.loadUniform(super.getUniformLocation("transformationMatrix"),
+                matrix);
 
     }
 

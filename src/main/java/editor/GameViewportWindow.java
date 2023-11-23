@@ -53,7 +53,8 @@ public class GameViewportWindow {
         buffer.bind();
         float[] pixels = new float[4];
         glReadBuffer(GL_COLOR_ATTACHMENT0);
-        glReadPixels(xCoord, yCoord, 1, 1, GL_RGBA, GL_FLOAT, pixels);
+        glReadPixels(xCoord, yCoord, 1, 1,
+                GL_RGBA, GL_FLOAT, pixels);
         float red = pixels[0];
         float green = pixels[1];
         float blue = pixels[2];
@@ -204,9 +205,11 @@ public class GameViewportWindow {
     }
 
     /**
-     * Calculates the maximum size the framebuffer with the current aspect ratio can be to fit within the window
+     * Calculates the maximum size the framebuffer with the
+     * current aspect ratio can be to fit within the window
      * @param buff the final framebuffer
-     * @return an {@code ImVec2} representing the width {@code x}, and height {@code y}
+     * @return an {@code ImVec2} representing the width {@code x},
+     * and height {@code y}
      */
     private static ImVec2 getLargestSizeForViewport(Framebuffer buff) {
         ImVec2 windowSize = new ImVec2();
@@ -214,7 +217,8 @@ public class GameViewportWindow {
         windowSize.x -= ImGui.getScrollX();
         windowSize.y -= ImGui.getScrollY();
 
-        float targetAspect = ((float) buff.getHeight() / (float) buff.getWidth());
+        float targetAspect = ((float) buff.getHeight() /
+                (float) buff.getWidth());
 
         float aspectWidth = windowSize.x;
         float aspectHeight = aspectWidth * targetAspect;
@@ -228,7 +232,8 @@ public class GameViewportWindow {
     /**
      * Gets the offset required inorder to center the image in the window
      * @param aspectSize the precalculated size for the image
-     * @return an {@code ImVec2} representing the horizontal offset {@code x}, and vertical offset {@code y}
+     * @return an {@code ImVec2} representing the horizontal
+     * offset {@code x}, and vertical offset {@code y}
      */
     private static ImVec2 getCenteredPositionForViewport(ImVec2 aspectSize) {
         ImVec2 windowSize = new ImVec2();
@@ -239,6 +244,7 @@ public class GameViewportWindow {
         float viewPortX = (windowSize.x / 2.0f) - (aspectSize.x / 2.0f);
         float viewPortY = (windowSize.y / 2.0f) - (aspectSize.y / 2.0f);
 
-        return new ImVec2(viewPortX + ImGui.getCursorPosX(), viewPortY + ImGui.getCursorPosY());
+        return new ImVec2(viewPortX + ImGui.getCursorPosX(),
+                viewPortY + ImGui.getCursorPosY());
     }
 }

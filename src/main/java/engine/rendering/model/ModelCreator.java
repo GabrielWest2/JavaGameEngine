@@ -95,10 +95,20 @@ public class ModelCreator {
 
     public static SkyboxModel createSkyboxModel(String[] TEXTURE_FILES) {
         Model m = loadToVAO(VERTICES, 3);
-        return new SkyboxModel(m.getVaoID(), m.getVertexCount(), TextureLoader.loadCubeMap(TEXTURE_FILES));
+        return new SkyboxModel(
+                m.getVaoID(),
+                m.getVertexCount(),
+                TextureLoader.loadCubeMap(TEXTURE_FILES)
+        );
     }
 
-    public static TexturedModel loadToTexturedVAO(float[] positions, int[] indices, float[] textureCoords, float[] normals, Texture texture) {
+    public static TexturedModel loadToTexturedVAO(
+            float[] positions,
+            int[] indices,
+            float[] textureCoords,
+            float[] normals,
+            Texture texture
+    ) {
         int vaoID = createVAO();
         bindIndicesBuffer(indices);
         storeDataInAttributeList(0, 3, positions);
@@ -108,7 +118,12 @@ public class ModelCreator {
         return new TexturedModel(vaoID, positions.length, texture);
     }
 
-    public static Model loadToTexturedVAO(float[] positions, int[] indices, float[] textureCoords, float[] normals) {
+    public static Model loadToTexturedVAO(
+              float[] positions,
+              int[] indices,
+              float[] textureCoords,
+              float[] normals
+    ) {
         int vaoID = createVAO();
         bindIndicesBuffer(indices);
         storeDataInAttributeList(0, 3, positions);
@@ -118,7 +133,11 @@ public class ModelCreator {
         return new Model(vaoID, positions.length);
     }
 
-    public static WaterModel loadToWaterVAO(float[] positions, int[] indices, float[] textureCoords) {
+    public static WaterModel loadToWaterVAO(
+            float[] positions,
+            int[] indices,
+            float[] textureCoords
+    ) {
         int vaoID = createVAO();
         bindIndicesBuffer(indices);
         storeDataInAttributeList(0, 3, positions);
@@ -127,7 +146,13 @@ public class ModelCreator {
         return new WaterModel(vaoID, positions.length);
     }
 
-    public static TerrainModel loadToTerrainVAO(float[] positions, int[] indices, float[] textureCoords, float[] normals, Matrix4f transformation) {
+    public static TerrainModel loadToTerrainVAO(
+            float[] positions,
+            int[] indices,
+            float[] textureCoords,
+            float[] normals,
+            Matrix4f transformation
+    ) {
         int vaoID = createVAO();
         bindIndicesBuffer(indices);
         storeDataInAttributeList(0, 3, positions);
@@ -135,11 +160,26 @@ public class ModelCreator {
         storeDataInAttributeList(2, 3, normals);
         unbindVAO();
 
-        return new TerrainModel(vaoID, positions.length * 3, TerrainManager.splatmap, TerrainManager.t1, TerrainManager.t2, TerrainManager.t3, TerrainManager.t4, transformation);
+        return new TerrainModel(
+                vaoID,
+                positions.length * 3,
+                TerrainManager.splatmap,
+                TerrainManager.t1,
+                TerrainManager.t2,
+                TerrainManager.t3,
+                TerrainManager.t4,
+                transformation
+        );
     }
 
 
-    public static TexturedModel loadToTexturedVAO(FloatBuffer positions, IntBuffer indices, FloatBuffer textureCoords, FloatBuffer normals, Texture texture) {
+    public static TexturedModel loadToTexturedVAO(
+            FloatBuffer positions,
+            IntBuffer indices,
+            FloatBuffer textureCoords,
+            FloatBuffer normals,
+            Texture texture
+    ) {
         int vaoID = createVAO();
         bindIndicesBuffer(indices);
         storeDataInAttributeList(0, 3, positions);
@@ -150,7 +190,12 @@ public class ModelCreator {
     }
 
 
-    public static Model loadToVAO(FloatBuffer positions, IntBuffer indices, FloatBuffer textureCoords, FloatBuffer normals) {
+    public static Model loadToVAO(
+            FloatBuffer positions,
+            IntBuffer indices,
+            FloatBuffer textureCoords,
+            FloatBuffer normals
+    ) {
         int vaoID = createVAO();
         bindIndicesBuffer(indices);
         storeDataInAttributeList(0, 3, positions);
@@ -167,27 +212,48 @@ public class ModelCreator {
         return vaoID;
     }
 
-    private static int storeDataInAttributeList(int attributeNumber, int coordinateSize, float[] data) {
+    private static int storeDataInAttributeList(
+            int attributeNumber,
+            int coordinateSize,
+            float[] data
+    ) {
         int vboID = GL15.glGenBuffers();
         vbos.add(vboID);
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vboID);
         FloatBuffer buffer = storeDataInFloatBuffer(data);
         GL15.glBufferData(GL15.GL_ARRAY_BUFFER, buffer, GL15.GL_STATIC_DRAW);
-        GL20.glVertexAttribPointer(attributeNumber, coordinateSize, GL11.GL_FLOAT, false, 0, 0);
+        GL20.glVertexAttribPointer(
+                attributeNumber,
+                coordinateSize,
+                GL11.GL_FLOAT,
+                false,
+                0,
+                0
+        );
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
 
         return vboID;
     }
 
-    private static int storeDataInAttributeList(int attributeNumber, int coordinateSize, FloatBuffer data) {
+    private static void storeDataInAttributeList(
+            int attributeNumber,
+            int coordinateSize,
+            FloatBuffer data
+    ) {
         int vboID = GL15.glGenBuffers();
         vbos.add(vboID);
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vboID);
         GL15.glBufferData(GL15.GL_ARRAY_BUFFER, data, GL15.GL_STATIC_DRAW);
-        GL20.glVertexAttribPointer(attributeNumber, coordinateSize, GL11.GL_FLOAT, false, 0, 0);
+        GL20.glVertexAttribPointer(
+                attributeNumber,
+                coordinateSize,
+                GL11.GL_FLOAT,
+                false,
+                0,
+                0
+        );
         GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
 
-        return vboID;
     }
 
 
@@ -209,7 +275,11 @@ public class ModelCreator {
         vbos.add(vboID);
         GL15.glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboID);
         IntBuffer buffer = storeDataInIntBuffer(indices);
-        GL15.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, buffer, GL15.GL_STATIC_DRAW);
+        GL15.glBufferData(
+                GL15.GL_ELEMENT_ARRAY_BUFFER,
+                buffer,
+                GL15.GL_STATIC_DRAW
+        );
         return vboID;
     }
 
@@ -217,7 +287,11 @@ public class ModelCreator {
         int vboID = GL15.glGenBuffers();
         vbos.add(vboID);
         GL15.glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vboID);
-        GL15.glBufferData(GL15.GL_ELEMENT_ARRAY_BUFFER, buffer, GL15.GL_STATIC_DRAW);
+        GL15.glBufferData(
+                GL15.GL_ELEMENT_ARRAY_BUFFER,
+                buffer,
+                GL15.GL_STATIC_DRAW
+        );
         return vboID;
     }
 

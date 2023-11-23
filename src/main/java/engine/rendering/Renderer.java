@@ -15,15 +15,14 @@ import engine.util.MatrixBuilder;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL13;
-import org.lwjgl.opengl.GL20;
-import org.lwjgl.opengl.GL30;
 
 import static org.lwjgl.glfw.GLFW.glfwPollEvents;
 import static org.lwjgl.glfw.GLFW.glfwSwapBuffers;
 import static org.lwjgl.opengl.GL11.*;
-import static org.lwjgl.opengl.GL13.GL_MULTISAMPLE;
+import static org.lwjgl.opengl.GL13.*;
+import static org.lwjgl.opengl.GL20.glDisableVertexAttribArray;
+import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
+import static org.lwjgl.opengl.GL30.glBindVertexArray;
 
 public class Renderer {
 
@@ -125,30 +124,48 @@ public class Renderer {
         waterShader.connectTextures();
         waterShader.setMaterial(damper, reflect);
         waterShader.loadWaterMovement(GameEngine.waterMovement);
-        waterShader.loadCameraPosition(GameEngine.getInstance().camera.getPosition());
-        waterShader.loadTransformationMatrix(MatrixBuilder.createTransformationMatrix(position, new Vector3f(0, 0, 0), new Vector3f(1, 1, 1)));
-        waterShader.loadViewMatrix(GameEngine.getInstance().camera.getViewMatrix());
-        GL30.glBindVertexArray(model.getVaoID());
-        GL20.glEnableVertexAttribArray(0);
-        GL20.glEnableVertexAttribArray(1);
-        GL20.glEnableVertexAttribArray(2);
+        waterShader.loadCameraPosition(
+                GameEngine.getInstance().camera.getPosition());
+        waterShader.loadTransformationMatrix(
+                MatrixBuilder.createTransformationMatrix(
+                        position,
+                        new Vector3f(0, 0, 0),
+                        new Vector3f(1, 1, 1))
+        );
+        waterShader.loadViewMatrix(
+                GameEngine.getInstance().camera.getViewMatrix());
+        glBindVertexArray(model.getVaoID());
+        glEnableVertexAttribArray(0);
+        glEnableVertexAttribArray(1);
+        glEnableVertexAttribArray(2);
 
-        GL13.glActiveTexture(GL13.GL_TEXTURE0);
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, reflectionBuffer.getColorTexture());
-        GL13.glActiveTexture(GL13.GL_TEXTURE1);
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, refractionBuffer.getColorTexture());
-        GL13.glActiveTexture(GL13.GL_TEXTURE2);
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, waterDUDV.textureID());
-        GL13.glActiveTexture(GL13.GL_TEXTURE3);
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, waterNormalMap.textureID());
-        GL13.glActiveTexture(GL13.GL_TEXTURE4);
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, refractionBuffer.getDepthTexture());
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, 
+                reflectionBuffer.getColorTexture());
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, 
+                refractionBuffer.getColorTexture());
+        glActiveTexture(GL_TEXTURE2);
+        glBindTexture(GL_TEXTURE_2D, 
+                waterDUDV.textureID());
+        glActiveTexture(GL_TEXTURE3);
+        glBindTexture(GL_TEXTURE_2D, 
+                waterNormalMap.textureID());
+        glActiveTexture(GL_TEXTURE4);
+        glBindTexture(GL_TEXTURE_2D, 
+                refractionBuffer.getDepthTexture());
 
-        GL11.glDrawElements(GL11.GL_TRIANGLES, model.getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
-        GL20.glDisableVertexAttribArray(2);
-        GL20.glDisableVertexAttribArray(1);
-        GL20.glDisableVertexAttribArray(0);
-        GL30.glBindVertexArray(0);
+        glDrawElements(
+                GL_TRIANGLES,
+                model.getVertexCount(),
+                GL_UNSIGNED_INT,
+                0
+        );
+
+        glDisableVertexAttribArray(2);
+        glDisableVertexAttribArray(1);
+        glDisableVertexAttribArray(0);
+        glBindVertexArray(0);
         waterShader.stop();
 
         glDisable(GL_BLEND);
@@ -169,18 +186,25 @@ public class Renderer {
         // float alpha = (float) ((entityId >> 24) & 0xff) / 0xff;
 
         mousePickingShader.loadColor(new Vector4f(red, green, blue, 1.0f));
-        mousePickingShader.loadTransformationMatrix(MatrixBuilder.createTransformationMatrix(transform.getPosition(), transform.getRotation(), transform.getScale()));
-        mousePickingShader.loadViewMatrix(GameEngine.getInstance().camera.getViewMatrix());
-        GL30.glBindVertexArray(model.getVaoID());
-        GL20.glEnableVertexAttribArray(0);
-        GL20.glEnableVertexAttribArray(1);
-        GL20.glEnableVertexAttribArray(2);
+        mousePickingShader.loadTransformationMatrix(
+                MatrixBuilder.createTransformationMatrix(
+                        transform.getPosition(),
+                        transform.getRotation(),
+                        transform.getScale()
+                )
+        );
+        mousePickingShader.loadViewMatrix(
+                GameEngine.getInstance().camera.getViewMatrix());
+        glBindVertexArray(model.getVaoID());
+        glEnableVertexAttribArray(0);
+        glEnableVertexAttribArray(1);
+        glEnableVertexAttribArray(2);
 
-        GL11.glDrawElements(GL11.GL_TRIANGLES, model.getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
-        GL20.glDisableVertexAttribArray(2);
-        GL20.glDisableVertexAttribArray(1);
-        GL20.glDisableVertexAttribArray(0);
-        GL30.glBindVertexArray(0);
+        glDrawElements(GL_TRIANGLES, model.getVertexCount(), GL_UNSIGNED_INT, 0);
+        glDisableVertexAttribArray(2);
+        glDisableVertexAttribArray(1);
+        glDisableVertexAttribArray(0);
+        glBindVertexArray(0);
         mousePickingShader.stop();
         glEnable(GL_CULL_FACE);
     }
@@ -195,77 +219,106 @@ public class Renderer {
         Matrix4f view = GameEngine.getInstance().camera.getViewMatrix();
         defaultShader.loadMaterial(model.getMaterial());
         defaultShader.loadLights(GameEngine.getInstance().loadedScene.getLights(), view);
-        defaultShader.loadTransformationMatrix(MatrixBuilder.createTransformationMatrix(transform.getPosition(), transform.getRotation(), transform.getScale()));
+        defaultShader.loadTransformationMatrix(
+                MatrixBuilder.createTransformationMatrix(
+                        transform.getPosition(),
+                        transform.getRotation(),
+                        transform.getScale()
+                )
+        );
         defaultShader.loadViewMatrix(view);
-        defaultShader.setClipPlane(new Vector4f(0, GameEngine.getInstance().clipDirection, 0, GameEngine.getInstance().clipHeight));
-        GL30.glBindVertexArray(model.getVaoID());
-        GL20.glEnableVertexAttribArray(0);
-        GL20.glEnableVertexAttribArray(1);
-        GL20.glEnableVertexAttribArray(2);
-        GL13.glActiveTexture(GL13.GL_TEXTURE0);
+        defaultShader.setClipPlane(
+                new Vector4f(
+                        0,
+                        GameEngine.getInstance().clipDirection,
+                        0,
+                        GameEngine.getInstance().clipHeight
+                )
+        );
+
+        glBindVertexArray(model.getVaoID());
+        glEnableVertexAttribArray(0);
+        glEnableVertexAttribArray(1);
+        glEnableVertexAttribArray(2);
+        glActiveTexture(GL_TEXTURE0);
         if(model.getMaterial().getLoadedTexture() != null) {
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, model.getMaterial().getLoadedTexture().textureID());
+            glBindTexture(GL_TEXTURE_2D, model.getMaterial().getLoadedTexture().textureID());
         }else {
-            GL11.glBindTexture(GL11.GL_TEXTURE_2D, Primitives.white.textureID());
+            glBindTexture(GL_TEXTURE_2D, Primitives.white.textureID());
         }
-        GL11.glDrawElements(GL11.GL_TRIANGLES, model.getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
-        GL20.glDisableVertexAttribArray(2);
-        GL20.glDisableVertexAttribArray(1);
-        GL20.glDisableVertexAttribArray(0);
-        GL30.glBindVertexArray(0);
+        glDrawElements(GL_TRIANGLES, model.getVertexCount(), GL_UNSIGNED_INT, 0);
+        glDisableVertexAttribArray(2);
+        glDisableVertexAttribArray(1);
+        glDisableVertexAttribArray(0);
+        glBindVertexArray(0);
         defaultShader.stop();
         glEnable(GL_CULL_FACE);
     }
 
-    public static void renderTerrain(TerrainModel model, float damper, float reflect) {
+    public static void renderTerrain(TerrainModel model) {
         terrainShader.start();
         Matrix4f view = GameEngine.getInstance().camera.getViewMatrix();
         terrainShader.loadViewMatrix(view);
         terrainShader.loadLights(GameEngine.getInstance().loadedScene.getLights(), view);
-        terrainShader.setTextureScales(TerrainManager.textureScale1,TerrainManager.textureScale2, TerrainManager.textureScale3, TerrainManager.textureScale4);
+
+        terrainShader.setTextureScales(
+                TerrainManager.textureScale1,
+                TerrainManager.textureScale2,
+                TerrainManager.textureScale3,
+                TerrainManager.textureScale4);
+
         terrainShader.connectTextures();
         terrainShader.loadTransformationMatrix(model.getTransformationMatrix());
-        terrainShader.setClipPlane(new Vector4f(0, GameEngine.getInstance().clipDirection, 0, GameEngine.getInstance().clipHeight));
-        GL30.glBindVertexArray(model.getVaoID());
-        GL20.glEnableVertexAttribArray(0);
-        GL20.glEnableVertexAttribArray(1);
-        GL20.glEnableVertexAttribArray(2);
 
-        GL13.glActiveTexture(GL13.GL_TEXTURE0);
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, model.getSplat().textureID());
+        terrainShader.setClipPlane(new Vector4f(0,
+                GameEngine.getInstance().clipDirection,
+                0, GameEngine.getInstance().clipHeight));
 
-        GL13.glActiveTexture(GL13.GL_TEXTURE1);
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, model.getT1().textureID());
-        GL13.glActiveTexture(GL13.GL_TEXTURE2);
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, model.getT2().textureID());
-        GL13.glActiveTexture(GL13.GL_TEXTURE3);
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, model.getT3().textureID());
-        GL13.glActiveTexture(GL13.GL_TEXTURE4);
-        GL11.glBindTexture(GL11.GL_TEXTURE_2D, model.getT4().textureID());
+        glBindVertexArray(model.getVaoID());
+        glEnableVertexAttribArray(0);
+        glEnableVertexAttribArray(1);
+        glEnableVertexAttribArray(2);
+
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, model.getSplat().textureID());
+
+        glActiveTexture(GL_TEXTURE1);
+        glBindTexture(GL_TEXTURE_2D, model.getT1().textureID());
+        glActiveTexture(GL_TEXTURE2);
+        glBindTexture(GL_TEXTURE_2D, model.getT2().textureID());
+        glActiveTexture(GL_TEXTURE3);
+        glBindTexture(GL_TEXTURE_2D, model.getT3().textureID());
+        glActiveTexture(GL_TEXTURE4);
+        glBindTexture(GL_TEXTURE_2D, model.getT4().textureID());
 
 
-        GL11.glDrawElements(GL11.GL_TRIANGLES, model.getVertexCount(), GL11.GL_UNSIGNED_INT, 0);
-        GL20.glDisableVertexAttribArray(1);
-        GL20.glDisableVertexAttribArray(2);
-        GL20.glDisableVertexAttribArray(0);
-        GL30.glBindVertexArray(0);
+        glDrawElements(GL_TRIANGLES, model.getVertexCount(),
+                GL_UNSIGNED_INT, 0);
+        glDisableVertexAttribArray(1);
+        glDisableVertexAttribArray(2);
+        glDisableVertexAttribArray(0);
+        glBindVertexArray(0);
         terrainShader.stop();
     }
 
     public static void renderSkybox(SkyboxModel model) {
         skyboxShader.start();
-        skyboxShader.loadViewMatrix(MatrixBuilder.createStationaryViewMatrix(GameEngine.getInstance().camera));
-        GL30.glBindVertexArray(model.getVaoID());
-        GL20.glEnableVertexAttribArray(0);
-        GL20.glEnableVertexAttribArray(1);
-        GL20.glEnableVertexAttribArray(2);
-        GL13.glActiveTexture(GL13.GL_TEXTURE0);
-        GL11.glBindTexture(GL13.GL_TEXTURE_CUBE_MAP, model.getCubemapTexture());
-        GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, model.getVertexCount());
-        GL20.glDisableVertexAttribArray(0);
-        GL20.glDisableVertexAttribArray(1);
-        GL20.glDisableVertexAttribArray(2);
-        GL30.glBindVertexArray(0);
+        skyboxShader.loadViewMatrix(
+                MatrixBuilder.createStationaryViewMatrix(
+                        GameEngine.getInstance().camera
+                )
+        );
+        glBindVertexArray(model.getVaoID());
+        glEnableVertexAttribArray(0);
+        glEnableVertexAttribArray(1);
+        glEnableVertexAttribArray(2);
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_CUBE_MAP, model.getCubemapTexture());
+        glDrawArrays(GL_TRIANGLES, 0, model.getVertexCount());
+        glDisableVertexAttribArray(0);
+        glDisableVertexAttribArray(1);
+        glDisableVertexAttribArray(2);
+        glBindVertexArray(0);
         skyboxShader.stop();
         skyboxShader.stop();
     }
@@ -287,9 +340,18 @@ public class Renderer {
 
     public static void endScene(Camera camera, Entity selected) {
 
-        PostProcessing.doPostProcessing(frameBuffer.getColorTexture(), frameBuffer.getDepthTexture());
+        PostProcessing.doPostProcessing(
+                frameBuffer.getColorTexture(),
+                frameBuffer.getDepthTexture()
+        );
 
-        GameViewportWindow.render(PostProcessing.finalBuffer, mousePickingBuffer, camera, selected);
+        GameViewportWindow.render(
+                PostProcessing.finalBuffer,
+                mousePickingBuffer,
+                camera,
+                selected
+        );
+
         LightingWindow.render(GameEngine.getInstance().loadedScene.getLights());
         WindowMenubar.render();
         ConsoleWindow.render();
@@ -309,10 +371,22 @@ public class Renderer {
     }
 
     public static void initFramebuffers() {
-        reflectionBuffer = new Framebuffer(DisplayManager.getWidth(), DisplayManager.getHeight(), Framebuffer.DEPTH_TEXTURE);
-        refractionBuffer = new Framebuffer(DisplayManager.getWidth(), DisplayManager.getHeight(), Framebuffer.DEPTH_TEXTURE);
-        frameBuffer = new Framebuffer(DisplayManager.getWidth(), DisplayManager.getHeight(), Framebuffer.DEPTH_TEXTURE);
-        mousePickingBuffer = new Framebuffer(DisplayManager.getWidth(), DisplayManager.getHeight(), Framebuffer.DEPTH_TEXTURE);
+        reflectionBuffer = new Framebuffer(
+                DisplayManager.getWidth(),
+                DisplayManager.getHeight(),
+                Framebuffer.DEPTH_TEXTURE);
+        refractionBuffer = new Framebuffer(
+                DisplayManager.getWidth(),
+                DisplayManager.getHeight(),
+                Framebuffer.DEPTH_TEXTURE);
+        frameBuffer = new Framebuffer(
+                DisplayManager.getWidth(),
+                DisplayManager.getHeight(),
+                Framebuffer.DEPTH_TEXTURE);
+        mousePickingBuffer = new Framebuffer(
+                DisplayManager.getWidth(),
+                DisplayManager.getHeight(),
+                Framebuffer.DEPTH_TEXTURE);
     }
 
     public static void initWater() {
