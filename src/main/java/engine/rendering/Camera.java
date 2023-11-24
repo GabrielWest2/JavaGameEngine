@@ -1,6 +1,7 @@
 package engine.rendering;
 
 import editor.GameViewportWindow;
+import engine.GameEngine;
 import engine.input.Keyboard;
 import engine.input.Mouse;
 import engine.util.MatrixBuilder;
@@ -31,7 +32,7 @@ public class Camera {
 
 
     public void update() {
-        if (GameViewportWindow.focused) {
+        if ((!GameEngine.editorMode) || GameViewportWindow.focused) {
             float vx = 0;
             float vy = 0;
             float vz = 0;
@@ -64,6 +65,7 @@ public class Camera {
             this.moveBy(move);
             if(Mouse.isMousePressed(1)) {
                 this.rotateBy(new Vector3f(Mouse.getMouseDy() / 10f, Mouse.getMouseDx() / 10f, 0));
+                System.out.println(Mouse.getMouseDx());
             }
         }
         this.viewMatrix = MatrixBuilder.createViewMatrix(this);

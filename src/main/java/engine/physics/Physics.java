@@ -59,16 +59,6 @@ public class Physics {
         bodies.remove(rigidbody3D.rb);
     }
 
-    public static void render() {
-        for (RigidBody rb : bodies.keySet()){
-            CollisionShape sh = rb.getCollisionShape();
-            //if(sh != null){
-            //    System.out.println(sh.getName());
-            //}
-            //TODO Render wireframe collider gizmo
-        }
-    }
-
     public static void logic() {
         dynamicsWorld.stepSimulation(Time.getDeltaTime());
         for (RigidBody rb : bodies.keySet()){

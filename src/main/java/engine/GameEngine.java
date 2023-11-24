@@ -14,28 +14,20 @@ import engine.scene.SceneManager;
 import engine.util.Time;
 import scripting.LuaScriptingManager;
 
-import java.util.Objects;
-
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
 
 
 public class GameEngine {
 
-    public static GameEngine instance;
-
+    public static boolean editorMode = false;
 
     public static void main(String[] args) {
-        instance = new GameEngine();
-        instance.run();
+        GameEngine.run();
     }
 
-    public static GameEngine getInstance() {
-        return instance;
-    }
-
-    public void run() {
-        DisplayManager.initOpenGL(this);
+    public static void run() {
+        DisplayManager.initOpenGL();
         loop();
         glfwFreeCallbacks(DisplayManager.window);
         glfwDestroyWindow(DisplayManager.window);
@@ -44,19 +36,24 @@ public class GameEngine {
         Renderer.cleanUp();
         AudioManager.cleanUp();
         glfwTerminate();
-        Objects.requireNonNull(glfwSetErrorCallback(null)).free();
+        glfwSetErrorCallback(null).free();
     }
 
-
-    private void loop() {
+    private static void loop() {
         Renderer.init();
         SceneManager.init();
         PostProcessing.init();
-        ConsoleWindow.init();
+        if(editorMode) {
+            ConsoleWindow.init();
+        }
         Physics.init();
         TerrainManager.init();
         WaterManger.init();
         AudioManager.init();
+        LuaScriptingManager.loadCode();
+
+        LuaScriptingManager.awake();
+        LuaScriptingManager.start();
 
         while (!glfwWindowShouldClose(DisplayManager.window)) {
             Renderer.beginFrame();
@@ -64,17 +61,8 @@ public class GameEngine {
             Mouse.update();
             SceneManager.loadedScene.camera.update();
             Physics.logic();
-            Physics.render();
-            LuaScriptingManager.Update();
-
-
-
-
-            if(Mouse.isMousePressed(0))
-                LuaScriptingManager.LeftClick();
-
+            LuaScriptingManager.update();
             Renderer.renderGame();
-
             Renderer.endScene(SceneManager.loadedScene.camera, ExplorerWindow.selectedEntity);
         }
     }

@@ -200,6 +200,11 @@ public class GameViewportWindow {
         ImGui.setCursorPos(10, 35);
         ImGui.textColored(0xff247019, "FPS: " + (int)ImGui.getIO().getFramerate());
 
+        ImVec2 pos = ImGui.getWindowSize();
+        ImGui.setCursorPos(pos.x / 2, 10);
+        ImGui.button(" " + FAIcons.ICON_PLAY + "");
+        ImGui.sameLine();
+        ImGui.button(" " + FAIcons.ICON_STOP + "");
         return f;
     }
 

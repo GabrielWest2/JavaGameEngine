@@ -1,12 +1,12 @@
 package engine.rendering;
 
 import editor.*;
+import engine.GameEngine;
 import engine.TerrainManager;
 import engine.WaterManger;
 import engine.ecs.Entity;
 import engine.ecs.component.ObjRenderer;
 import engine.ecs.component.Transform;
-import engine.physics.Physics;
 import engine.postprocessing.PostProcessing;
 import engine.rendering.model.*;
 import engine.rendering.texture.Texture;
@@ -149,7 +149,6 @@ public class Renderer {
         clipHeight = 10000;
         renderScene(SceneManager.loadedScene, skybox);
         WaterManger.render();
-        Physics.render();
         Renderer.frameBuffer.unbind();
     }
 
@@ -412,7 +411,9 @@ public class Renderer {
 
     public static void beginFrame() {
         DisplayManager.newImguiFrame();
-        DisplayManager.createDockspace();
+        if(GameEngine.editorMode) {
+            DisplayManager.createDockspace();
+        }
         glEnable(GL_CULL_FACE);
         glEnable(GL_CLIP_PLANE0);
         glEnable(GL_MULTISAMPLE);
@@ -434,20 +435,23 @@ public class Renderer {
                 frameBuffer.getDepthTexture()
         );
 
-        GameViewportWindow.render(
-                PostProcessing.finalBuffer,
-                mousePickingBuffer,
-                camera,
-                selected
-        );
+        if(GameEngine.editorMode) {
+            GameViewportWindow.render(
+                    PostProcessing.finalBuffer,
+                    mousePickingBuffer,
+                    camera,
+                    selected
+            );
 
-        LightingWindow.render(SceneManager.loadedScene.getLights());
-        WindowMenubar.render();
-        ConsoleWindow.render();
-        ExplorerWindow.render();
-        InspectorWindow.render();
+            LightingWindow.render(SceneManager.loadedScene.getLights());
+            WindowMenubar.render();
+            ConsoleWindow.render();
+            ExplorerWindow.render();
+            InspectorWindow.render();
 
-        DisplayManager.endImguiFrame();
+        }
+            DisplayManager.endImguiFrame();
+
         glfwSwapBuffers(DisplayManager.window); // swap the color buffers
         glfwPollEvents();
     }

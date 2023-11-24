@@ -1,32 +1,19 @@
-local engine = luajava.bindClass("engine.GameEngine"):getInstance()
+local engine = luajava.bindClass("engine.GameEngine")
 local time = luajava.bindClass("engine.util.Time")
-local textureLoader = luajava.bindClass("engine.rendering.texture.TextureLoader")
-local objLoader = luajava.bindClass("engine.rendering.model.OBJLoader")
-local modelRenderer = luajava.bindClass("engine.ecs.component.ModelRenderer")
+local sceneManager = luajava.bindClass("engine.scene.SceneManager")
+local mouse = luajava.bindClass("engine.input.Mouse")
 
-function Update()
-    --if engine.loadedScene:getEntities():size() == 1 then
-    --    tex = textureLoader:getTexture("grass_color.png")
-    --    model = objLoader:loadTexturedOBJ("dragon.obj", tex);
-
-
-    --    entity = engine.loadedScene:getEntities():get(0)
-
-    --    entity:getTransform():getPosition().y = entity:getTransform():getPosition().y + time:getDeltaTime()
-    --end
+function Start()
+    print("LUA SCRIPT STARTED!")
 end
 
-function LeftClick()
-    print("[LUA] hi")
-        if engine.loadedScene:getEntities():size() > 1 then
-            print("[LUA] more than one")
---            tex = textureLoader:getTexture("white.png")
---            model = objLoader:loadTexturedOBJ("dragon.obj", tex);
---
---            entity = engine.loadedScene:getEntities():get(1)
---            rendererClass = modelRenderer:clazz()
---            renderer = entity:getComponent(rendererClass)
---            renderer:setModel(model)
-            --entity:getTransform():getPosition().y = entity:getTransform():getPosition().y + time:getDeltaTime()
+function Update()
+    if mouse:isMousePressed(0) then
+        print("[LUA] hi")
+        if sceneManager.loadedScene:getEntities():size() > 1 then
+            entity = sceneManager.loadedScene:getEntities():get(0)
+            print("[LUA] entity name: " .. entity:getName())
+            entity:getTransform():getPosition().y = 1 * time:getDeltaTime() + entity:getTransform():getPosition().y;
         end
+    end
 end

@@ -1,5 +1,6 @@
 package engine.postprocessing;
 
+import engine.GameEngine;
 import engine.rendering.DisplayManager;
 import engine.postprocessing.brightnessfilter.BrightnessFilterEffect;
 import engine.postprocessing.combine.CombineEffect;
@@ -68,9 +69,12 @@ public class PostProcessing {
     public static void doPostProcessing(int colorBuffer, int depthBuffer) {
         start();
 
-        finalBuffer.bind();
+
+        if(GameEngine.editorMode) finalBuffer.bind();
+
         contrastEffect.render(colorBuffer, depthBuffer);
-        finalBuffer.unbind();
+
+        if(GameEngine.editorMode) finalBuffer.unbind();
 
         /*
         finalBuffer.bind();

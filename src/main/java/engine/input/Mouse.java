@@ -1,11 +1,8 @@
 package engine.input;
 
-import editor.GameViewportWindow;
 import imgui.ImGui;
 import imgui.ImVec2;
 import org.joml.Vector2f;
-
-import static org.lwjgl.glfw.GLFW.GLFW_KEY_ESCAPE;
 
 public class Mouse {
 
@@ -17,34 +14,12 @@ public class Mouse {
 
     private static float dy = 0;
 
-    private static boolean mouseHidden = false;
-
-    public static boolean isMouseHidden() {
-        return mouseHidden;
-    }
-
-    public static void setMouseHidden(boolean hidden) {
-        mouseHidden = hidden;
-        //glfwSetInputMode(DisplayManager.window, GLFW_CURSOR, hidden ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL);
-    }
 
     public static void update() {
         dx = x - ImGui.getMousePosX();
         dy = y - ImGui.getMousePosY();
         x = ImGui.getMousePosX();
         y = ImGui.getMousePosY();
-
-        if (!mouseHidden) {
-            dx = 0;
-            dy = 0;
-            if (ImGui.isMouseClicked(0) && GameViewportWindow.focused) {
-                setMouseHidden(true);
-            }
-        } else {
-            if (Keyboard.isKeyPressed(GLFW_KEY_ESCAPE)) {
-                setMouseHidden(false);
-            }
-        }
     }
 
     public static boolean isMousePressed(int i) {

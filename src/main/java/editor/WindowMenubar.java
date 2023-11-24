@@ -76,8 +76,8 @@ public class WindowMenubar {
                 if (ImGui.menuItem("Add Empty Component")) {
                     SceneManager.loadedScene.addEntity(new Entity());
                 }
-                if (ImGui.menuItem("Add Grass Block")) {
-                    SceneManager.loadedScene.addEntity(new Entity().addComponent(new ObjRenderer().setPaths("models/grass.obj")));
+                if (ImGui.menuItem("Add Cube")) {
+                    SceneManager.loadedScene.addEntity(new Entity().addComponent(new ObjRenderer().setPaths("engine/primitive/cube.obj")));
                 }
 
                 ImGui.endMenu();
